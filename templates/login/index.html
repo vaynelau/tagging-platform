@@ -1,0 +1,15 @@
+{#login/templates/login/index.html#}
+
+
+{% extends 'login/base.html' %}
+{% block title %}主页{% endblock %}
+{% block content %}
+    {% if request.session.success %}
+        <div class="alert alert-warning">{{ request.session.success }}</div>
+    {% endif %}
+    {% if request.session.is_login %}
+        <h1>用户{{ request.session.user_name }}已登录</h1>
+    {% else %}
+        <h1>请登录或注册</h1>
+    {% endif %}
+{% endblock %}
