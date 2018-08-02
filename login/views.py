@@ -16,7 +16,7 @@ def login(request):
         return redirect("/index/")
 
     if request.method == "POST":
-        login_form = forms.UserForm(request.POST)
+        login_form = forms.LoginForm(request.POST)
         message = "表单信息有误！"
         if login_form.is_valid():
             username = login_form.cleaned_data['username']
@@ -37,7 +37,7 @@ def login(request):
                 message = "用户名未注册！"
         return render(request, 'login/login.html', locals())
 
-    login_form = forms.UserForm()
+    login_form = forms.LoginForm()
     return render(request, 'login/login.html', locals())
 
 
@@ -81,6 +81,7 @@ def register(request):
             request.session['success'] = "注册成功！"
             request.session['redirect'] = True
             return redirect('/index/')
+
     register_form = forms.RegisterForm()
     return render(request, 'login/register.html', locals())
 
