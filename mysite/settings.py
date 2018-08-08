@@ -72,10 +72,9 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql',  # 数据库类型
         'NAME': 'mysite',  # 数据库名字
         'USER': 'django',  # 账号
         'PASSWORD': '123456',  # 密码
@@ -123,8 +122,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sina.com'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = 'xxx@sina.com'
-EMAIL_HOST_PASSWORD = 'xxxxxxxxxxx'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.sina.cn'
+# EMAIL_PORT = 25
+# EMAIL_HOST_USER = 'liu1351853931@sina.cn'
+# EMAIL_HOST_PASSWORD = 'WbLw321.0'
