@@ -1,11 +1,15 @@
-#!/usr/bin/env python
-# _*_ coding:utf-8 _*_
 from django import forms
 
 
 class LoginForm(forms.Form):
+    TYPE = (
+        ('admin', '管理员'),
+        ('user', '普通用户'),
+    )
+
     username = forms.CharField(label="用户名", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label="密码", max_length=128, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    group = forms.ChoiceField(label='用户类别', choices=TYPE, widget=forms.RadioSelect())
 
 
 class RegisterForm(forms.Form):

@@ -1,22 +1,19 @@
 {% extends 'login/base.html' %}
 
-
 {% block title %}登录{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{{ static('css/login.css') }}">
 {% endblock %}
 
-
 {% block content %}
     <div class="container">
         <div class="col-md-4 col-md-offset-4">
             <form class='form-login' action="/login/" method="post">
-                {% if message %}
-                    <div class="alert alert-warning">{{ message }}</div>
+                {% if error_message %}
+                    <div class="alert alert-warning">{{ error_message }}</div>
                 {% endif %}
                 {{ csrf_input }}
                 <h1 class="text-center">欢迎登录</h1>
-
                 <div class="form-group">
                     {{ login_form.username.label_tag() }}
                     {{ login_form.username }}
@@ -25,7 +22,10 @@
                     {{ login_form.password.label_tag() }}
                     {{ login_form.password }}
                 </div>
-                <h1></h1>
+                <div class="form-group">
+                    {{ login_form.group.label_tag() }}
+                    {{ login_form.group }}
+                </div>
                 <button type="submit" class="btn btn-block btn-primary">登录</button>
             </form>
         </div>

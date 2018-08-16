@@ -7,9 +7,13 @@
     {% if request.session.message %}
         <div class="alert alert-warning">{{ request.session.message }}</div>
     {% endif %}
-    {% if user_name %}
-        <h1>用户{{ user_name }}已登录</h1>
+    {% if request.session.is_login %}
+        {% if request.session.group=='admin' %}
+            <h1 class="text-center">管理员{{ request.session.username }}已登录</h1>
+        {% else %}
+            <h1 class="text-center">用户{{ request.session.username }}已登录</h1>
+        {% endif %}
     {% else %}
-        <h1>请登录或注册</h1>
+        <h1 class="text-center">请登录或注册</h1>
     {% endif %}
 {% endblock %}

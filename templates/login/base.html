@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="{{ static('bootstrap-3.3.7-dist/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ static('bootstrap-table-dist/bootstrap-table.min.css') }}" rel="stylesheet">
 
     {% block css %}{% endblock %}
 </head>
@@ -25,7 +26,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">任务分发系统</a>
+            <a class="navbar-brand" href="#">MySite</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -34,8 +35,13 @@
                 <li class="active"><a href="/index/">主页</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if user_name %}
-                    <li><a href="#">当前用户：{{ user_name }}</a></li>
+                {% if request.session.is_login %}
+                    {% if request.session.group=='admin' %}
+                        <li><a href="#">当前管理员：{{ request.session.username }}</a></li>
+                    {% else %}
+                        <li><a href="#">当前用户：{{ request.session.username }}</a></li>
+                    {% endif %}
+                    <li><a href="/task/">任务管理</a></li>
                     <li><a href="/logout/">退出</a></li>
                 {% else %}
                     <li><a href="/login/">登录</a></li>
@@ -44,15 +50,16 @@
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
-
 </nav>
 
 {% block content %}{% endblock %}
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="{{ static('js/jquery-3.2.1.js') }}"></script>
+<script src="{{ static('js/jquery-3.3.1.js') }}"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{{ static('bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ static('bootstrap-table-dist/bootstrap-table.js') }}"></script>
+<script src="{{ static('bootstrap-table-dist/locale/bootstrap-table-zh-CN.js') }}"></script>
 </body>
 </html>

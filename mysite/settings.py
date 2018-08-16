@@ -123,8 +123,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.sina.cn'
-# EMAIL_PORT = 25
-# EMAIL_HOST_USER = 'liu1351853931@sina.cn'
-# EMAIL_HOST_PASSWORD = 'WbLw321.0'
+SESSION_COOKIE_AGE = 60 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
