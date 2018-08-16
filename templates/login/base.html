@@ -1,23 +1,15 @@
-{% load staticfiles %}
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
     <title>{% block title %}base{% endblock %}</title>
 
     <!-- Bootstrap -->
-    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{{ static('bootstrap-3.3.7-dist/css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
     {% block css %}{% endblock %}
 </head>
 
@@ -33,7 +25,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Mysite</a>
+            <a class="navbar-brand" href="#">任务分发系统</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -42,8 +34,8 @@
                 <li class="active"><a href="/index/">主页</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if request.session.is_login %}
-                    <li><a href="#">当前在线：{{ request.session.user_name }}</a></li>
+                {% if user_name %}
+                    <li><a href="#">当前用户：{{ user_name }}</a></li>
                     <li><a href="/logout/">退出</a></li>
                 {% else %}
                     <li><a href="/login/">登录</a></li>
@@ -59,8 +51,8 @@
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+<script src="{{ static('js/jquery-3.2.1.js') }}"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+<script src="{{ static('bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>
 </body>
 </html>
