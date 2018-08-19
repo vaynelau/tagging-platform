@@ -36,5 +36,5 @@ class Admin(CommonInfo):
 
 class Task(models.Model):
     admin = models.ForeignKey('Admin', on_delete=models.SET_NULL, blank=True, null=True)
-    user = models.ManyToManyField('User')
+    users = models.ManyToManyField('User')
     name = models.CharField(max_length=128, unique=True)

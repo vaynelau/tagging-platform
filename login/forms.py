@@ -1,5 +1,7 @@
 from django import forms
 
+from login import models
+
 
 class LoginForm(forms.Form):
     TYPE = (
@@ -24,3 +26,24 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(label="邮箱地址", widget=forms.EmailInput(attrs={'class': 'form-control'}))
     phone = forms.CharField(label="手机号", widget=forms.TextInput(attrs={'class': 'form-control'}))
     sex = forms.ChoiceField(label='性别', choices=gender, widget=forms.RadioSelect())
+
+
+def get_users():
+    all_records = models.User.objects.all()
+    user_list = []
+    for user in all_records:
+        user_list.append((user.name, user.name,))
+    print('TaskForm: get_users')
+    return user_list
+
+
+class TaskForm(forms.Form):
+    # def __init__(self):
+    #     forms.Form.__init__(self)
+    #     TaskForm.name = forms.CharField(label="任务名", max_length=128,
+    #                                     widget=forms.TextInput(attrs={'class': 'form-control'}))
+    #     TaskForm.users = forms.MultipleChoiceField(label="执行者", choices=get_users(),
+    #                                                widget=forms.CheckboxSelectMultiple)
+
+    name = forms.CharField(label="任务名", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    users = forms.MultipleChoiceField(label="执行者", choices=get_users(), widget=forms.CheckboxSelectMultiple)

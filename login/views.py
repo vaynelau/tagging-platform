@@ -4,7 +4,6 @@ import json
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.db.models import Sum
 
 from login import forms
 from login import models
@@ -20,12 +19,22 @@ def index(request):
     else:
         request.session['redirect'] = False
 
-    return render(request, 'login/index.html', locals())
+    return render(request, 'login/index.html')
 
 
 def login(request):
     if request.session.get('is_login', None):
+        request.session['message'] = "请勿重复登录！"
+        request.session['redirect'] = True
         return redirect("/index/")
+
+    if not request.session.get('redirect', None):
+        try:
+            del request.session['message']
+        except KeyError:
+            pass
+    else:
+        request.session['redirect'] = False
 
     if request.method == "POST":
         login_form = forms.LoginForm(request.POST)
@@ -69,11 +78,14 @@ def login(request):
 
 def register(request):
     if request.session.get('is_login', None):
+        request.session['message'] = "请先退出后再注册！"
+        request.session['redirect'] = True
         return redirect("/index/")
 
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
         if not register_form.is_valid():
+            error_message = "表单信息有误！"
             return render(request, 'login/register.html', locals())
 
         username = register_form.cleaned_data['username']
@@ -109,6 +121,7 @@ def register(request):
 
         request.session['message'] = "注册成功！"
         request.session['redirect'] = True
+        forms.TaskForm.user_list = forms.get_users()
         return redirect('/login/')
 
     register_form = forms.RegisterForm()
@@ -117,16 +130,22 @@ def register(request):
 
 def logout(request):
     if not request.session.get('is_login', None):
+        request.session['message'] = "您尚未登录！"
+        request.session['redirect'] = True
         return redirect("/index/")
 
     request.session.flush()
     request.session['message'] = "退出成功！"
     request.session['redirect'] = True
-
     return redirect("/index/")
 
 
 def task(request):
+    if not request.session.get('is_login', None):
+        request.session['message'] = "您没有权限查看该页面！"
+        request.session['redirect'] = True
+        return redirect("/index/")
+
     if not request.session.get('redirect', None):
         try:
             del request.session['message']
@@ -136,15 +155,56 @@ def task(request):
     else:
         request.session['redirect'] = False
 
-    if request.session.get('group', None) == 'admin':
-        pass
-    elif request.session.get('group', None) == 'user':
-        pass
+    # if request.session.get('group', None) == 'admin':
+    #     pass
+    # elif request.session.get('group', None) == 'user':
+    #     pass
 
     return render(request, 'login/task.html', locals())
 
 
-def show_all_tasks(request):
+def add_task(request):
+    if not request.session.get('group', None) == 'admin':
+        request.session['message'] = "您没有权限查看该页面！"
+        request.session['redirect'] = True
+        return redirect("/index/")
+
+    if request.method == "POST":
+        task_form = forms.TaskForm(request.POST)
+        if not task_form.is_valid():
+            error_message = "表单信息有误！"
+            return render(request, 'login/add_task.html', locals())
+
+        name = task_form.cleaned_data['name']
+        user_list = task_form.cleaned_data['users']
+
+        same_name_task = models.Task.objects.filter(name=name)
+        if same_name_task:
+            error_message = '该任务已存在！'
+            return render(request, 'login/add_task.html', locals())
+
+        new_task = models.Task.objects.create()
+        new_task.name = name
+        new_task.admin = models.Admin.objects.get(name=request.session.get('username', None))
+        print(new_task.admin)
+        new_task.save()
+        for user in user_list:
+            new_task.users.add(models.User.objects.get(name=user))
+
+        request.session['message'] = "任务发布成功！"
+        request.session['redirect'] = True
+        return redirect('/task/')
+
+    task_form = forms.TaskForm()
+    return render(request, 'login/add_task.html', locals())
+
+
+def get_all_tasks(request):
+    if not request.session.get('group', None) == 'admin':
+        request.session['message'] = "您没有权限查看该页面！"
+        request.session['redirect'] = True
+        return redirect("/index/")
+
     print(request.GET)
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
@@ -158,7 +218,7 @@ def show_all_tasks(request):
         limit = 20
 
     if search:
-        all_records = models.Task.objects.filter(name=search)
+        all_records = models.Task.objects.filter(name__contains=search)
     else:
         all_records = models.Task.objects.all()
 
@@ -174,10 +234,64 @@ def show_all_tasks(request):
     response_data = {'total': all_records.count(), 'rows': []}
 
     for task in paginator.page(page):
+        users_name = []
+        for user in task.users.all():
+            users_name.append(user.name)
         response_data['rows'].append({
             "task_name": task.name if task.name else "",
-            "task_admin": task.admin if task.admin else "",
-            "task_user": task.user if task.user else "",
+            "task_admin": task.admin.name if task.admin else "",
+            "task_users": users_name if task.users else "",
         })
+
+    return HttpResponse(json.dumps(response_data))
+
+
+def get_user_tasks(request):
+    if not request.session.get('group', None) == 'user':
+        request.session['message'] = "您没有权限查看该页面！"
+        request.session['redirect'] = True
+        return redirect("/index/")
+
+    print(request.GET)
+    limit = request.GET.get('limit')
+    offset = request.GET.get('offset')
+    search = request.GET.get('search')
+    sort_column = request.GET.get('sort')
+    order = request.GET.get('order')
+
+    current_user = models.User.objects.get(name=request.session.get('username', None))
+    if search:
+        all_records = current_user.task_set.filter(name__contains=search)
+    else:
+        all_records = current_user.task_set.all()
+
+    if sort_column:
+        sort_column = sort_column.replace('task_', '')
+        if sort_column in ['name', 'admin']:  # 如果排序的列表在这些内容里面
+            if order == 'desc':
+                sort_column = '-%s' % sort_column
+            all_records = all_records.order_by(sort_column)
+
+    response_data = {'total': all_records.count(), 'rows': []}
+
+    if not offset:
+        offset = 0
+
+    if not limit:
+        for task in all_records:
+            response_data['rows'].append({
+                "task_name": task.name if task.name else "",
+                "task_admin": task.admin.name if task.admin.name else "",
+                "task_users": current_user.name if current_user.name else "",
+            })
+    else:
+        paginator = Paginator(all_records, limit)
+        page = int(int(offset) / int(limit) + 1)
+        for task in paginator.page(page):
+            response_data['rows'].append({
+                "task_name": task.name if task.name else "",
+                "task_admin": task.admin.name if task.admin.name else "",
+                "task_users": current_user.name if current_user.name else "",
+            })
 
     return HttpResponse(json.dumps(response_data))

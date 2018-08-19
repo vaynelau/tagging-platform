@@ -1,19 +1,20 @@
-{#login/templates/login/index.html#}
-
-
 {% extends 'login/base.html' %}
+
 {% block title %}主页{% endblock %}
+
 {% block content %}
-    {% if request.session.message %}
-        <div class="alert alert-warning">{{ request.session.message }}</div>
-    {% endif %}
-    {% if request.session.is_login %}
-        {% if request.session.group=='admin' %}
-            <h1 class="text-center">管理员{{ request.session.username }}已登录</h1>
-        {% else %}
-            <h1 class="text-center">用户{{ request.session.username }}已登录</h1>
+    <div class="container">
+        {% if request.session.message %}
+            <div class="alert alert-success">{{ request.session.message }}</div>
         {% endif %}
-    {% else %}
-        <h1 class="text-center">请登录或注册</h1>
-    {% endif %}
+        {% if request.session.is_login %}
+            {% if request.session.group=='admin' %}
+                <h1 class="text-center" style="font-family: 华文行楷">管理员{{ request.session.username }}已登录</h1>
+            {% else %}
+                <h1 class="text-center" style="font-family: 华文行楷">用户{{ request.session.username }}已登录</h1>
+            {% endif %}
+        {% else %}
+            <h1 class="text-center" style="font-family: 华文行楷">请登录或注册</h1>
+        {% endif %}
+    </div> <!-- /container -->
 {% endblock %}
