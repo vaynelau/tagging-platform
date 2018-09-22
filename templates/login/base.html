@@ -10,8 +10,8 @@
     <!-- Bootstrap -->
     <link href="{{ static('bootstrap-3.3.7-dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ static('bootstrap-table-dist/bootstrap-table.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet"
-          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+    {#    <link rel="stylesheet"#}
+    {#          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">#}
     {% block css %}{% endblock %}
 </head>
 
@@ -62,6 +62,7 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="{{ static('bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ static('bootstrap-table-dist/bootstrap-table.js') }}"></script>
+<script src="{{ static('js/ga.js') }}"></script>
 <script src="{{ static('bootstrap-table-dist/extensions/export/bootstrap-table-export.js') }}"></script>
 <script src="{{ static('bootstrap-table-dist/locale/bootstrap-table-zh-CN.js') }}"></script>
 </body>

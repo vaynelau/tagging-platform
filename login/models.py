@@ -3,7 +3,7 @@
 from django.db import models
 
 
-class CommonInfo(models.Model):
+class CommonUser(models.Model):
     gender = (
         ('male', '男'),
         ('female', '女'),
@@ -24,12 +24,12 @@ class CommonInfo(models.Model):
         abstract = True
 
 
-class User(CommonInfo):
+class User(CommonUser):
     """用户表"""
     pass
 
 
-class Admin(CommonInfo):
+class Admin(CommonUser):
     """管理员表"""
     pass
 
@@ -38,3 +38,11 @@ class Task(models.Model):
     admin = models.ForeignKey('Admin', on_delete=models.SET_NULL, blank=True, null=True)
     users = models.ManyToManyField('User')
     name = models.CharField(max_length=128, unique=True)
+    details = models.TextField(max_length=1024)
+    c_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['c_time']

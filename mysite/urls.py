@@ -18,14 +18,14 @@ from django.urls import path
 from login import views
 
 urlpatterns = [
-    path('', views.index),
     path('admin/', admin.site.urls),
+    path('', views.index),
     path('index/', views.index),
-    path('task/', views.task),
-    path('get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
-    path('get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),
-    path('add_task/', views.add_task),
     path('login/', views.login),
     path('register/', views.register),
     path('logout/', views.logout),
+    path('task/', views.task),
+    path('task/add/', views.add_task),
+    path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
+    path('task/get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),
 ]
