@@ -10,16 +10,18 @@ from login import forms
 from login import models
 
 
-def index(request):
+def check_redirect(request):
     if not request.session.get('redirect', None):
         try:
             del request.session['message']
-            del request.session['redirect']
         except KeyError:
             pass
     else:
         request.session['redirect'] = False
 
+
+def index(request):
+    check_redirect(request)
     return render(request, 'login/index.html')
 
 
@@ -29,13 +31,7 @@ def login(request):
         request.session['redirect'] = True
         return redirect("/index/")
 
-    if not request.session.get('redirect', None):
-        try:
-            del request.session['message']
-        except KeyError:
-            pass
-    else:
-        request.session['redirect'] = False
+    check_redirect(request)
 
     error_message = ''
     if request.method == "POST":
@@ -147,20 +143,7 @@ def task(request):
         request.session['message'] = "您没有权限查看该页面！"
         request.session['redirect'] = True
         return redirect("/index/")
-
-    if not request.session.get('redirect', None):
-        try:
-            del request.session['message']
-            del request.session['redirect']
-        except KeyError:
-            pass
-    else:
-        request.session['redirect'] = False
-
-    # if request.session.get('group', None) == 'admin':
-    #     pass
-    # elif request.session.get('group', None) == 'user':
-    #     pass
+    check_redirect(request)
 
     return render(request, 'login/task.html', locals())
 

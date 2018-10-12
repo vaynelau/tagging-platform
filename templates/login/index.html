@@ -9,12 +9,12 @@
         {% endif %}
         {% if request.session.is_login %}
             {% if request.session.group=='admin' %}
-                <h1 class="text-center" style="font-family: 华文行楷">管理员{{ request.session.username }}已登录</h1>
+                <h1 class="text-center">管理员{{ request.session.username }}已登录</h1>
             {% else %}
-                <h1 class="text-center" style="font-family: 华文行楷">用户{{ request.session.username }}已登录</h1>
+                <h1 class="text-center">用户{{ request.session.username }}已登录</h1>
             {% endif %}
         {% else %}
-            <h1 class="text-center" style="font-family: 华文行楷">请登录或注册</h1>
+            <h1 class="text-center">请登录或注册</h1>
         {% endif %}
     </div> <!-- /container -->
 {% endblock %}
