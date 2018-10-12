@@ -240,7 +240,6 @@ def get_user_tasks(request):
         request.session['redirect'] = True
         return redirect("/index/")
 
-
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
     search = request.GET.get('search')
