@@ -1,5 +1,4 @@
 # login/models.py
-
 from django.db import models
 
 
@@ -35,6 +34,8 @@ class Admin(CommonUser):
 
 
 class Task(models.Model):
+    """任务表"""
+
     admin = models.ForeignKey('Admin', on_delete=models.SET_NULL, blank=True, null=True)
     users = models.ManyToManyField('User')
     name = models.CharField(max_length=128, unique=True)

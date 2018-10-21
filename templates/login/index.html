@@ -4,9 +4,9 @@
 
 {% block content %}
     <div class="container">
-        {% if request.session.message %}
-            <div class="alert alert-success">{{ request.session.message }}</div>
-        {% endif %}
+        {% for message in get_messages(request) %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
         {% if request.session.is_login %}
             {% if request.session.group=='admin' %}
                 <h1 class="text-center">管理员{{ request.session.username }}已登录</h1>
