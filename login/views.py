@@ -1,4 +1,5 @@
 # login/views.py
+import hashlib
 import json
 
 from django.core.paginator import Paginator
@@ -8,6 +9,13 @@ from django.utils import timezone
 
 from login import forms
 from login import models
+
+
+def hash_code(s, salt='login'):  # 加点盐
+    s += salt
+    md5 = hashlib.md5()
+    md5.update(s.encode(encoding='utf-8'))  # update方法只接收bytes类型
+    return md5.hexdigest()
 
 
 def check_redirect(request):
@@ -39,28 +47,24 @@ def login(request):
         if not login_form.is_valid():
             return render(request, 'login/login.html', locals())
 
-        username = login_form.cleaned_data['username'].strip()
+        username = login_form.cleaned_data['username']
         password = login_form.cleaned_data['password']
-        group = login_form.cleaned_data['group']
 
-        if group == 'user':
-            try:
-                user = models.User.objects.get(name=username)
-            except:
-                error_message = "用户名未注册！"
+        if models.Admin.objects.filter(name=username).exists():
+            group = 'admin'
+            admin = models.Admin.objects.get(name=username)
+            if admin.password != hash_code(password, username):
+                error_message = "密码错误！"
                 return render(request, 'login/login.html', locals())
-            if user.password != password:
+        elif models.User.objects.filter(name=username).exists():
+            group = 'user'
+            user = models.User.objects.get(name=username)
+            if user.password != hash_code(password, username):
                 error_message = "密码错误！"
                 return render(request, 'login/login.html', locals())
         else:
-            try:
-                admin = models.Admin.objects.get(name=username)
-            except:
-                error_message = "用户名未注册！"
-                return render(request, 'login/login.html', locals())
-            if admin.password != password:
-                error_message = "密码错误！"
-                return render(request, 'login/login.html', locals())
+            error_message = "用户名未注册！"
+            return render(request, 'login/login.html', locals())
 
         request.session['is_login'] = True
         request.session['group'] = group
@@ -96,22 +100,28 @@ def register(request):
         if password1 != password2:  # 两次密码是否相同
             error_message = "两次输入的密码不一致！"
             return render(request, 'login/register.html', locals())
-        same_name_user = models.User.objects.filter(name=username)
-        if same_name_user:  # 用户名是否唯一
+        if models.Admin.objects.filter(name=username).exists():  # 用户名是否唯一
             error_message = '该用户名已注册！'
             return render(request, 'login/register.html', locals())
-        same_email_user = models.User.objects.filter(email=email)
-        if same_email_user:  # 邮箱地址是否唯一
+        if models.User.objects.filter(name=username).exists():  # 用户名是否唯一
+            error_message = '该用户名已注册！'
+            return render(request, 'login/register.html', locals())
+        if models.Admin.objects.filter(email=email).exists():  # 邮箱地址是否唯一
             error_message = '该邮箱已注册！'
             return render(request, 'login/register.html', locals())
-        same_phone_user = models.User.objects.filter(phone=phone)
-        if same_phone_user:  # 手机号是否唯一
+        if models.User.objects.filter(email=email).exists():  # 邮箱地址是否唯一
+            error_message = '该邮箱已注册！'
+            return render(request, 'login/register.html', locals())
+        if models.Admin.objects.filter(phone=phone).exists():  # 手机号是否唯一
+            error_message = '该手机号已注册！'
+            return render(request, 'login/register.html', locals())
+        if models.User.objects.filter(phone=phone).exists():  # 手机号是否唯一
             error_message = '该手机号已注册！'
             return render(request, 'login/register.html', locals())
 
         new_user = models.User.objects.create()
         new_user.name = username
-        new_user.password = password1
+        new_user.password = hash_code(password1, username)
         new_user.email = email
         new_user.phone = phone
         new_user.sex = sex
@@ -119,7 +129,6 @@ def register(request):
 
         request.session['message'] = "注册成功！"
         request.session['redirect'] = True
-        forms.TaskForm.user_list = forms.get_users()
         return redirect('/login/')
 
     register_form = forms.RegisterForm()
