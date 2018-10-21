@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0.5/ref/settings/
 """
 
 import os
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -133,3 +134,10 @@ STATICFILES_DIRS = [
 SESSION_COOKIE_AGE = 60 * 60
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+MESSAGE_TAGS = {
+    messages.SUCCESS: "alert alert-success",
+    messages.INFO: "alert alert-info",
+    messages.WARNING: "alert alert-warning",
+    messages.ERROR: "alert alert-danger",
+}

@@ -6,42 +6,28 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.contrib import messages
 
 from login import forms
 from login import models
 
 
-def hash_code(s, salt='login'):  # 加点盐
+def gen_md5(s, salt='login'):  # 加盐
     s += salt
     md5 = hashlib.md5()
     md5.update(s.encode(encoding='utf-8'))  # update方法只接收bytes类型
     return md5.hexdigest()
 
 
-def check_redirect(request):
-    if not request.session.get('redirect', None):
-        try:
-            del request.session['message']
-        except KeyError:
-            pass
-    else:
-        request.session['redirect'] = False
-
-
 def index(request):
-    check_redirect(request)
     return render(request, 'login/index.html')
 
 
 def login(request):
     if request.session.get('is_login', None):
-        request.session['message'] = "请勿重复登录！"
-        request.session['redirect'] = True
+        messages.warning(request, "请勿重复登录！")
         return redirect("/index/")
 
-    check_redirect(request)
-
-    error_message = ''
     if request.method == "POST":
         login_form = forms.LoginForm(request.POST)
         if not login_form.is_valid():
@@ -53,24 +39,23 @@ def login(request):
         if models.Admin.objects.filter(name=username).exists():
             group = 'admin'
             admin = models.Admin.objects.get(name=username)
-            if admin.password != hash_code(password, username):
-                error_message = "密码错误！"
+            if admin.password != gen_md5(password, username):
+                messages.error(request, "密码错误！")
                 return render(request, 'login/login.html', locals())
         elif models.User.objects.filter(name=username).exists():
             group = 'user'
             user = models.User.objects.get(name=username)
-            if user.password != hash_code(password, username):
-                error_message = "密码错误！"
+            if user.password != gen_md5(password, username):
+                messages.error(request, "密码错误！")
                 return render(request, 'login/login.html', locals())
         else:
-            error_message = "用户名未注册！"
+            messages.error(request, "用户名未注册！")
             return render(request, 'login/login.html', locals())
 
         request.session['is_login'] = True
         request.session['group'] = group
         request.session['username'] = username
-        request.session['message'] = "登录成功！"
-        request.session['redirect'] = True
+        messages.success(request, "登录成功！")
         request.session.set_expiry(3600)
         return redirect('/task/')
 
@@ -80,14 +65,13 @@ def login(request):
 
 def register(request):
     if request.session.get('is_login', None):
-        request.session['message'] = "请先退出后再注册！"
-        request.session['redirect'] = True
+        messages.warning(request, "请先退出后再注册！")
         return redirect("/index/")
 
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
         if not register_form.is_valid():
-            error_message = "表单信息有误！"
+            messages.error(request, "表单信息有误！")
             return render(request, 'login/register.html', locals())
 
         username = register_form.cleaned_data['username']
@@ -98,37 +82,30 @@ def register(request):
         sex = register_form.cleaned_data['sex']
 
         if password1 != password2:  # 两次密码是否相同
-            error_message = "两次输入的密码不一致！"
+            messages.error(request, "两次输入的密码不一致！")
             return render(request, 'login/register.html', locals())
-        if models.Admin.objects.filter(name=username).exists():  # 用户名是否唯一
-            error_message = '该用户名已注册！'
+        if models.Admin.objects.filter(name=username).exists() or \
+                models.User.objects.filter(name=username).exists():  # 用户名是否唯一
+            messages.error(request, "该用户名已注册！")
             return render(request, 'login/register.html', locals())
-        if models.User.objects.filter(name=username).exists():  # 用户名是否唯一
-            error_message = '该用户名已注册！'
+        if models.Admin.objects.filter(email=email).exists() or \
+                models.User.objects.filter(email=email).exists():  # 邮箱地址是否唯一
+            messages.error(request, "该邮箱已注册！")
             return render(request, 'login/register.html', locals())
-        if models.Admin.objects.filter(email=email).exists():  # 邮箱地址是否唯一
-            error_message = '该邮箱已注册！'
-            return render(request, 'login/register.html', locals())
-        if models.User.objects.filter(email=email).exists():  # 邮箱地址是否唯一
-            error_message = '该邮箱已注册！'
-            return render(request, 'login/register.html', locals())
-        if models.Admin.objects.filter(phone=phone).exists():  # 手机号是否唯一
-            error_message = '该手机号已注册！'
-            return render(request, 'login/register.html', locals())
-        if models.User.objects.filter(phone=phone).exists():  # 手机号是否唯一
-            error_message = '该手机号已注册！'
+        if models.Admin.objects.filter(phone=phone).exists() or \
+                models.User.objects.filter(phone=phone).exists():  # 手机号是否唯一
+            messages.error(request, "该手机号已注册！")
             return render(request, 'login/register.html', locals())
 
         new_user = models.User.objects.create()
         new_user.name = username
-        new_user.password = hash_code(password1, username)
+        new_user.password = gen_md5(password1, username)
         new_user.email = email
         new_user.phone = phone
         new_user.sex = sex
         new_user.save()
 
-        request.session['message'] = "注册成功！"
-        request.session['redirect'] = True
+        messages.success(request, "注册成功！")
         return redirect('/login/')
 
     register_form = forms.RegisterForm()
@@ -137,45 +114,39 @@ def register(request):
 
 def logout(request):
     if not request.session.get('is_login', None):
-        request.session['message'] = "您尚未登录！"
-        request.session['redirect'] = True
+        messages.warning(request, "您尚未登录！")
         return redirect("/index/")
 
     request.session.flush()
-    request.session['message'] = "退出成功！"
-    request.session['redirect'] = True
+    messages.success(request, "退出成功！")
     return redirect("/index/")
 
 
 def task(request):
     if not request.session.get('is_login', None):
-        request.session['message'] = "您没有权限查看该页面！"
-        request.session['redirect'] = True
+        messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
-    check_redirect(request)
 
     return render(request, 'login/task.html', locals())
 
 
 def add_task(request):
     if not request.session.get('group', None) == 'admin':
-        request.session['message'] = "您没有权限查看该页面！"
-        request.session['redirect'] = True
+        messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
 
     if request.method == "POST":
         task_form = forms.TaskForm(request.POST)
         if not task_form.is_valid():
-            error_message = "表单信息有误，请重新填写！"
+            messages.error(request, "表单信息有误！")
             return render(request, 'login/add_task.html', locals())
 
         name = task_form.cleaned_data['name']
         users_list = task_form.cleaned_data['users']
         details = task_form.cleaned_data['details']
 
-        same_name_task = models.Task.objects.filter(name=name)
-        if same_name_task:
-            error_message = '该任务已存在！'
+        if models.Task.objects.filter(name=name).exists():
+            messages.error(request, "该任务已存在！")
             return render(request, 'login/add_task.html', locals())
 
         new_task = models.Task.objects.create()
@@ -186,8 +157,7 @@ def add_task(request):
         for user in users_list:
             new_task.users.add(models.User.objects.get(name=user))
 
-        request.session['message'] = "任务发布成功！"
-        request.session['redirect'] = True
+        messages.success(request, "任务发布成功！")
         return redirect('/task/')
 
     task_form = forms.TaskForm()
@@ -196,11 +166,9 @@ def add_task(request):
 
 def get_all_tasks(request):
     if not request.session.get('group', None) == 'admin':
-        request.session['message'] = "您没有权限查看该页面！"
-        request.session['redirect'] = True
+        messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
 
-    # print(request.GET)
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
     search = request.GET.get('search')
@@ -245,8 +213,7 @@ def get_all_tasks(request):
 
 def get_user_tasks(request):
     if not request.session.get('group', None) == 'user':
-        request.session['message'] = "您没有权限查看该页面！"
-        request.session['redirect'] = True
+        messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
 
     limit = request.GET.get('limit')
