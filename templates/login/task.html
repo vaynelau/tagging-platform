@@ -7,7 +7,9 @@
 {% block content %}
     <div class="container">
         {% for message in get_messages(request) %}
-            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+            </div>
         {% endfor %}
         {% if request.session.group=='admin' %}
             <h1 class="text-center">已发布任务列表</h1>
