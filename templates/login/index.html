@@ -1,7 +1,9 @@
 {% extends 'login/base.html' %}
 
 {% block title %}主页{% endblock %}
-
+{% block css %}
+    <link rel="stylesheet" href="{{ static('css/begin.css') }}"
+  type='text/css' />{% endblock %}
 {% block content %}
     <div class="container">
         {% for message in get_messages(request) %}
@@ -11,12 +13,12 @@
         {% endfor %}
         {% if request.session.is_login %}
             {% if request.session.group=='admin' %}
-                <h1 class="text-center">管理员{{ request.session.username }}已登录</h1>
+                <h1 class="text-center" style="font-family:方正启体简体">管理员{{ request.session.username }}已登录</h1>
             {% else %}
-                <h1 class="text-center">用户{{ request.session.username }}已登录</h1>
+                <h1 class="text-center" style="font-family:方正启体简体">用户{{ request.session.username }}已登录</h1>
             {% endif %}
         {% else %}
-            <h1 class="text-center">请登录或注册</h1>
+            <h1 class="text-center" style="font-family:方正启体简体">请登录或注册</h1>
         {% endif %}
     </div> <!-- /container -->
 {% endblock %}

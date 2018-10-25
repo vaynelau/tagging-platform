@@ -17,17 +17,10 @@
 .bootstrap-table .table:not(.table-condensed) > thead > tr > td,
 .bootstrap-table .table:not(.table-condensed) > tbody > tr > td,
 .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td {
-    padding: 8px;
+    padding: 4px;
 }
 
-.bootstrap-table .table.table-no-bordered > thead > tr > th,
-.bootstrap-table .table.table-no-bordered > tbody > tr > td {
-    border-right: 2px solid transparent;
-}
 
-.bootstrap-table .table.table-no-bordered > tbody > tr > td:last-child {
-    border-right: none;
-}
 
 .fixed-table-container {
     position: relative;
@@ -144,8 +137,8 @@
 
 .fixed-table-pagination div.pagination,
 .fixed-table-pagination .pagination-detail {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .fixed-table-pagination div.pagination .pagination {
@@ -159,7 +152,7 @@
 
 .fixed-table-pagination .pagination-info {
     line-height: 34px;
-    margin-right: 5px;
+    margin-right: 0px;
 }
 
 .fixed-table-pagination .btn-group {
@@ -181,7 +174,7 @@
 }
 
 .fixed-table-toolbar .columns-right {
-    margin-left: 5px;
+    margin-left: 0px;
 }
 
 .fixed-table-toolbar .columns label {

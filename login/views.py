@@ -31,7 +31,7 @@ def login(request):
     if request.method == "POST":
         login_form = forms.LoginForm(request.POST)
         if not login_form.is_valid():
-            return render(request, 'login/login.html', locals())
+                   render(request, 'login/login.html', locals())
 
         username = login_form.cleaned_data['username']
         password = login_form.cleaned_data['password']
@@ -78,8 +78,8 @@ def register(request):
         password1 = register_form.cleaned_data['password1']
         password2 = register_form.cleaned_data['password2']
         email = register_form.cleaned_data['email']
-        phone = register_form.cleaned_data['phone']
-        sex = register_form.cleaned_data['sex']
+       # phone = register_form.cleaned_data['phone']
+      #  sex = register_form.cleaned_data['sex']
 
         if password1 != password2:  # 两次密码是否相同
             messages.error(request, "两次输入的密码不一致！")
@@ -92,17 +92,17 @@ def register(request):
                 models.User.objects.filter(email=email).exists():  # 邮箱地址是否唯一
             messages.error(request, "该邮箱已注册！")
             return render(request, 'login/register.html', locals())
-        if models.Admin.objects.filter(phone=phone).exists() or \
-                models.User.objects.filter(phone=phone).exists():  # 手机号是否唯一
-            messages.error(request, "该手机号已注册！")
-            return render(request, 'login/register.html', locals())
+    #if models.Admin.objects.filter(phone=phone).exists() or \
+        #        models.User.objects.filter(phone=phone).exists():  # 手机号是否唯一
+         #   messages.error(request, "该手机号已注册！")
+         #   return render(request, 'login/register.html', locals())
 
         new_user = models.User.objects.create()
         new_user.name = username
         new_user.password = gen_md5(password1, username)
         new_user.email = email
-        new_user.phone = phone
-        new_user.sex = sex
+    #    new_user.phone = phone
+     #   new_user.sex = sex
         new_user.save()
 
         messages.success(request, "注册成功！")
