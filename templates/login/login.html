@@ -44,26 +44,11 @@
                     {{ login_form.password }}
                 </div>
                  <a href="/check/" style="font-size: 10px;color: whitesmoke;margin-left: 230px;"><span class="glyphicon glyphicon-share-alt"></span> 忘记密码?</a>
-            <div class="form-group_2" style=" font-size:17px;width:300px; height:100px;Margin-top:-20px;Margin-bottom:-20px;Margin-left:0px;Margin-right:0px;" >
-            <span class="glyphicon glyphicon-pencil"> </span>
-                <lable ><b>验证码:</b></lable>
-                <div class=container>
-                    <div class="row">
-                        <div class="col-md-6"> <input  type="text"  class = "form-control" style="width: 120px;";id="validCode" /></div>
-                        <div class="col-md-6 col-md-offset-0" style="margin-left: -430px;margin-bottom: 30px;"><input type="text" value="点击获取验证码" onclick="createCode()" readonly="readonly" id="checkCode" class="unchanged" style="height:38px;width: 128px;background: none;color: white;" /><br /></div>
-
-                        {#  <input type="text" onClick="createCode()" readonly="readonly" id="checkCode" class="unchanged" style="height:auto;width:120px;margin-top:-900px;margin-left:-400px;background-color:wheat;cursor:pointer" /><br /> #}
-
-                    </div>
-                </div>
-
-
-                <button type="submit" name = "login"  class="btn btn-block btn-primary" style="top:350px;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-bottom:-10px;Margin-left:20px;Margin-right:0px;font-size: 20px;width: 260px;" ><span class="	glyphicon glyphicon-check"></span> 登录 </button>
-            </div>
+                <button type="submit" name = "login"  class="btn btn-block btn-primary" style="box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-top:30px;Margin-bottom:0px;Margin-left:20px;Margin-right:0px;font-size: 20px;width: 260px;" ><span class="	glyphicon glyphicon-check"></span> 登录 </button>
             </form>
             <form class='form-login' action="/login/" method="post">
                      {{ csrf_input }}
-                     <button type="submit" name ="regist" class="btn btn-block btn-primary" onclick="validate()"; style="top:450px;left:180px;color:whitesmoke;border-width:3px;background:none;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-top:40px;Margin-bottom:25px;Margin-left:20px;Margin-right:0px;font-size: 20px;width: 260px;" ><span class="glyphicon glyphicon-wrench"></span> 去注册 </button>
+                     <button type="submit" name ="regist" class="btn btn-block btn-primary" style="top:450px;left:180px;color:whitesmoke;border-width:3px;background:none;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-top:0px;Margin-bottom:25px;Margin-left:20px;Margin-right:0px;font-size: 20px;width: 260px;" ><span class="glyphicon glyphicon-wrench"></span> 去注册 </button>
             </form>
         </div>
     </div> <!-- /container -->
