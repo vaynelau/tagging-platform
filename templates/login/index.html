@@ -4,6 +4,7 @@
 {% block css %}
     <link rel="stylesheet" href="{{ static('css/begin.css') }}"
   type='text/css' />{% endblock %}
+
 {% block content %}
     <div class="container">
         {% for message in get_messages(request) %}

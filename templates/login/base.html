@@ -11,15 +11,96 @@
     <title>{% block title %}base{% endblock %}</title>
 
     <!-- Bootstrap -->
-    <link href="{{ static ('bootstrap-3.3.7-dist/css/bootstrap.min.css') }}    " rel="stylesheet">
-    <link href="{{static ( 'bootstrap-table-dist/bootstrap-table.min.css' )}}" rel="stylesheet">
+    <link href="{{ static ('bootstrap-3.3.7-dist/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{static ( 'bootstrap-table-dist/bootstrap-table.css' )}}" rel="stylesheet">
     {#    <link rel="stylesheet"#}
     {#          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">#}
     {% block css %}{% endblock %}
+    <script >
+
+        function change(){
+            demoImg = document.getElementById("showText");
+            v=document.getElementById("id_password");
+            if (v.type == "password") {
+                v.type="text";
+                demoImg.src ="../static/css/open_eye.jpg";
+            }else{
+                v.type="password";
+                demoImg.src ="../static/css/close_eye.jpg";
+            }
+        };
+         var code ; //在全局 定义验证码
+     function createCode()
+     {
+       code = "";
+       var codeLength = 6;//验证码的长度
+       var checkCode = document.getElementById("checkCode");
+       var selectChar = new Array(0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+       for(var i=0;i<codeLength;i++)
+       {
+        var charIndex = Math.floor(Math.random()*36);
+        code +=selectChar[charIndex];
+       }
+       if(checkCode)
+       {
+         checkCode.className="code";
+         checkCode.value = code;
+         checkCode.blur();
+       }
+     }
+     function validate () {
+         var inputCode = document.getElementById("validCode").value;
+         if (inputCode.length <= 0) {
+             alert("请输入验证码！");
+         }
+         else if (inputCode.toUpperCase() != code) {
+             alert("验证码输入错误！");
+             createCode();//刷新验证码
+         }
+         else {
+             alert("^-^ OK");
+         }
+     }
+    </script>
 </head>
 
-<body style="margin:50px">
+<body style="margin-top:0px;">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav"
+                    aria-expanded="false">
+                <span class="sr-only">切换导航条</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand"  href="#">标注系统</a>
+        </div>
 
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="my-nav">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/index/">主页</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.session.is_login %}
+                    {% if request.session.group=='admin' %}
+                        <li><a href="#">当前管理员：{{ request.session.username }}</a></li>
+                    {% else %}
+                        <li><a href="#">当前用户：{{ request.session.username }}</a></li>
+                    {% endif %}
+                    <li><a href="/task/">任务管理</a></li>
+                    <li><a href="/logout/">退出</a></li>
+                {% else %}
+                    <li><a href="/login/">登录</a></li>
+                    <li><a href="/register/">注册</a></li>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
 
 
 {% block content %}{% endblock %}
@@ -29,10 +110,11 @@
 {#<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>#}
 <script src="{{  static ('js/jquery-3.3.1.js') }} "></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{{   static ('bootstrap-3.3.7-dist/js/bootstrap.min.js')}}"></script>
+<script src="{{   static ('bootstrap-3.3.7-dist/js/bootstrap.js')}}"></script>
 <script src=" {{ static( 'bootstrap-table-dist/bootstrap-table.js')}}"></script>
 <script src="{{ static ('js/ga.js')}}"></script>
 <script src="{{ static ('bootstrap-table-dist/extensions/export/bootstrap-table-export.js')}}"></script>
 <script src="{{ static ('bootstrap-table-dist/locale/bootstrap-table-zh-CN.js')}}"></script>
+
 </body>
 </html>

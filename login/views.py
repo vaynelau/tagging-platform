@@ -29,6 +29,8 @@ def login(request):
         return redirect("/index/")
 
     if request.method == "POST":
+        if 'regist' in request.POST:
+           return redirect("/index/")
         login_form = forms.LoginForm(request.POST)
         if not login_form.is_valid():
                    render(request, 'login/login.html', locals())

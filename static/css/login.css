@@ -6,24 +6,21 @@ body {
     background-repeat:no-repeat;
 
 }
-a:link {
-color:#000000;
-text-decoration:none;
-}
-a:visited {
-color:#ffffff;
-text-decoration:none;
-}
-a:hover {
-color:#000000;
-text-decoration:none;
-}
-a:active {
-color:#FFFFFF;
-text-decoration:none;
-}
-.container{
-	box-shadow:0 0 10px #000  ;width:400px;border-left:2px  solid #204d74 ;border-right:2px  solid #204d74;border-top:2px  dashed #204d74;border-bottom:2px  dashed #204d74;
+
+.icon-user{
+
+position: absolute;left: 0；z-index:5;
+
+background-image: url(yaoshi.jpg); /*引入图片图片*/
+
+background-repeat: no-repeat; /*设置图片不重复*/
+
+background-position: 0px 0px; /*图片显示的位置*/
+
+width: 20px; /*设置图片显示的宽*/
+
+height: 20px; /*图片显示的高*/
+
 }
 .form-login {
     max-width: 330px;
