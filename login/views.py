@@ -138,31 +138,34 @@ def add_task(request):
         return redirect("/index/")
 
     if request.method == "POST":
-        task_form = forms.TaskForm(request.POST)
-        if not task_form.is_valid():
-            messages.error(request, "表单信息有误！")
-            return render(request, 'login/add_task.html', locals())
+        pass
+        # task_form = forms.TaskForm(request.POST)
+        # if not task_form.is_valid():
+        #     messages.error(request, "表单信息有误，请重新填写！")
+        #     return render(request, 'login/add_task.html', locals())
+        #
+        # name = task_form.cleaned_data['name']
+        # users_list = task_form.cleaned_data['users']
+        # details = task_form.cleaned_data['details']
+        #
+        # if models.Task.objects.filter(name=name).exists():
+        #     messages.error(request, "该任务已存在！")
+        #     return render(request, 'login/add_task.html', locals())
+        #
+        # new_task = models.Task.objects.create()
+        # new_task.name = name
+        # new_task.details = details
+        # new_task.admin = models.Admin.objects.get(name=request.session.get('username', None))
+        # new_task.save()
+        # for user in users_list:
+        #     new_task.users.add(models.User.objects.get(name=user))
+        #
+        # messages.success(request, "任务发布成功！")
+        # return redirect('/task/')
 
-        name = task_form.cleaned_data['name']
-        users_list = task_form.cleaned_data['users']
-        details = task_form.cleaned_data['details']
-
-        if models.Task.objects.filter(name=name).exists():
-            messages.error(request, "该任务已存在！")
-            return render(request, 'login/add_task.html', locals())
-
-        new_task = models.Task.objects.create()
-        new_task.name = name
-        new_task.details = details
-        new_task.admin = models.Admin.objects.get(name=request.session.get('username', None))
-        new_task.save()
-        for user in users_list:
-            new_task.users.add(models.User.objects.get(name=user))
-
-        messages.success(request, "任务发布成功！")
-        return redirect('/task/')
-
-    task_form = forms.TaskForm()
+    task_form1 = forms.TaskForm1()
+    task_form2 = forms.TaskForm2()
+    task_form3 = forms.TaskForm3()
     return render(request, 'login/add_task.html', locals())
 
 
