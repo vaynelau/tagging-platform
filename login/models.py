@@ -18,8 +18,8 @@ class Task(models.Model):
 
     template = models.IntegerField(default=1)
     name = models.CharField(max_length=128, unique=True)
-    admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created_by_the_admin')
-    users = models.ManyToManyField('User', related_name='tasks_owned_by_the_user')
+    admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created')
+    users = models.ManyToManyField('User', related_name='tasks_owned')
     details = models.TextField(max_length=1024)
     c_time = models.DateTimeField(auto_now_add=True)  # 保存创建时间，不可修改
 

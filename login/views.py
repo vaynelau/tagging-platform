@@ -214,9 +214,9 @@ def get_user_tasks(request):
     current_user = models.User.objects.get(name=request.session.get('username', None))
 
     if search:
-        all_records = current_user.task_set.filter(name__contains=search)
+        all_records = current_user.tasks_owned.filter(name__contains=search)
     else:
-        all_records = current_user.task_set.all()
+        all_records = current_user.tasks_owned.all()
 
     if sort_column:
         sort_column = sort_column.replace('task_', '')
