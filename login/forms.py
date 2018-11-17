@@ -19,14 +19,12 @@ class RegisterForm(forms.Form):
     password2 = forms.CharField(label="确认密码", max_length=128,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label="邮箱地址", widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    # phone = forms.CharField(label="手机号", widget=forms.TextInput(attrs={'class': 'form-control'}))
-    # sex = forms.ChoiceField(label='性别', choices=gender, widget=forms.RadioSelect())
 
 
 class TaskForm1(forms.Form):
     templates = (
-        ('template1', '任务模板1：设定问题和选项'),
-        ('template2', '任务模板2：画标注框'),
+        (1, '任务模板1：设定问题和选项'),
+        (2, '任务模板2：画标注框'),
     )
     template = forms.ChoiceField(label='任务模板', choices=templates, required=True, widget=forms.RadioSelect())
 

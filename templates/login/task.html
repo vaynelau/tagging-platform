@@ -11,7 +11,7 @@
                 <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
             </div>
         {% endfor %}
-        {% if request.session.group=='admin' %}
+        {% if request.session.is_admin %}
             <h1 class="text-center">已发布任务列表</h1>
             <div id="toolbar" class="btn-toolbar" role="toolbar">
                 <div class="btn-group">
@@ -63,7 +63,7 @@
                 </tr>
                 </thead>
             </table>
-        {% elif request.session.group=='user' %}
+        {% else %}
             <h1 class="text-center" style="font-family: 华文行楷">当前用户任务列表</h1>
             <div id="toolbar" class="btn-toolbar" role="toolbar">
                 <!--------------->
