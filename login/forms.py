@@ -30,7 +30,7 @@ class TaskForm1(forms.Form):
 
 
 class TaskForm2(forms.Form):
-    # 仅针对模版1的标注问题,暂时设定问题最多为3个，选项数最多为5个，可以根据需要修改
+    # 仅针对模版1的标注问题,暂时设定问题为1个，选项数最多为5个，可以根据需要修改
     q1 = forms.CharField(label='标注问题1', max_length=128, required=True,
                          widget=forms.TextInput(attrs={'class': 'form-control'}))
     a1_q1 = forms.CharField(label='选项1', max_length=128, required=True,
@@ -44,40 +44,41 @@ class TaskForm2(forms.Form):
     a5_q1 = forms.CharField(label='选项5', max_length=128, required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    q2 = forms.CharField(label='标注问题2', max_length=128, required=False,
-                         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a1_q2 = forms.CharField(label='选项1', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a2_q2 = forms.CharField(label='选项2', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a3_q2 = forms.CharField(label='选项3', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a4_q2 = forms.CharField(label='选项4', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a5_q2 = forms.CharField(label='选项5', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # q2 = forms.CharField(label='标注问题2', max_length=128, required=False,
+    #                      widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a1_q2 = forms.CharField(label='选项1', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a2_q2 = forms.CharField(label='选项2', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a3_q2 = forms.CharField(label='选项3', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a4_q2 = forms.CharField(label='选项4', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a5_q2 = forms.CharField(label='选项5', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    #
+    # q3 = forms.CharField(label='标注问题3', max_length=128, required=False,
+    #                      widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a1_q3 = forms.CharField(label='选项1', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a2_q3 = forms.CharField(label='选项2', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a3_q3 = forms.CharField(label='选项3', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a4_q3 = forms.CharField(label='选项4', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # a5_q3 = forms.CharField(label='选项5', max_length=128, required=False,
+    #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    q3 = forms.CharField(label='标注问题3', max_length=128, required=False,
-                         widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a1_q3 = forms.CharField(label='选项1', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a2_q3 = forms.CharField(label='选项2', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a3_q3 = forms.CharField(label='选项3', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a4_q3 = forms.CharField(label='选项4', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    a5_q3 = forms.CharField(label='选项5', max_length=128, required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    img = forms.ImageField(label='上传图片', max_length=256, required=True,
-                           widget=forms.ClearableFileInput())
+    # 可以一次上传多张图片
+    image = forms.ImageField(label='上传图片', required=True,
+                             widget=forms.ClearableFileInput({'multiple': True}))
 
 
 class TaskForm3(forms.Form):
     name = forms.CharField(label="任务名", max_length=128, required=True,
                            widget=forms.TextInput(attrs={'class': 'form-control'}))
-    users = forms.ModelMultipleChoiceField(label="选择用户", queryset=models.User.objects.all(), required=True,
-                                           widget=forms.CheckboxSelectMultiple())
+    users = forms.ModelMultipleChoiceField(label="选择用户", queryset=models.User.objects.filter(is_admin=False),
+                                           required=True, widget=forms.CheckboxSelectMultiple())
     details = forms.CharField(label="任务详情", max_length=1024, required=False,
                               widget=forms.Textarea(attrs={'class': 'form-control'}))

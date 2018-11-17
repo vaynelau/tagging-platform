@@ -4,7 +4,7 @@
 {% block content %}
     <div class="container">
         <div class="col-md-4 col-md-offset-4">
-            <form class='form-register' action="/task/add/" method="post">
+            <form class='form-register' action="/task/add/" method="post" enctype="multipart/form-data">
                 {% for message in get_messages(request) %}
                     <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
                         <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
@@ -41,8 +41,8 @@
                     {{ task_form2.a5_q1 }}
                 </div>
                 <div class="form-group">
-                    {{ task_form2.img.label_tag() }}
-                    {{ task_form2.img }}
+                    {{ task_form2.image.label_tag() }}
+                    {{ task_form2.image }}
                 </div>
                 <div class="form-group">
                     {{ task_form3.name.label_tag() }}

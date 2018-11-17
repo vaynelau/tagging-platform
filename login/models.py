@@ -2,6 +2,11 @@
 from django.db import models
 
 
+def img_directory_path(instance, filename):
+    # 文件上传到MEDIA_ROOT/task_<id>/<filename>目录中
+    return 'task_{0}/{1}'.format(instance.task.id, filename)
+
+
 class User(models.Model):
     name = models.CharField(max_length=128, unique=True)
     password = models.CharField(max_length=128)
@@ -12,11 +17,15 @@ class User(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["c_time"]
+
 
 class Task(models.Model):
     """任务表"""
 
     template = models.IntegerField(default=1)
+    content = models.TextField(max_length=1024)  # 针对模板1，保存问题及选项，中以分隔符分隔
     name = models.CharField(max_length=128, unique=True)
     admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created')
     users = models.ManyToManyField('User', related_name='tasks_owned')
@@ -26,16 +35,16 @@ class Task(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["c_time"]
+
 
 class SubTask(models.Model):
     """子任务表"""
 
+    image = models.ImageField(max_length=256, upload_to=img_directory_path)
     task = models.ForeignKey('Task', on_delete=models.CASCADE)
-    content = models.TextField(max_length=1024)  # 保存问题及选项，中以分隔符分隔
     result = models.TextField(max_length=1024)  # 保存标记结果
-
-    def __str__(self):
-        return self.content
 
 
 class Label(models.Model):
