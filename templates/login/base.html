@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -12,179 +10,179 @@
 
     <!-- Bootstrap -->
     <link href="{{ static ('bootstrap-3.3.7-dist/css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{static ( 'bootstrap-table-dist/bootstrap-table.css' )}}" rel="stylesheet">
+    <link href="{{ static ( 'bootstrap-table-dist/bootstrap-table.css' ) }}" rel="stylesheet">
     {#    <link rel="stylesheet"#}
     {#          href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">#}
     {% block css %}{% endblock %}
-{% block style %}{% endblock %}
-    <script >
-function up_pict(){
+    {% block style %}{% endblock %}
+    <script>
+        function up_pict() {
 
 
-        var div = document.getElementById('main');//通过id查找div
-        var img = div.getElementsByTagName('img');//通过div查找div下的所有img标签（获取所有的图片）
+            var div = document.getElementById('main');//通过id查找div
+            var img = div.getElementsByTagName('img');//通过div查找div下的所有img标签（获取所有的图片）
 
 //通过getElementsByTagName 获取的标签是一个数组
 
 
-        var count = 0;//定义一个变量用来记录图片数组下标
+            var count = 0;//定义一个变量用来记录图片数组下标
 
-        var timer = null;//定义一个变量标识时器
+            var timer = null;//定义一个变量标识时器
 
-        timer = setInterval(change, 2000);//启动一个定时器2000毫秒调用一次change函数（切换一张图片）
+            timer = setInterval(change, 2000);//启动一个定时器2000毫秒调用一次change函数（切换一张图片）
 
 
-        for (var i = 0; i < img.length; i++) {//遍历所有图片
+            for (var i = 0; i < img.length; i++) {//遍历所有图片
 
-            img[i].style.display = 'none';//先让所有图片隐藏
-        }
+                img[i].style.display = 'none';//先让所有图片隐藏
+            }
 
-        img[count].style.display = 'block';//让当前下标的图片显示
+            img[count].style.display = 'block';//让当前下标的图片显示
 
-        count++;//每次加1
-        if (count == img.length) {
+            count++;//每次加1
+            if (count == img.length) {
 
 //当count==图片张数时让count=0；
-            count = 0;//使图片数组下标又回到0就形成了一个循环那么就可以让图片循环切换了
-        }
-div.onmouseover = clearInterval(timer);//当鼠标移入Div时清除定时器，作用是当我们鼠标移入图片时
+                count = 0;//使图片数组下标又回到0就形成了一个循环那么就可以让图片循环切换了
+            }
+            div.onmouseover = clearInterval(timer);//当鼠标移入Div时清除定时器，作用是当我们鼠标移入图片时
 //图片就不再自动切换
-div.onmouseout = timer = setInterval(change, 2000);//当鼠标移入Div时开启定时器，作用是当我们鼠标移
+            div.onmouseout = timer = setInterval(change, 2000);//当鼠标移入Div时开启定时器，作用是当我们鼠标移
 //出div时又让图片自动切
-}
+        }
 
-        function change(){
+        function change() {
             demoImg = document.getElementById("showText");
-            v=document.getElementById("id_password");
+            v = document.getElementById("id_password");
             if (v.type == "password") {
-                v.type="text";
-                demoImg.src ="../static/css/open_eye.jpg";
-            }else{
-                v.type="password";
-                demoImg.src ="../static/css/close_eye.jpg";
+                v.type = "text";
+                demoImg.src = "../static/css/open_eye.jpg";
+            } else {
+                v.type = "password";
+                demoImg.src = "../static/css/close_eye.jpg";
             }
         };
-         function set_templete(a){
-            choice=a;
+
+        function set_templete(a) {
+            choice = a;
         };
-         function up_picture(){
-              var flObj=document.getElementById("file")
-          var btn=document.getElementById("btn");
-             btn.onclick=function()
-          {
-              var file=flObj.files[0];                 //因为每次只上传了一张图片，所以获取到flObj.files[0];    
-              var fReader=new FileReader();
-              fReader.readAsDataURL(file)
-              fReader.onload=function(e)
-              {
-                  document.getElementById("img").src= this.result
-              }
-          }
-         }
-        window.onload = function(){
-    var input = document.getElementById("file");
-    var result,div;
 
-    if(typeof FileReader==='undefined'){
-        result.innerHTML = "抱歉，你的浏览器不支持 FileReader";
-        input.setAttribute('disabled','disabled');
-    }else{
-        input.addEventListener('change',readFile,false);
-    }　　　　　//handler
-
-
-
-
-    var dataArr = null; //直接传base64数据
-    var fd = null;  //FormData方式发送请求
-
-    function readFile(){
-            dataArr = { data : [] };
-            fd = new FormData();
-            var iLen = this.files.length;
-        for(var i=0;i<iLen;i++){
-            if (!input['value'].match(/.jpg|.gif|.png|.bmp/i)){　　//判断上传文件格式
-                return alert("上传的图片格式不正确，请重新选择");
-            }
-            var reader = new FileReader();
-            fd.append(i,this.files[i]);
-            reader.readAsDataURL(this.files[i]);  //转成base64
-            var fileName = this.files[i].name;
-            reader.onload = function(e){
-                    var imgMsg = {
-                        name : fileName,//获取文件名
-                        base64 : this.result   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+        function up_picture() {
+            var flObj = document.getElementById("id_image")
+            var btn = document.getElementById("btn");
+            btn.onclick = function () {
+                var file = flObj.files[0];                 //因为每次只上传了一张图片，所以获取到flObj.files[0];    
+                var fReader = new FileReader();
+                fReader.readAsDataURL(file)
+                fReader.onload = function (e) {
+                    document.getElementById("img").src = this.result
                 }
-                    dataArr.data.push(imgMsg);
-                result = '<div style="display:none" class="result" ><img src="'+this.result+'" alt=""/></div>';
-                div = document.createElement('div');
-                div.innerHTML = result;
-                div['className'] = 'float';
-                document.getElementsByTagName('body')[0].appendChild(div);  　　//插入dom树
-                var img = div.getElementsByTagName('img')[0];
-                img.onload = function(){
-                    var nowHeight = ReSizePic(this); //设置图片大小
-                    this.parentNode.style.display = 'block';
-                    var oParent = this.parentNode;
-                    if(nowHeight){
-                        oParent.style.paddingTop = (oParent.offsetHeight - nowHeight)/2 + 'px';
+            }
+        }
+
+        window.onload = function () {
+            var input = document.getElementById("id_image");
+            var result, div;
+
+            if (typeof FileReader === 'undefined') {
+                result.innerHTML = "抱歉，你的浏览器不支持 FileReader";
+                input.setAttribute('disabled', 'disabled');
+            } else {
+                input.addEventListener('change', readFile, false);
+            }　　　　　//handler
+
+
+            var dataArr = null; //直接传base64数据
+            var fd = null;  //FormData方式发送请求
+
+            function readFile() {
+                dataArr = {data: []};
+                fd = new FormData();
+                var iLen = this.files.length;
+                for (var i = 0; i < iLen; i++) {
+                    if (!input['value'].match(/.jpg|.gif|.png|.bmp/i)) {　　//判断上传文件格式
+                        return alert("上传的图片格式不正确，请重新选择");
+                    }
+                    var reader = new FileReader();
+                    fd.append(i, this.files[i]);
+                    reader.readAsDataURL(this.files[i]);  //转成base64
+                    var fileName = this.files[i].name;
+                    reader.onload = function (e) {
+                        var imgMsg = {
+                            name: fileName,//获取文件名
+                            base64: this.result   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                        }
+                        dataArr.data.push(imgMsg);
+                        result = '<div style="display:none" class="result" ><img src="' + this.result + '" alt=""/></div>';
+                        div = document.createElement('div');
+                        div.innerHTML = result;
+                        div['className'] = 'float';
+                        document.getElementsByTagName('body')[0].appendChild(div);  　　//插入dom树
+                        var img = div.getElementsByTagName('img')[0];
+                        img.onload = function () {
+                            var nowHeight = ReSizePic(this); //设置图片大小
+                            this.parentNode.style.display = 'block';
+                            var oParent = this.parentNode;
+                            if (nowHeight) {
+                                oParent.style.paddingTop = (oParent.offsetHeight - nowHeight) / 2 + 'px';
+                            }
+                        }
                     }
                 }
+
+
+            }
+
+
+            function send() {
+                $.ajax({
+                    url: 'http://123.206.89.242:9999',
+                    type: 'post',
+                    data: dataArr,
+                    dataType: 'json',
+                    //processData: false,   用FormData传fd时需有这两项
+                    //contentType: false,
+                    success: function (data) {
+                        console.log('返回的数据：' + JSON.stringify(data))
+                    }
+                })
+            }
+
+            var oBtn = document.getElementsByTagName('button')[0];
+            oBtn.onclick = function () {
+                if (!input.files.length) {
+                    return alert('请先选择文件');
+                }
+                send();
             }
         }
 
+        /*
+         用ajax发送fd参数时要告诉jQuery不要去处理发送的数据，
+         不要去设置Content-Type请求头才可以发送成功，否则会报“Illegal invocation”的错误，
+         也就是非法调用，所以要加上“processData: false,contentType: false,”
+         * */
 
-    }
 
+        function ReSizePic(ThisPic) {
+            var RePicWidth = 200; //这里修改为您想显示的宽度值
 
-    function send(){
-        $.ajax({
-            url : 'http://123.206.89.242:9999',
-            type : 'post',
-            data : dataArr,
-            dataType: 'json',
-            //processData: false,   用FormData传fd时需有这两项
-            //contentType: false,
-            success : function(data){
-                console.log('返回的数据：'+JSON.stringify(data))
-          　}
-        })
-    }
+            var TrueWidth = ThisPic.width; //图片实际宽度
+            var TrueHeight = ThisPic.height; //图片实际高度
 
-    var oBtn = document.getElementsByTagName('button')[0];
-    oBtn.onclick=function(){
-            if(!input.files.length){
-                return alert('请先选择文件');
+            if (TrueWidth > TrueHeight) {
+                //宽大于高
+                var reWidth = RePicWidth;
+                ThisPic.width = reWidth;
+                //垂直居中
+                var nowHeight = TrueHeight * (reWidth / TrueWidth);
+                return nowHeight;  //将图片修改后的高度返回，供垂直居中用
+            } else {
+                //宽小于高
+                var reHeight = RePicWidth;
+                ThisPic.height = reHeight;
             }
-        send();
-    }
-}
-/*
- 用ajax发送fd参数时要告诉jQuery不要去处理发送的数据，
- 不要去设置Content-Type请求头才可以发送成功，否则会报“Illegal invocation”的错误，
- 也就是非法调用，所以要加上“processData: false,contentType: false,”
- * */
-
-
-function ReSizePic(ThisPic) {
-    var RePicWidth = 200; //这里修改为您想显示的宽度值
-
-    var TrueWidth = ThisPic.width; //图片实际宽度
-    var TrueHeight = ThisPic.height; //图片实际高度
-
-    if(TrueWidth>TrueHeight){
-        //宽大于高
-        var reWidth = RePicWidth;
-        ThisPic.width = reWidth;
-        //垂直居中
-        var nowHeight = TrueHeight * (reWidth/TrueWidth);
-        return nowHeight;  //将图片修改后的高度返回，供垂直居中用
-    }else{
-        //宽小于高
-        var reHeight = RePicWidth;
-        ThisPic.height = reHeight;
-    }
-}
+        }
 
 
     </script>
@@ -203,7 +201,7 @@ function ReSizePic(ThisPic) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand"  href="#">标注系统</a>
+            <a class="navbar-brand" href="#">标注系统</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -235,13 +233,13 @@ function ReSizePic(ThisPic) {
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 {#<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>#}
-<script src="{{  static ('js/jquery-3.3.1.js') }} "></script>
+<script src="{{ static ('js/jquery-3.3.1.js') }} "></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{{   static ('bootstrap-3.3.7-dist/js/bootstrap.js')}}"></script>
-<script src=" {{ static( 'bootstrap-table-dist/bootstrap-table.js')}}"></script>
-<script src="{{ static ('js/ga.js')}}"></script>
-<script src="{{ static ('bootstrap-table-dist/extensions/export/bootstrap-table-export.js')}}"></script>
-<script src="{{ static ('bootstrap-table-dist/locale/bootstrap-table-zh-CN.js')}}"></script>
+<script src="{{ static ('bootstrap-3.3.7-dist/js/bootstrap.js') }}"></script>
+<script src=" {{ static( 'bootstrap-table-dist/bootstrap-table.js') }}"></script>
+<script src="{{ static ('js/ga.js') }}"></script>
+<script src="{{ static ('bootstrap-table-dist/extensions/export/bootstrap-table-export.js') }}"></script>
+<script src="{{ static ('bootstrap-table-dist/locale/bootstrap-table-zh-CN.js') }}"></script>
 
 </body>
 </html>
