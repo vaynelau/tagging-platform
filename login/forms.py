@@ -31,7 +31,7 @@ class TaskForm1(forms.Form):
 
 class TaskForm2(forms.Form):
     # 仅针对模版1的标注问题,暂时设定问题为1个，选项数最多为5个，可以根据需要修改
-    q1 = forms.CharField(label='标注问题1', max_length=128, required=True,
+    q1 = forms.CharField(label='问题1', max_length=128, required=True,
                          widget=forms.TextInput(attrs={'class': 'form-control'}))
     a1_q1 = forms.CharField(label='选项1', max_length=128, required=True,
                             widget=forms.TextInput(attrs={'class': 'form-control'}))

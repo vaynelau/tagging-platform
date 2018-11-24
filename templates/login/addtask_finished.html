@@ -1,0 +1,43 @@
+{% extends 'login/base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="{{ static('css/addtask_finished.css') }}"
+  type='text/css' />
+{% endblock %}
+
+{% block title %}设置可见范围{% endblock %}
+{% block content %}
+    <div class="container row">
+        <div class="col-md-6" style="positon:relative;left:600px;">
+            <form class='form-register' action="/addtask_step6/" method="post" enctype="multipart/form-data">
+                {% for message in get_messages(request) %}
+                    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                        <a href=" #" class="close" data-dismiss="alert">&times;</a>{{ message }}
+                    </div>
+                {% endfor %}
+                {{ csrf_input }}
+            <div style="position: absolute;right:250px;margin-top: -170px;"><img   src="../static/css/songda.png/" width="80px"; height="80px";  ></div>
+
+                <h1 class="text-center" style="margin-top:200px;color:honeydew;font-size: 53px;margin-bottom: 70px;"></span>FINISHED!</h1>
+                <h2 class="text-center" style="margin-top:100px;color:honeydew;font-size: 40px;margin-bottom: 90px;"></span>Welcome to your task space...</h2>
+                </form>
+                <div  class="col-md-12 row" style="positon:relative;margin-top: 0px;">
+                    <div class="col-md-6" style="top:83px;left:3px;">
+                        <form class='form-setqa-last' action="/addtask_step6/" method="post">
+                        {{ csrf_input }}
+                        <button type="submit" name="last" style="margin-top:0px;font-size: 20px;"class="btn btn-lg btn-block"><span class="	glyphicon glyphicon-chevron-left"></span> 上一步</button>
+                        </form>
+                    </div>
+
+
+                    <div class="col-md-6" style="top:53px;right:0px;">
+                    <form class='form-setqa-next' action="/addtask_step6/" method="post">
+                        {{ csrf_input }}
+                        <button type="submit" name="mytask" style="margin-top:30px;font-size: 20px;"; class="btn btn-lg btn-block"><span class="glyphicon glyphicon-repeat"></span> 查看已发布任务</button>
+                     </form>
+                      </div>
+                </div>
+
+
+        </div>
+    </div> <!-- /container -->
+{% endblock %}

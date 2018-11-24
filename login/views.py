@@ -48,7 +48,8 @@ def login(request):
             return render(request, 'login/login.html', locals())
 
         request.session['is_login'] = True
-        request.session['is_admin'] = user.is_admin
+      #  request.session['is_admin'] = user.is_admin
+        request.session['is_admin'] = True
         request.session['username'] = username
         messages.success(request, "登录成功！")
         request.session.set_expiry(3600)
@@ -242,3 +243,69 @@ def get_user_tasks(request):
         })
 
     return HttpResponse(json.dumps(response_data))
+
+def addtask_select_templete(request):
+    task_form1 = forms.TaskForm1()
+    if request.session.get('is_login', None):
+        messages.warning(request, "请勿重复登录！")
+        return redirect("/index/")
+    if request.method == "POST":
+        if 'next' in request.POST:
+            return redirect("/addtask_step2/")
+        if not task_form1.is_valid():
+            messages.error(request, "表单信息有误！")
+            return render(request, 'login/addtask_select_templete.html', locals())
+    return  render(request, 'login/addtask_select_templete.html', locals())
+
+def addtask_set_qa(request):
+    task_form2 = forms.TaskForm2()
+    if request.session.get('is_login', None):
+        messages.warning(request, "请勿重复登录！")
+        return redirect("/index/")
+
+    if request.method == "POST":
+        if 'last' in request.POST:
+            return redirect("/addtask_step1/")
+        elif 'next' in request.POST:
+            return redirect("/addtask_step3/")
+
+        if not task_form2.is_valid():
+            messages.error(request, "表单信息有误！")
+            return render(request, 'login/addtask_set_qa.html', locals())
+    return  render(request, 'login/addtask_set_qa.html', locals())
+
+
+def  addtask_set_title(request):
+    task_form3 = forms.TaskForm3()
+    if request.method == "POST":
+        if 'last' in request.POST:
+            return redirect("/addtask_step2/")
+        elif 'next' in request.POST:
+            return redirect("/addtask_step4/")
+    return  render(request, 'login/addtask_set_title.html', locals())
+
+def  addtask_select_member(request):
+    task_form3 = forms.TaskForm3()
+    if request.method == "POST":
+        if 'last' in request.POST:
+            return redirect("/addtask_step3/")
+        elif 'next' in request.POST:
+            return redirect("/addtask_step5/")
+    return  render(request, 'login/addtask_select_member.html', locals())
+
+def  addtask_setdetail(request):
+    task_form3 = forms.TaskForm3()
+    if request.method == "POST":
+        if 'last' in request.POST:
+            return redirect("/addtask_step4/")
+        elif 'next' in request.POST:
+            return redirect("/addtask_step6/")
+    return  render(request, 'login/addtask_setdetail.html', locals())
+
+def  addtask_finished(request):
+    if request.method == "POST":
+        if 'last' in request.POST:
+            return redirect("/addtask_step5/")
+        elif 'mytask' in request.POST:
+            return redirect("/task/")
+    return  render(request, 'login/addtask_finished.html', locals())

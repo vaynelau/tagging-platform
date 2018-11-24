@@ -1,0 +1,112 @@
+{% extends 'login/base.html' %}
+{% block css %}
+    <link rel="stylesheet" href="{{ static('css/addtask_set_qa.css') }}"
+  type='text/css' />
+{% endblock %}
+
+{% block title %}{% endblock %}
+{% block style %}
+<style type="text/css">
+    .float{
+        position:relative;
+        top:300px;
+        left:920px;
+        float:left;;
+        width : 200px;
+        height: 200px;
+        overflow: hidden;
+        border: 3px solid #CCCCCC;
+        border-radius: 10px;
+        padding: 5px;
+        margin: 5px;
+        background:transparent;color:#a3bce4;background-color:rgba(45,55,55,0.45);box-shadow:0 0 15px #000000 ;
+    }
+    img{
+        position: relative;
+    }
+    .result{
+        box-shadow: #122b40;
+        width: 200px;
+        height: 200px;
+        text-align: center;
+        box-sizing: border-box
+
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container row">
+        <div class="col-md-3" style="positon:relative; left:400px;margin-bottom: -800px;">
+            <form class='form-register' action="/addtask_step2/" method="post" enctype="multipart/form-data">
+                {% for message in get_messages(request) %}
+                    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                        <a href=" #" class="close" data-dismiss="alert">&times;</a>{{ message }}
+                    </div>
+                {% endfor %}
+                {{ csrf_input }}
+            <img class="a" src="../static/css/shezhiwenti.png/" width="80px;" height="80px;" />
+                <h1 class="text-center" style="font-size: 40px; margin-bottom: 40px;">设置问答</h1>
+            <div class = "row">
+                <div class="col-md-12" style="margin-bottom: 40px;">
+                    <div class="form-group">
+                    {{ task_form2.q1.label_tag() }}
+                    {{ task_form2.q1 }}
+                </div>
+                <div class="form-group">
+                    {{ task_form2.a1_q1.label_tag() }}
+                    {{ task_form2.a1_q1 }}
+                </div>
+                <div class="form-group">
+                    {{ task_form2.a2_q1.label_tag() }}
+                    {{ task_form2.a2_q1 }}
+                </div>
+                </div>
+<div class="col-md-8" style="top:-230px;left:300px;margin-bottom: -800px;">
+    <img class="a" src="../static/css/add.png/" width="35px;" height="35px;" />
+    <span  width="40px;" height="40px;"style="font-size: 18px;" >增加问题</span>
+</div>
+
+<div class="col-md-8" style="top:-190px;left:300px;margin-bottom: -800px;">
+    <img class="a" src="../static/css/shanchu.png/" width="35px;" height="35px;" />
+    <span  width="40px;" height="40px;"style="font-size: 18px;" >删除问题</span>
+</div>
+
+<div class="col-md-8" style="top:-120px;left:300px;margin-bottom: -800px;">
+    <img class="a" src="../static/css/queding.png/" width="35px;" height="35px;" />
+    <span  width="40px;" height="40px;"style="font-size: 18px;" >增加选项</span>
+</div>
+<div class="col-md-8" style="top:-80px;left:300px;margin-bottom: -800px;">
+    <img class="a" src="../static/css/shanchuxuanxiang.png/" width="35px;" height="35px;" />
+    <span  width="40px;" height="40px;"style="font-size: 18px;" >删除选项</span>
+</div>
+
+               {#  <div class="form-group">
+                    {{ task_form2.image.label_tag() }}
+                    {{ task_form2.image }} #}
+            <div class="col-md-12" style="top:-340px;left:500px;margin-bottom: -800px;">
+                 <img class="a" src="../static/css/shangchuantupian.png/" width="60px;" height="60px;" style="margin-bottom: 10px;"/>
+              {# <input type="file" name="file" id="file" style="margin-bottom: 20px;font-size: 20px;"></br>
+                 <button type="submit" id = "btn" name = "btn"  onclick="up_picture()"  class="btn btn-block btn-toolbar" style="margin-bottom: 40px;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-top:30px;Margin-bottom:0px;Margin-left:10px;Margin-right:0px;font-size: 20px;width: 200px;" ><span class="	glyphicon glyphicon-save"></span> 预览图像 </button>
+                <div id="picBox"><img class="b" src="../static/css/morentupian.jpg/" width="500" height="400" id="img"/></div> #} 
+                <label style="font-size: 22px;">请选择图像文件：</label>
+                <input type="file" id="file" style="font-size: 22px;"  multiple/> <!--用input标签并选择type=file，记得带上multiple，不然就只能单选图片了-->
+            </div></div>
+  </form>
+            <div style="margin-top:-100px;margin-bottom: 40px;">
+                 <form class='form-setqa-last' action="/addtask_step2/" method="post">
+                     {{ csrf_input }}
+                     <button type="submit" name="last" style="margin-top:0px;font-size: 20px;"class="btn btn-info btn-block"><span class="	glyphicon glyphicon-chevron-left"></span> 上一步</button>
+                 </form>
+
+                <form class='form-setqa-next' action="/addtask_step2/" method="post">
+                     {{ csrf_input }}
+                     <button type="submit" name="next" style="margin-top:30px;font-size: 20px;"; class="btn btn-warning btn-block"><span class="	glyphicon glyphicon-chevron-right"></span>下一步</button>
+                </form>
+            </div>
+
+
+        </div>
+    </div> <!-- /container -->
+{% endblock %}
