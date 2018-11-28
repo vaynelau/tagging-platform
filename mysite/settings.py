@@ -85,14 +85,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
 
-#         'NAME': 'tag',
-#         "USER": 'root',
-#         "PASSWORD": 'hjy19980717',
+        # 'NAME': 'tag',
+        # "USER": 'root',
+        # "PASSWORD": 'hjy19980717',
 
         'NAME': 'TaggingSystem',  # 数据库名字
         'USER': 'django',  # 账号
         'PASSWORD': '123456',  # 密码
-      
+
         'HOST': '127.0.0.1',  # 本机地址
         'PORT': '3306',  # 端口
     }
