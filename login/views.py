@@ -1,9 +1,6 @@
 # login/views.py
 import hashlib
 import json
-import os
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.utils.datastructures import MultiValueDict
 
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -301,7 +298,6 @@ def addtask_set_qa(request):
         new_task.content = content
         new_task.save()
         img_files = request.FILES.getlist('image')
-        print(img_files)
         if img_files:
             sub_tasks = new_task.subtask_set.all().delete()
             for f in img_files:
