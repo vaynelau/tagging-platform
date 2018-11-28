@@ -302,11 +302,13 @@ def addtask_set_qa(request):
         new_task.save()
         img_files = request.FILES.getlist('image')
         print(img_files)
-        for f in img_files:
-            sub_task = models.SubTask.objects.create()
-            sub_task.image = f
-            sub_task.task = new_task
-            sub_task.save()
+        if img_files:
+            sub_tasks = new_task.subtask_set.all().delete()
+            for f in img_files:
+                sub_task = models.SubTask.objects.create()
+                sub_task.image = f
+                sub_task.task = new_task
+                sub_task.save()
         if 'last' in request.POST:
             return redirect('/addtask_step1/')
         if 'next' in request.POST:
@@ -321,12 +323,9 @@ def addtask_set_qa(request):
     img_files = []
     sub_tasks = new_task.subtask_set.all()
     for sub_task in sub_tasks:
-        img_file = SimpleUploadedFile(sub_task.image.name, content=open(sub_task.image.path, 'rb').read(),
-                                      content_type='image/jpeg')
+        img_file = sub_task.image.name
         img_files.append(img_file)
-    img_data = MultiValueDict({'image': img_files})
-    print(img_data)
-    task_form2 = forms.TaskForm2(img_data)
+    task_form2 = forms.TaskForm2()
     return render(request, 'login/addtask_set_qa.html', locals())
 
 

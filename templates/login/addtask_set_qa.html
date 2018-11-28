@@ -102,6 +102,7 @@
                     <div class="col-md-12" style="top:-340px;left:500px;margin-bottom: -800px;">
                         <img class="a" src="../static/css/shangchuantupian.png/" width="60px;" height="60px;"
                              style="margin-bottom: 10px;"/>
+
                           {# <input type="file" name="file" id="file" style="margin-bottom: 20px;font-size: 20px;"></br>
                  <button type="submit" id = "btn" name = "btn"  onclick="up_picture()"  class="btn btn-block btn-toolbar" style="margin-bottom: 40px;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-top:30px;Margin-bottom:0px;Margin-left:10px;Margin-right:0px;font-size: 20px;width: 200px;" ><span class="	glyphicon glyphicon-save"></span> 预览图像 </button>
                 <div id="picBox"><img class="b" src="../static/css/morentupian.jpg/" width="500" height="400" id="img"/></div> #} 
@@ -109,6 +110,8 @@
                         {{ task_form2.image }}
                         {# <input type="file" id="file" style="font-size: 22px;" multiple/>#}
                         <!--用input标签并选择type=file，记得带上multiple，不然就只能单选图片了-->
+
+
                     </div>
                 </div>
                 <button type="submit" name="last" value="1" style="margin-top:0px;font-size: 20px;"
@@ -122,4 +125,9 @@
             </form>
         </div>
     </div> <!-- /container -->
+    {% for i in img_files %}
+        <div class="float">
+            <div style="display:none" class="result"><img name="uploaded_imgs" src="../media/{{ i }}"/></div>
+        </div>
+    {% endfor %}
 {% endblock %}
