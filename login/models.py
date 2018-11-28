@@ -26,11 +26,11 @@ class Task(models.Model):
 
     template = models.IntegerField(default=1)
     content = models.TextField(max_length=1024)  # 针对模板1，保存问题及选项，中以分隔符分隔
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128)
     admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created')
     users = models.ManyToManyField('User', related_name='tasks_owned')
     details = models.TextField(max_length=1024)
-    c_time = models.DateTimeField(auto_now_add=True)  # 保存创建时间，不可修改
+    c_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间，可以修改
 
     def __str__(self):
         return self.name
@@ -43,8 +43,8 @@ class SubTask(models.Model):
     """子任务表"""
 
     image = models.ImageField(max_length=256, upload_to=img_directory_path)
-    task = models.ForeignKey('Task', on_delete=models.CASCADE)
-    result = models.TextField(max_length=1024)  # 保存标记结果
+    task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
+    result = models.TextField(max_length=1024)  # 保存最终标记结果
 
 
 class Label(models.Model):
