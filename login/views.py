@@ -368,7 +368,6 @@ def addtask_select_member(request):
             return render(request, 'login/addtask_select_member.html', locals())
         new_task = models.Task.objects.get(id=request.session['new_task_id'])
         users = task_form4.cleaned_data['users']
-        print(users, type(users), request.session, type(request.session))
         new_task.users.set(users)
         new_task.save()
         if 'last' in request.POST:
