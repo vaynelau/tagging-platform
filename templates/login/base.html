@@ -111,12 +111,7 @@
 
                 var imgs = document.getElementsByName('uploaded_imgs');
                 for (var i = 0; i < imgs.length; i++) {
-                    var nowHeight = ReSizePic(imgs[i]); //设置图片大小
                     imgs[i].parentNode.parentNode.style.display = 'none';
-                    var oParent = imgs[i].parentNode;
-                    if (nowHeight) {
-                        oParent.style.paddingTop = (oParent.offsetHeight - nowHeight) / 2 + 'px';
-                    }
                 }
 
 
