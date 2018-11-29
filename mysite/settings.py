@@ -140,7 +140,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace('\\', '/')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    MEDIA_ROOT,
 ]
 
 SESSION_COOKIE_AGE = 60 * 60
