@@ -42,7 +42,7 @@
 {% endblock %}
 
 {% block script %}
-<script src="../../static/js/add_task_set_qa.js"></script>
+    <script src="../../static/js/1.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -57,7 +57,7 @@
                 {{ csrf_input }}
                 <img class="a" src="../static/css/shezhiwenti.png/" width="80px;" height="80px;"/>
                 <h1 class="text-center" style="font-size: 40px; margin-bottom: 40px;">设置问答</h1>
-                <div class="row">
+                <div class="row" id="addform">
                     <div id="form-div" class="col-md-12" style="margin-bottom: 40px;">
                         <div class="form-group">
                             {{ task_form2.q1.label_tag() }}
@@ -71,24 +71,28 @@
                             {{ task_form2.a2_q1.label_tag() }}
                             {{ task_form2.a2_q1 }}
                         </div>
+                        <div class="col-md-8" style="top:-120px;left:300px;margin-bottom: -800px;">
+                            <img class="a" src="../static/css/queding.png/" width="35px;" height="35px;"
+                                 onclick="addChoice(this)" id="add1"/>
+                            <span width="40px;" height="40px;" style="font-size: 18px;">增加选项</span>
+                        </div>
+                        <div class="col-md-8" style="top:-80px;left:300px;margin-bottom: -800px;">
+                            <img class="a" src="../static/css/shanchuxuanxiang.png/" width="35px;" height="35px;"
+                                 onclick="removeChoice(this)" id="del1"/>
+                            <span width="40px;" height="40px;" style="font-size: 18px;">删除选项</span>
+                        </div>
                     </div>
-                    <div class="col-md-8" style="top:-230px;left:300px;margin-bottom: -800px;">
-                        <img class="a" src="../static/css/add.png/" width="35px;" height="35px;" onclick="addQuestion()"/>
+
+                    <div class="col-md-8" style="position:absolute;top: 100px;left:300px;margin-bottom: -800px;">
+                        <img class="a" src="../static/css/add.png/" width="35px;" height="35px;"
+                             onclick="addQuestion()"/>
                         <span width="40px;" height="40px;" style="font-size: 18px;">增加问题</span>
                     </div>
 
-                    <div class="col-md-8" style="top:-190px;left:300px;margin-bottom: -800px;">
-                        <img class="a" src="../static/css/shanchu.png/" width="35px;" height="35px;" onclick="removeQuestion()"/>
+                    <div class="col-md-8" style="position:absolute;top:130px;left:300px;margin-bottom: -800px;">
+                        <img class="a" src="../static/css/shanchu.png/" width="35px;" height="35px;"
+                             onclick="removeQuestion()"/>
                         <span width="40px;" height="40px;" style="font-size: 18px;">删除问题</span>
-                    </div>
-
-                    <div class="col-md-8" style="top:-120px;left:300px;margin-bottom: -800px;">
-                        <img class="a" src="../static/css/queding.png/" width="35px;" height="35px;" onclick="addChoice()"/>
-                        <span width="40px;" height="40px;" style="font-size: 18px;">增加选项</span>
-                    </div>
-                    <div class="col-md-8" style="top:-80px;left:300px;margin-bottom: -800px;">
-                        <img class="a" src="../static/css/shanchuxuanxiang.png/" width="35px;" height="35px;" onclick="removeChoice()"/>
-                        <span width="40px;" height="40px;" style="font-size: 18px;">删除选项</span>
                     </div>
 
                     {#  <div class="form-group">
@@ -106,6 +110,7 @@
                     </div>
                 </div>
             </form>
+
             <div style="margin-top:-100px;margin-bottom: 40px;">
                 <form class='form-setqa-last' action="/addtask_step2/" method="post">
                     {{ csrf_input }}
