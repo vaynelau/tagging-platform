@@ -3,7 +3,7 @@
 
 {% block title %}发布任务{% endblock %}
 {% block content %}
-    <div class="container row">
+    <div class="container">
         <div class="col-md-8" style="positon:relative; left:-300px;">
             <form class='form-register' action="/task/add/" method="post" enctype="multipart/form-data">
                 {% for message in get_messages(request) %}
@@ -42,7 +42,6 @@
                     {{ task_form3.name.label_tag() }}
                     {{ task_form3.name }}
                 </div>
-
                 <button type="submit" class="btn btn-primary btn-block">发布</button>
             </form>
         </div>

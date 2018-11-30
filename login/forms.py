@@ -71,14 +71,20 @@ class TaskForm2(forms.Form):
     #                         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     # 可以一次上传多张图片
-    image = forms.ImageField(label='上传图片', required=True,
-                             widget=forms.ClearableFileInput({'multiple': True}))
+    image = forms.ImageField(label='请选择图像文件', required=False,
+                             widget=forms.ClearableFileInput({'multiple': True, 'style': 'font-size: 22px;'}))
 
 
 class TaskForm3(forms.Form):
     name = forms.CharField(label="任务名", max_length=128, required=True,
                            widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
+class TaskForm4(forms.Form):
     users = forms.ModelMultipleChoiceField(label="选择用户", queryset=models.User.objects.filter(is_admin=False),
-                                           required=True, widget=forms.CheckboxSelectMultiple())
+                                           required=False, widget=forms.CheckboxSelectMultiple())
+
+
+class TaskForm5(forms.Form):
     details = forms.CharField(label="任务详情", max_length=1024, required=False,
                               widget=forms.Textarea(attrs={'class': 'form-control'}))
