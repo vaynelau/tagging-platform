@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from login import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +36,4 @@ urlpatterns = [
     path('addtask_step6/', views.addtask_finished),
     path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
     path('task/get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

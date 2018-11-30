@@ -85,23 +85,41 @@
             var input = document.getElementById("id_image");
             var result, div;
 
+            var imgs = document.getElementsByName('uploaded_imgs');
+            for (var i = 0; i < imgs.length; i++) {
+                var nowHeight = ReSizePic(imgs[i]); //设置图片大小
+                imgs[i].parentNode.style.display = 'block';
+                var oParent = imgs[i].parentNode;
+                if (nowHeight) {
+                    oParent.style.paddingTop = (oParent.offsetHeight - nowHeight) / 2 + 'px';
+                }
+            }
+
+
             if (typeof FileReader === 'undefined') {
                 result.innerHTML = "抱歉，你的浏览器不支持 FileReader";
                 input.setAttribute('disabled', 'disabled');
             } else {
                 input.addEventListener('change', readFile, false);
-            }　　　　　//handler
+            }//handler
 
 
             var dataArr = null; //直接传base64数据
             var fd = null;  //FormData方式发送请求
 
             function readFile() {
+
+                var imgs = document.getElementsByName('uploaded_imgs');
+                for (var i = 0; i < imgs.length; i++) {
+                    imgs[i].parentNode.parentNode.style.display = 'none';
+                }
+
+
                 dataArr = {data: []};
                 fd = new FormData();
                 var iLen = this.files.length;
                 for (var i = 0; i < iLen; i++) {
-                    if (!input['value'].match(/.jpg|.gif|.png|.bmp/i)) {　　//判断上传文件格式
+                    if (!input['value'].match(/.jpg|.gif|.png|.bmp/i)) {//判断上传文件格式
                         return alert("上传的图片格式不正确，请重新选择");
                     }
                     var reader = new FileReader();
@@ -114,7 +132,7 @@
                             base64: this.result   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
                         }
                         dataArr.data.push(imgMsg);
-                        result = '<div style="display:none" class="result" ><img src="' + this.result + '" alt=""/></div>';
+                        result = '<div style="display:none" class="result" ><img name="uploaded_imgs" src="' + this.result + '" alt=""/></div>';
                         div = document.createElement('div');
                         div.innerHTML = result;
                         div['className'] = 'float';
@@ -130,8 +148,6 @@
                         }
                     }
                 }
-
-
             }
 
 

@@ -59,77 +59,75 @@
                 <h1 class="text-center" style="font-size: 40px; margin-bottom: 40px;">设置问答</h1>
                 <div class="row" id="addform">
                     <div id="form-div" class="col-md-12" style="margin-bottom: 40px;">
-                        <div class="form-group">
-                            {{ task_form2.q1.label_tag() }}
-                            {{ task_form2.q1 }}
-                        </div>
-                        <div class="form-group">
-                            {{ task_form2.a1_q1.label_tag() }}
-                            {{ task_form2.a1_q1 }}
-                        </div>
-                        <div class="form-group">
-                            {{ task_form2.a2_q1.label_tag() }}
-                            {{ task_form2.a2_q1 }}
-                        </div>
-                        <div class="col-md-8" style="top:-120px;left:300px;margin-bottom: -800px;">
+                        {% for qa in qa_list %}
+                            <div class="form-group">
+                                <label for="id_q{{ loop.index }}">问题{{ loop.index }}:</label>
+                                <input type="text" name="q{{ loop.index }}" value="{{ qa['question'] }}"
+                                       class="form-control"
+                                       maxlength="128" required
+                                       id="id_q{{ loop.index }}"/>
+                            </div>
+                            {% set i = loop.index %}
+                            {% for ans in qa['answers'] %}
+                                <div class="form-group">
+                                    <label for="id_a{{ loop.index }}_q{{ i }}">选项{{ loop.index }}:</label>
+                                    <input type="text" name="a{{ loop.index }}_q{{ i }}" value="{{ ans }}"
+                                           class="form-control" maxlength="128"
+                                           required id="id_a{{ loop.index }}_q{{ i }}"/>
+                                </div>
+                            {% endfor %}
+                            <div class="col-md-8" style="top:-120px;left:300px;margin-bottom: -800px;">
                             <img class="a" src="../static/css/queding.png/" width="35px;" height="35px;"
-                                 onclick="addChoice(this)" id="add1"/>
+                                 onclick="addChoice(this)" id="add{{ loop.index }}"/>
                             <span width="40px;" height="40px;" style="font-size: 18px;">增加选项</span>
                         </div>
                         <div class="col-md-8" style="top:-80px;left:300px;margin-bottom: -800px;">
                             <img class="a" src="../static/css/shanchuxuanxiang.png/" width="35px;" height="35px;"
-                                 onclick="removeChoice(this)" id="del1"/>
+                                 onclick="removeChoice(this)" id="del{{ loop.index }}"/>
                             <span width="40px;" height="40px;" style="font-size: 18px;">删除选项</span>
                         </div>
+                            
+                        {% endfor %}
                     </div>
-
-                    <div class="col-md-8" style="position:absolute;top: 100px;left:300px;margin-bottom: -800px;">
+                    <div class="col-md-8" style="top:-230px;left:300px;margin-bottom: -800px;">
                         <img class="a" src="../static/css/add.png/" width="35px;" height="35px;"
                              onclick="addQuestion()"/>
                         <span width="40px;" height="40px;" style="font-size: 18px;">增加问题</span>
                     </div>
 
                     <div class="col-md-8" style="position:absolute;top:130px;left:300px;margin-bottom: -800px;">
+
                         <img class="a" src="../static/css/shanchu.png/" width="35px;" height="35px;"
                              onclick="removeQuestion()"/>
                         <span width="40px;" height="40px;" style="font-size: 18px;">删除问题</span>
                     </div>
-
-                    {#  <div class="form-group">
-                    {{ task_form2.image.label_tag() }}
-                    {{ task_form2.image }} #}
                     <div class="col-md-12" style="top:-340px;left:500px;margin-bottom: -800px;">
                         <img class="a" src="../static/css/shangchuantupian.png/" width="60px;" height="60px;"
                              style="margin-bottom: 10px;"/>
+
                           {# <input type="file" name="file" id="file" style="margin-bottom: 20px;font-size: 20px;"></br>
                  <button type="submit" id = "btn" name = "btn"  onclick="up_picture()"  class="btn btn-block btn-toolbar" style="margin-bottom: 40px;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);Margin-top:30px;Margin-bottom:0px;Margin-left:10px;Margin-right:0px;font-size: 20px;width: 200px;" ><span class="	glyphicon glyphicon-save"></span> 预览图像 </button>
                 <div id="picBox"><img class="b" src="../static/css/morentupian.jpg/" width="500" height="400" id="img"/></div> #} 
-                        <label style="font-size: 22px;">请选择图像文件：</label>
-                        <input type="file" id="file" style="font-size: 22px;" multiple/>
+                        <label for="{{ task_form2.image.id_for_label }}" style="font-size: 22px;">请选择图像文件：</label>
+                        {{ task_form2.image }}
+                        {# <input type="file" name="image" multiple style="font-size: 22px;" id="id_image" /> #}
                         <!--用input标签并选择type=file，记得带上multiple，不然就只能单选图片了-->
                     </div>
                 </div>
+                <button type="submit" name="last" value="1" style="margin-top:0px;font-size: 20px;"
+                        class="btn btn-info btn-block">
+                    <span class="	glyphicon glyphicon-chevron-left"></span>上一步
+                </button>
+                <button type="submit" name="next" value="1" style="margin-top:30px;font-size: 20px;"
+                        class="btn btn-warning btn-block">
+                    <span class="	glyphicon glyphicon-chevron-right"></span>下一步
+                </button>
             </form>
-
-            <div style="margin-top:-100px;margin-bottom: 40px;">
-                <form class='form-setqa-last' action="/addtask_step2/" method="post">
-                    {{ csrf_input }}
-                    <button type="submit" name="last" style="margin-top:0px;font-size: 20px;"
-                            class="btn btn-info btn-block"><span class="	glyphicon glyphicon-chevron-left"></span>
-                        上一步
-                    </button>
-                </form>
-
-                <form class='form-setqa-next' action="/addtask_step2/" method="post">
-                    {{ csrf_input }}
-                    <button type="submit" name="next" style="margin-top:30px;font-size: 20px;" ;
-                            class="btn btn-warning btn-block"><span
-                            class="	glyphicon glyphicon-chevron-right"></span>下一步
-                    </button>
-                </form>
-            </div>
-
-
         </div>
     </div> <!-- /container -->
+    {% for i in img_files %}
+        <div class="float">
+            <div style="display:none" class="result"><img name="uploaded_imgs" src="../media/{{ i }}"/></div>
+        </div>
+    {% endfor %}
 {% endblock %}
