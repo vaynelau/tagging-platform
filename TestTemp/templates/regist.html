@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Letter - Simple Sign Up Form</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">  <!-- Google web font "Open Sans" -->
+  <link rel="stylesheet" href="{{ static('css/regist_font-awesome.min.css')}}">
+  <link rel="stylesheet" href="{{ static('css/regist_bootstrap.min.css')}}">
+
+  <link rel="stylesheet" href="{{ static('css/regist_demo.css')}}" />
+  <link rel="stylesheet" href="{{ static('css/templatemo-style.css')}}">
+
+  <script type="text/javascript" src="{{ static('js/modernizr.custom.86080.js')}}"></script>
+
+	</head>
+
+	<body>
+
+			<div id="particles-js"></div>
+
+			<ul class="cb-slideshow">
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	        </ul>
+
+			<div class="container-fluid">
+				<div class="row cb-slideshow-text-container ">
+
+					<div class= "tm-content col-xl-6 col-sm-8 col-xs-8 ml-auto section">
+                        <form class='subscribe-form form-register' action="/regist/" method="post">
+                                    {% for message in get_messages(request) %}
+                                    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                            <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+                                    </div>
+                                 {% endfor %}
+                                {{ csrf_input }}
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<button type="submit" name="login" class="btn btn-default btn-block btn-lg" style="margin-left:50px;margin-bottom:50px;font-size: 20px;color: #2b542c">Return to Home Page</button>
+							</div>
+                        </form>
+					<header class="mb-5"><h1>Sign Up</h1></header>
+
+					<P class="mb-5">Thank you for joining our site!</P>
+
+                    <form action="#" method="get" class="subscribe-form">
+               	    	<div class="row form-section">
+                    <form class='form-register' action="/regist/" method="post">
+							<div class="col-md-7 col-sm-7 col-xs-7">
+                                    {% for message in get_messages(request) %}
+                                    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                            <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+                                    </div>
+                                 {% endfor %}
+                                {{ csrf_input }}
+                                <input style="margin-bottom: 20px;" name="username" type="text" class="form-control" id="contact_email" placeholder="Your Username" required/>
+                                <input style="margin-bottom: 20px;" name="password1" type="password" class="form-control" id="contact_email" placeholder="Your Password." required/>
+                                <input style="margin-bottom: 20px;" name="passwrod2" type="password" class="form-control" id="contact_email" placeholder="Confirm Password" required/>
+			                      <input style="margin-bottom: 40px;" name="email" type="text" class="form-control" id="contact_email" placeholder="Your Email..." required/>
+				  			  <button type="submit" name="regist" class="tm-btn-subscribe">Regist</button>
+                            </div>
+
+                        </form>
+
+						</div>
+                    </form>
+
+					<div class="tm-social-icons-container text-xs-center">
+	                    <a href="#" class="tm-social-link"><i class="fa fa-facebook"></i></a>
+	                    <a href="#" class="tm-social-link"><i class="fa fa-google-plus"></i></a>
+	                    <a href="#" class="tm-social-link"><i class="fa fa-twitter"></i></a>
+	                    <a href="#" class="tm-social-link"><i class="fa fa-linkedin"></i></a>
+	                </div>
+
+					</div>
+				</div>
+
+			</div>
+	</body>
+
+	<script type="text/javascript" src="{{static('js/particles.js')}}"></script>
+	<script type="text/javascript" src="{{static('js/app.js')}}"></script>
+</html>
