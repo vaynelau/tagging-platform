@@ -69,7 +69,7 @@
         };
 
         function up_picture() {
-            var flObj = document.getElementById("file")
+            var flObj = document.getElementById("id_image")
             var btn = document.getElementById("btn");
             btn.onclick = function () {
                 var file = flObj.files[0];                 //因为每次只上传了一张图片，所以获取到flObj.files[0];    
@@ -82,7 +82,7 @@
         }
 
         window.onload = function () {
-            var input = document.getElementById("file");
+            var input = document.getElementById("id_image");
             var result, div;
 
             if (typeof FileReader === 'undefined') {

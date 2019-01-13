@@ -1,6 +1,9 @@
 # login/views.py
 import hashlib
 import json
+import os
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.datastructures import MultiValueDict
 
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -48,7 +51,7 @@ def login(request):
             return render(request, 'login/login.html', locals())
 
         request.session['is_login'] = True
-      #  request.session['is_admin'] = user.is_admin
+        #  request.session['is_admin'] = user.is_admin
         request.session['is_admin'] = True
         request.session['username'] = username
         messages.success(request, "登录成功！")
@@ -202,7 +205,7 @@ def get_all_tasks(request):
 
 
 def get_user_tasks(request):
-    if not request.session.get('is_admin', None) or request.session.get('is_admin', None):
+    if not request.session.get('is_login', None) or request.session.get('is_admin', None):
         messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
 
@@ -244,68 +247,153 @@ def get_user_tasks(request):
 
     return HttpResponse(json.dumps(response_data))
 
+
 def addtask_select_templete(request):
-    task_form1 = forms.TaskForm1()
-    if request.session.get('is_login', None):
-        messages.warning(request, "请勿重复登录！")
+    if not request.session.get('is_admin', None):
+        messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
+
     if request.method == "POST":
-        if 'next' in request.POST:
+        if request.session.get('new_task_id', None):
+            new_task = models.Task.objects.get(id=request.session['new_task_id'])
+        else:
+            new_task = models.Task.objects.create()
+            new_task.admin = models.User.objects.get(name=request.session['username'])
+            new_task.save()
+            request.session['new_task_id'] = new_task.id
+
+        if request.POST.get('template') == '1':
+            new_task.template = 1
+            new_task.save()
             return redirect("/addtask_step2/")
-        if not task_form1.is_valid():
-            messages.error(request, "表单信息有误！")
-            return render(request, 'login/addtask_select_templete.html', locals())
-    return  render(request, 'login/addtask_select_templete.html', locals())
+
+    return render(request, 'login/addtask_select_templete.html', locals())
+
 
 def addtask_set_qa(request):
-    task_form2 = forms.TaskForm2()
-    if request.session.get('is_login', None):
-        messages.warning(request, "请勿重复登录！")
+    if not request.session.get('is_admin', None):
+        messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
+    if not request.session.get('new_task_id', None):
+        return redirect("/addtask_step1/")
 
     if request.method == "POST":
-        if 'last' in request.POST:
-            return redirect("/addtask_step1/")
-        elif 'next' in request.POST:
-            return redirect("/addtask_step3/")
-
+        task_form2 = forms.TaskForm2(request.POST, request.FILES)
         if not task_form2.is_valid():
             messages.error(request, "表单信息有误！")
             return render(request, 'login/addtask_set_qa.html', locals())
-    return  render(request, 'login/addtask_set_qa.html', locals())
+        q1 = task_form2.cleaned_data['q1']
+        a1_q1 = task_form2.cleaned_data['a1_q1']
+        a2_q1 = task_form2.cleaned_data['a2_q1']
+        new_task = models.Task.objects.get(id=request.session['new_task_id'])
+        new_task.content = q1 + '&' + a1_q1 + '&' + a2_q1
+        new_task.save()
+        img_files = request.FILES.getlist('image')
+        for f in img_files:
+            sub_task = models.SubTask.objects.create()
+            sub_task.image = f
+            sub_task.task = new_task
+            sub_task.save()
+        return redirect('/addtask_step3/')
+
+    new_task = models.Task.objects.get(id=request.session['new_task_id'])
+    content = new_task.content.split('&')
+    q1 = content[0] if len(content) > 0 else ''
+    a1_q1 = content[1] if len(content) > 1 else ''
+    a2_q1 = content[2] if len(content) > 2 else ''
+    data = {'q1': q1, 'a1_q1': a1_q1, 'a2_q1': a2_q1}
+    img_files = []
+    sub_tasks = new_task.subtask_set.all()
+    for sub_task in sub_tasks:
+        img_file = SimpleUploadedFile(sub_task.image.name, content=open(sub_task.image.path, 'rb').read(),
+                                      content_type='image/jpeg')
+        img_files.append(img_file)
+    img_data = MultiValueDict({'image': img_files})
+    task_form2 = forms.TaskForm2(data, img_data)
+
+    return render(request, 'login/addtask_set_qa.html', locals())
 
 
-def  addtask_set_title(request):
-    task_form3 = forms.TaskForm3()
+def addtask_set_title(request):
+    if not request.session.get('is_admin', None):
+        messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    if not request.session.get('new_task_id', None):
+        return redirect("/addtask_step1/")
+
     if request.method == "POST":
-        if 'last' in request.POST:
-            return redirect("/addtask_step2/")
-        elif 'next' in request.POST:
-            return redirect("/addtask_step4/")
-    return  render(request, 'login/addtask_set_title.html', locals())
+        task_form3 = forms.TaskForm3(request.POST)
+        if not task_form3.is_valid():
+            messages.error(request, "表单信息有误！")
+            return render(request, 'login/addtask_set_title.html', locals())
+        name = task_form3.cleaned_data['name']
+        new_task = models.Task.objects.get(id=request.session['new_task_id'])
+        if models.Task.objects.filter(name=name).exclude(id=request.session['new_task_id']).exists():
+            messages.error(request, "该任务名已存在！")
+            return render(request, 'login/addtask_set_title.html', locals())
+        new_task.name = name
+        new_task.save()
+        return redirect("/addtask_step4/")
 
-def  addtask_select_member(request):
-    task_form3 = forms.TaskForm3()
-    if request.method == "POST":
-        if 'last' in request.POST:
-            return redirect("/addtask_step3/")
-        elif 'next' in request.POST:
-            return redirect("/addtask_step5/")
-    return  render(request, 'login/addtask_select_member.html', locals())
+    new_task = models.Task.objects.get(id=request.session['new_task_id'])
+    task_form3 = forms.TaskForm3({'name': new_task.name})
+    return render(request, 'login/addtask_set_title.html', locals())
 
-def  addtask_setdetail(request):
-    task_form3 = forms.TaskForm3()
-    if request.method == "POST":
-        if 'last' in request.POST:
-            return redirect("/addtask_step4/")
-        elif 'next' in request.POST:
-            return redirect("/addtask_step6/")
-    return  render(request, 'login/addtask_setdetail.html', locals())
 
-def  addtask_finished(request):
+def addtask_select_member(request):
+    if not request.session.get('is_admin', None):
+        messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    if not request.session.get('new_task_id', None):
+        return redirect("/addtask_step1/")
+
     if request.method == "POST":
-        if 'last' in request.POST:
-            return redirect("/addtask_step5/")
-        elif 'mytask' in request.POST:
-            return redirect("/task/")
-    return  render(request, 'login/addtask_finished.html', locals())
+        task_form4 = forms.TaskForm4(request.POST)
+        if not task_form4.is_valid():
+            messages.error(request, "表单信息有误！")
+            return render(request, 'login/addtask_select_member.html', locals())
+        new_task = models.Task.objects.get(id=request.session['new_task_id'])
+        users = task_form4.cleaned_data['users']
+        new_task.users.set(users)
+        new_task.save()
+        return redirect("/addtask_step5/")
+
+    new_task = models.Task.objects.get(id=request.session['new_task_id'])
+    task_form4 = forms.TaskForm4({'users': new_task.users.all()})
+    return render(request, 'login/addtask_select_member.html', locals())
+
+
+def addtask_setdetail(request):
+    if not request.session.get('is_admin', None):
+        messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    if not request.session.get('new_task_id', None):
+        return redirect("/addtask_step1/")
+
+    if request.method == "POST":
+        task_form5 = forms.TaskForm5(request.POST)
+        if not task_form5.is_valid():
+            messages.error(request, "表单信息有误！")
+            return render(request, 'login/addtask_select_member.html', locals())
+        new_task = models.Task.objects.get(id=request.session['new_task_id'])
+        details = task_form5.cleaned_data['details']
+        new_task.details = details
+        new_task.save()
+        return redirect("/addtask_step6/")
+
+    new_task = models.Task.objects.get(id=request.session['new_task_id'])
+    task_form5 = forms.TaskForm5({'details': new_task.details})
+    return render(request, 'login/addtask_setdetail.html', locals())
+
+
+def addtask_finished(request):
+    if not request.session.get('is_admin', None):
+        messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    if not request.session.get('new_task_id', None):
+        return redirect("/addtask_step1/")
+
+    if request.method == "POST":
+        del request.session['new_task_id']
+        return redirect("/task/")
+    return render(request, 'login/addtask_finished.html', locals())
