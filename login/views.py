@@ -25,7 +25,7 @@ def index(request):
 
 def login(request):
     if request.session.get('is_login', None):
-        messages.warning(request, "请勿重复登录！")
+        # messages.warning(request, "请勿重复登录！")
         return redirect("/index/")
 
     if request.method == "POST":
@@ -46,10 +46,10 @@ def login(request):
             return render(request, 'login.html', locals())
 
         request.session['is_login'] = True
-        #  request.session['is_admin'] = user.is_admin
+        # request.session['is_admin'] = user.is_admin
         request.session['is_admin'] = True
         request.session['username'] = username
-        messages.success(request, "登录成功！")
+        # messages.success(request, "登录成功！")
         request.session.set_expiry(3600)
         return redirect('/index/')
 
@@ -59,7 +59,7 @@ def login(request):
 
 def register(request):
     if request.session.get('is_login', None):
-        messages.warning(request, "请先退出后再注册！")
+        # messages.warning(request, "请先退出后再注册！")
         return redirect("/index/")
 
     if request.method == "POST":
@@ -89,9 +89,15 @@ def register(request):
         new_user.email = email
         new_user.is_admin = False  # 只能注册普通用户
         new_user.save()
-        print(new_user.c_time)
-        messages.success(request, "注册成功！")
-        return redirect('/login/')
+
+        request.session['is_login'] = True
+        # request.session['is_admin'] = user.is_admin
+        request.session['is_admin'] = True
+        request.session['username'] = username
+        # messages.success(request, "登录成功！")
+        request.session.set_expiry(3600)
+        # messages.success(request, "注册成功！")
+        return redirect('/index/')
 
     register_form = forms.RegisterForm()
     return render(request, 'regist.html', locals())
@@ -99,11 +105,11 @@ def register(request):
 
 def logout(request):
     if not request.session.get('is_login', None):
-        messages.warning(request, "您尚未登录！")
+        # messages.warning(request, "您尚未登录！")
         return redirect("/index/")
 
     request.session.flush()
-    messages.success(request, "退出成功！")
+    # messages.success(request, "退出成功！")
     return redirect("/index/")
 
 

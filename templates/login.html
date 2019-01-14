@@ -56,25 +56,21 @@
                     <div class="landing-text wow fadeInUp">
                         <h2 style="font-size: 40px;margin-bottom: 100px;">The same planet, different worlds, have their
                             own wonderful places!</h2>
-
                     </div>
-
-
                 </div>
 
                 <!-- /.signup form -->
                 <div class="col-md-5">
-
                     <div class="signup-header wow fadeInUp">
                         <h3 class="form-title text-center">GET STARTED</h3>
-                        {#  		<form class="form-header" action="http://moxdesign.us10.list-manage.com/subscribe/post" role="form" method="POST" id="#"> #}
-
+                        {#          <form class="form-header" action="http://moxdesign.us10.list-manage.com/subscribe/post" role="form" method="POST" id="#"> #}
+                        {% for message in get_messages(request) %}
+                            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+                            </div>
+                        {% endfor %}
                         <form class='form-login' action="/login/" method="post">
-                            {% for message in get_messages(request) %}
-                                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                                    <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
-                                </div>
-                            {% endfor %}
+
                             {{ csrf_input }}
                             <div class="form-group">
                                 {{ login_form.username }}
@@ -87,9 +83,8 @@
                                        name="login" value="Log on">
                             </div>
                             <p class="privacy text-center">We will not share your personal privacy. Read our <a
-                                    href="privacy.html">privacy policy</a>.</p>
+                                    href="#">privacy policy</a>.</p>
                         </form>
-
                         {# </form> #}
                     </div>
 
