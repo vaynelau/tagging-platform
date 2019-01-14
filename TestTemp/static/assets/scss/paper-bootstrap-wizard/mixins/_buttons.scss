@@ -11,12 +11,12 @@
   .open > &.dropdown-toggle,
   .open > &.dropdown-toggle:focus,
   .open > &.dropdown-toggle:hover {
-      background-color: $btn-color ;
-      color: $fill-font-color ;
-      border-color: $btn-color ;
-      .caret{
-          border-top-color: $fill-font-color;
-      }
+    background-color: $btn-color;
+    color: $fill-font-color;
+    border-color: $btn-color;
+    .caret {
+      border-top-color: $fill-font-color;
+    }
   }
 
   &.disabled,
@@ -34,7 +34,6 @@
     }
   }
 
-
   &.btn-fill {
     color: $white-color;
     background-color: $btn-color;
@@ -44,14 +43,14 @@
     &:focus,
     &:active,
     &.active,
-    .open > &.dropdown-toggle{
-        background-color: $btn-states-color;
-        color: $white-color;
-        border-color: $btn-states-color;
+    .open > &.dropdown-toggle {
+      background-color: $btn-states-color;
+      color: $white-color;
+      border-color: $btn-states-color;
     }
 
-    .caret{
-        border-top-color: $white-color;
+    .caret {
+      border-top-color: $white-color;
     }
   }
 
@@ -60,29 +59,28 @@
     &:focus,
     &:active,
     &.active,
-    .open > &.dropdown-toggle{
-        background-color: $transparent-bg;
-        color: $btn-states-color;
+    .open > &.dropdown-toggle {
+      background-color: $transparent-bg;
+      color: $btn-states-color;
     }
 
-    .caret{
-        border-top-color: $white-color;
+    .caret {
+      border-top-color: $white-color;
     }
   }
 
-  .caret{
-      border-top-color: $btn-color;
+  .caret {
+    border-top-color: $btn-color;
   }
 }
 
+@mixin btn-size($padding-vertical, $padding-horizontal, $font-size, $border, $line-height) {
+  font-size: $font-size;
+  border-radius: $border;
+  padding: $padding-vertical $padding-horizontal;
 
-@mixin btn-size($padding-vertical, $padding-horizontal, $font-size, $border, $line-height){
-   font-size: $font-size;
-   border-radius: $border;
-   padding: $padding-vertical $padding-horizontal;
-
-   &.btn-simple{
-       padding: $padding-vertical + 2 $padding-horizontal;
-   }
+  &.btn-simple {
+    padding: $padding-vertical + 2 $padding-horizontal;
+  }
 
 }

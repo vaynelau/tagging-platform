@@ -6,7 +6,6 @@ import login.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('login', '0001_initial'),
     ]
@@ -46,7 +45,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='task',
             name='admin',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tasks_created', to='login.User'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='tasks_created', to='login.User'),
         ),
         migrations.AlterField(
             model_name='task',

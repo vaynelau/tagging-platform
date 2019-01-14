@@ -18,9 +18,9 @@ from django.urls import path
 from login import views
 
 urlpatterns = [
-   # path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('login/', views.login),
-path('index/', views.index),
-path('regist/', views.regist),
-path('release_task/', views.release_task),
+    path('index/', views.index),
+    path('regist/', views.regist),
+    path('release_task/', views.release_task),
 ]

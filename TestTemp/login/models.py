@@ -25,7 +25,7 @@ class Task(models.Model):
     """任务表"""
 
     template = models.IntegerField(default=1)
-    content = models.TextField(max_length=1024,default="")  # 针对模板1，保存问题及选项，中以分隔符分隔
+    content = models.TextField(max_length=1024, default="")  # 针对模板1，保存问题及选项，中以分隔符分隔
     name = models.CharField(max_length=128)
     admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created')
     users = models.ManyToManyField('User', related_name='tasks_owned')
