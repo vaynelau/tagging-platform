@@ -22,5 +22,5 @@ urlpatterns = [
     path('login/', views.login),
 path('index/', views.index),
 path('regist/', views.regist),
-path('task/', views.task),
+path('release_task/', views.release_task),
 ]
