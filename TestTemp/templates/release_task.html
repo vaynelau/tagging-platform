@@ -34,9 +34,56 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
 	<link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
 	<link href="{{  static('assets/css/themify-icons.css')}}" rel="stylesheet">
+      <meta charset="utf-8">
+  <title>BizPage Bootstrap Template</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Favicons -->
+  <link href="{{ static('img/favicon.png')}}" rel="icon">
+  <link href="{{ static('img/apple-touch-icon.png')}}" rel="apple-touch-icon">
+	<!-- bootstrap-css -->
+	<link href="{{ static('css/bootstrap.css')}}" rel="stylesheet" type="text/css" media="all" />
+
+
+  <!-- Bootstrap CSS File -->
+  <link href="{{ static('lib/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="{{ static('lib/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
+  <link href="{{ static('lib/animate/animate.min.css')}}" rel="stylesheet">
+  <link href="{{ static('lib/ionicons/css/ionicons.min.css')}}" rel="stylesheet">
+  <link href="{{ static('lib/owlcarousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
+  <link href="{{ static('lib/lightbox/css/lightbox.min.css')}}" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="{{ static('css/style.css')}}" rel="stylesheet">
 </head>
 
 <body>
+  <!--==========================
+    Header
+  ============================-->
+  <header id="header">
+    <div class="container-fluid">
+
+      <div id="logo" class="pull-left">
+        <h1><a href="#intro" class="scrollto">BizPage</a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="#intro"><img src="img/logo.png" alt="" title="" /></a>-->
+      </div>
+
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li class="menu-active"><a href="/release_task/">Release Task</a></li>
+                            <li><a href="/index/">Home</a></li>
+         <li><a href="/login/">Log In</a></li>
+              <li><a href="/regist/">Regist</a></li>
+        </ul>
+      </nav><!-- #nav-menu-container -->
+    </div>
+  </header><!-- #header -->
 	<div class="image-container set-full-height" style="background-image: url({{  static('assets/img/paper-1.jpeg')}})">
 
 	    <!--   Big container   -->
@@ -46,7 +93,7 @@
 		            <!--      Wizard container        -->
 		            <div class="wizard-container">
 
-		                <div class="card wizard-card" data-color="orange" id="wizardProfile">
+		                <div class="card wizard-card" data-color="azure" id="wizardProfile">
 		                    <form action="/release_task/" method="post">
 		                <!--        You can switch " data-color="orange""  with one of the next bright colors: "blue", "green", "orange", "red", "azure"        -->
 
@@ -227,7 +274,7 @@
 		                        </div>
 		                        <div class="wizard-footer">
 		                            <div class="pull-right">
-		                                <input type='button' class='btn btn-next btn-fill btn-warning btn-wd' name='next' value='Next' />
+		                                <input type='button' class='btn btn-next btn-fill btn-price btn-warning btn-wd' name='next' value='Next' />
 		                                <input type='submit' class='btn btn-finish btn-fill btn-warning btn-wd' name='finish' value='Finish' />
 		                            </div>
 
