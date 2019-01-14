@@ -5,8 +5,10 @@ from login import models
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="用户名", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label="密码", max_length=128, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label="用户名", max_length=128, widget=forms.TextInput(
+        attrs={'class': 'form-control input-lg', 'placeholder': 'Your account', 'id': 'username'}))
+    password = forms.CharField(label="密码", max_length=128, widget=forms.PasswordInput(
+        attrs={'class': 'form-control input-lg', 'placeholder': 'Password', 'id': 'password'}))
 
 
 class RegisterForm(forms.Form):
