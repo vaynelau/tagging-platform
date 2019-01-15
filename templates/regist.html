@@ -61,7 +61,8 @@
             <form class='subscribe-form form-register' action="/regist/" method="post">
                 {{ csrf_input }}
                 <div class="col-md-5 col-sm-5 col-xs-5">
-                    <button type="button" onclick="window.location.href='/login/'" name="login" class="btn btn-default btn-block btn-lg"
+                    <button type="button" onclick="window.location.href='/login/'" name="login"
+                            class="btn btn-default btn-block btn-lg"
                             style="margin-left:50px;margin-bottom:50px;font-size: 20px;color: #2b542c">Log In
                     </button>
                 </div>
@@ -80,10 +81,14 @@
                             </div>
                         {% endfor %}
                         {{ csrf_input }}
-                        {{ register_form.username }}
-                        {{ register_form.password1 }}
-                        {{ register_form.password2 }}
-                        {{ register_form.email }}
+                        <input type="text" name="username" class="form-control" id="username"
+                               placeholder="Your Username" style="margin-bottom: 20px;" maxlength="128" required/>
+                        <input type="password" name="password1" class="form-control" id="password1"
+                               placeholder="Your Password" style="margin-bottom: 20px;" maxlength="128" required/>
+                        <input type="password" name="password2" class="form-control" id="password2"
+                               placeholder="Confirm Password" style="margin-bottom: 20px;" maxlength="128" required/>
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Your Email..."
+                               style="margin-bottom: 40px;" required/>
                         <button type="submit" name="regist" class="tm-btn-subscribe">Sign Up</button>
                     </div>
                 </div>

@@ -1,10 +1,26 @@
 # login/models.py
 from django.db import models
+import hashlib
+
+
+def gen_md5(s, salt='9527'):  # 加盐
+    s += salt
+    md5 = hashlib.md5()
+    md5.update(s.encode(encoding='utf-8'))  # update方法只接收bytes类型
+    return md5.hexdigest()
 
 
 def img_directory_path(instance, filename):
     # 文件上传到MEDIA_ROOT/task_<id>/<filename>目录中
     return 'task_{0}/{1}'.format(instance.task.id, filename)
+
+
+def get_untagged_sub_task(task, user):
+    label = task.label_set.filter(user=user, is_tagged=False).first()
+    if label is not None:
+        return label.sub_task
+    else:
+        return None
 
 
 class User(models.Model):
@@ -56,11 +72,3 @@ class Label(models.Model):
     result = models.TextField(max_length=1024)  # 保存标记结果
     m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间，可以修改
     is_tagged = models.BooleanField(default=False)
-
-
-def get_untagged_sub_task(task, user):
-    label = task.label_set.filter(user=user, is_tagged=False).first()
-    if label is not None:
-        return label.sub_task
-    else:
-        return None
