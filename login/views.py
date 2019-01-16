@@ -130,6 +130,7 @@ def release_task(request):
 
         # save questions and answers
         i = 1
+        j = 1
         content = ''
         while 'q' + str(i) in request.POST:
             question = request.POST.get('q' + str(i))
@@ -137,7 +138,7 @@ def release_task(request):
                 messages.error(request, "表单信息有误，请重新填写！")
                 return render(request, 'release_task.html', locals())
             content += '|' + question
-            j = 1
+
             while 'a' + str(j) + '_q' + str(i) in request.POST:
                 answer = request.POST.get('a' + str(j) + '_q' + str(i))
                 if len(answer) == 0 or len(answer) > 128:
@@ -158,6 +159,10 @@ def release_task(request):
             sub_task.image = f
             sub_task.task = new_task
             sub_task.save()
+            label = models.Label.objects.create()
+            label.task = new_task
+            label.sub_task = sub_task
+            label.save()
 
         messages.success(request, "任务发布成功！")
         return redirect('/index/')
