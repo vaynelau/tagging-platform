@@ -66,9 +66,9 @@ class SubTask(models.Model):
 class Label(models.Model):
     """标签表"""
 
-    task = models.ForeignKey('Task', on_delete=models.CASCADE)
-    sub_task = models.ForeignKey('SubTask', on_delete=models.CASCADE)
+    task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
+    sub_task = models.ForeignKey('SubTask', null=True, on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     result = models.TextField(max_length=1024)  # 保存标记结果
-    m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间，可以修改
+    m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间
     is_tagged = models.BooleanField(default=False)
