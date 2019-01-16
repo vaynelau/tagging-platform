@@ -130,7 +130,6 @@ def release_task(request):
 
         # save questions and answers
         i = 1
-
         content = ''
         while 'q' + str(i) in request.POST:
             question = request.POST.get('q' + str(i))
