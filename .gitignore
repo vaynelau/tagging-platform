@@ -2,6 +2,7 @@
 ### Example user template template
 ### Example user template
 
+media/
 # IntelliJ project files
 .idea
 *.iml
@@ -28,7 +29,6 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.Python
 build/
 develop-eggs/
 dist/
@@ -103,7 +103,6 @@ celerybeat-schedule
 
 # Environments
 .env
-.venv
 env/
 venv/
 ENV/
