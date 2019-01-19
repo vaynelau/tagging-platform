@@ -158,8 +158,8 @@ def release_task(request):
             sub_task.image = f
             sub_task.task = new_task
             sub_task.save()
+
             label = models.Label.objects.create()
-            label.task = new_task
             label.sub_task = sub_task
             label.save()
 

@@ -199,56 +199,60 @@
                                         <h5 class="info-text"> What questions would you like to know?</h5>
                                         <div class="row" id="addform">
                                             <div id="form-div" class="col-md-12">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="id_q1">问题1:</label>
-                                                        <input type="text" name="q1" class="form-control"
-                                                               maxlength="128" required id="id_q1"/>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="id_a1_q1">选项1:</label>
-                                                        <input type="text" name="a1_q1" class="form-control"
-                                                               maxlength="128" required id="id_a1_q1"/>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="id_a2_q1">选项2:</label>
-                                                        <input type="text" name="a2_q1" class="form-control"
-                                                               maxlength="128" required id="id_a2_q1"/>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 col-md-offset-6 " style="margin-top: -200px;">
-                                                    <div class="col-md-8">
-                                                        <img class="a" src="../static/css/add.png/" width="35px;"
-                                                             height="35px;"
-                                                             onclick="addQuestion()"/>
-                                                        <span width="40px;" height="40px;"
-                                                              style="font-size: 18px;">增加问题</span>
+                                                <div id="question1">
+                                                    <div class="col-md-6" id="qu1">
+                                                        <div class="form-group">
+                                                            <label for="id_q1" id="ques1">问题1:</label>
+                                                            <input type="text" name="q1" class="form-control"
+                                                                   maxlength="128" required id="id_q1"/>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="id_a1_q1" id="choi1_1">选项1:</label>
+                                                            <input type="text" name="a1_q1" class="form-control"
+                                                                   maxlength="128" required id="id_a1_q1"/>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="id_a2_q1" id="choi2_1">选项2:</label>
+                                                            <input type="text" name="a2_q1" class="form-control"
+                                                                   maxlength="128" required id="id_a2_q1"/>
+                                                        </div>
                                                     </div>
 
-                                                    <div class="col-md-8">
-                                                        <img class="a" src="../static/css/shanchu.png/" width="35px;"
-                                                             height="35px;"
-                                                             onclick="removeQuestion()"/>
-                                                        <span width="40px;" height="40px;"
-                                                              style="font-size: 18px;">删除问题</span>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <img class="a" src="../static/css/queding.png/" width="35px;"
-                                                             height="35px;" onclick="addChoice(this)" id="add1"/>
-                                                        <span width="40px;" height="40px;"
-                                                              style="font-size: 18px;">增加选项</span>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <img class="a" src="../static/css/shanchuxuanxiang.png/"
-                                                             width="35px;" height="35px;" onclick="removeChoice(this)"
-                                                             id="del1"/>
-                                                        <span width="40px;" height="40px;"
-                                                              style="font-size: 18px;">删除选项</span>
+                                                    <div class="col-md-6 col-md-offset-6 " style="margin-top: -200px;">
+                                                        <div class="col-md-8">
+                                                            <img class="a" src="../static/css/add.png/" width="35px;"
+                                                                 height="35px;"
+                                                                 onclick="addQuestion()"/>
+                                                            <span width="40px;" height="40px;"
+                                                                  style="font-size: 18px;">增加问题</span>
+                                                        </div>
+
+                                                        <div class="col-md-8">
+                                                            <img class="a" src="../static/css/shanchu.png/"
+                                                                 width="35px;"
+                                                                 height="35px;"
+                                                                 onclick="removeQuestion()"/>
+                                                            <span width="40px;" height="40px;"
+                                                                  style="font-size: 18px;">删除问题</span>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <img class="a" src="../static/css/queding.png/"
+                                                                 width="35px;"
+                                                                 height="35px;" onclick="addChoice(this)" id="add1"/>
+                                                            <span width="40px;" height="40px;"
+                                                                  style="font-size: 18px;">增加选项</span>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <img class="a" src="../static/css/shanchuxuanxiang.png/"
+                                                                 width="35px;" height="35px;"
+                                                                 onclick="removeChoice(this)"
+                                                                 id="del1"/>
+                                                            <span width="40px;" height="40px;"
+                                                                  style="font-size: 18px;">删除选项</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
