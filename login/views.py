@@ -43,7 +43,7 @@ def login(request):
         request.session['username'] = username
         # messages.success(request, "登录成功！")
         request.session.set_expiry(3600)
-        return redirect('/index/')
+        return redirect('/all_task/')
 
     login_form = forms.LoginForm()
     return render(request, 'login.html', locals())
@@ -169,6 +169,12 @@ def release_task(request):
     task_form = forms.TaskForm()
     return render(request, 'release_task.html', locals())
 
+
+def all_task(request):
+    return render(request, 'all_task.html', locals())
+
+def enter_task(request):
+    return render(request, 'enter_task.html', locals())
 
 def task(request):
     if not request.session.get('is_login', None):
