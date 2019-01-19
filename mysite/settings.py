@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
+    'django_cleanup',  # should go after your apps
 ]
 
 MIDDLEWARE = [
@@ -84,9 +85,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mysite',
-        "USER": 'root',
-        "PASSWORD": 'hjy19980717',
+      
+        # 'NAME': 'tag',
+        # "USER": 'root',
+        # "PASSWORD": 'hjy19980717',
+
+        'NAME': 'TaggingSystem',  # 数据库名字
+        'USER': 'django',  # 账号
+        'PASSWORD': '123456',  # 密码
+
         'HOST': '127.0.0.1',  # 本机地址
         'PORT': '3306',  # 端口
     }
@@ -126,6 +133,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0.5/howto/static-files/
 
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace('\\', '/')
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -141,6 +152,3 @@ MESSAGE_TAGS = {
     messages.WARNING: "alert alert-warning",
     messages.ERROR: "alert alert-danger",
 }
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace('\\', '/')
