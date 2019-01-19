@@ -171,10 +171,16 @@ def release_task(request):
 
 
 def all_task(request):
+    task_list = models.Task.objects.all()
+    num_task = len(task_list)
+    if request.method == "POST":
+        print(request.POST)
     return render(request, 'all_task.html', locals())
+
 
 def enter_task(request):
     return render(request, 'enter_task.html', locals())
+
 
 def task(request):
     if not request.session.get('is_login', None):

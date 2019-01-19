@@ -63,7 +63,7 @@ class SubTask(models.Model):
     task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
     result = models.TextField(max_length=1024)  # 保存最终标记结果
     num_tagged = models.IntegerField(default=1)
-    users = models.ManyToManyField('User', related_name='tasks_owned')
+    users = models.ManyToManyField('User', related_name='sub_tasks_tagged')
 
 
 class Label(models.Model):
