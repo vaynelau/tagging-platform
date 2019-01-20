@@ -160,9 +160,9 @@ def release_task(request):
             sub_task.task = new_task
             sub_task.save()
 
-            label = models.Label.objects.create()
-            label.sub_task = sub_task
-            label.save()
+            # label = models.Label.objects.create()
+            # label.sub_task = sub_task
+            # label.save()
 
         # messages.success(request, "任务发布成功！")
         return redirect('/all_task/')
@@ -201,37 +201,54 @@ def all_task(request):
         current_user = models.User.objects.get(name=request.session['username'])
         favorite_task_list = current_user.favorite_tasks.all()
         favorite_task_num = favorite_task_list.count()
+        # num_task_unfinished = models.Task.objects.filter(is_closed=False).count()
+
     return render(request, 'all_task.html', locals())
 
 
 def enter_task(request):
-    if not request.session.get('task_id', None):
+    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
         return redirect('/all_task/')
+    current_user = models.User.objects.get(name=request.session['username'])
+    task = models.Task.objects.get(id=request.session['task_id'])
+
     if request.method == "POST":
         print(request.POST)
+        i = 1
+        result = ''
+        while 'q' + str(i) in request.POST:
+            result += '|' + 'q' + str(i)
+            answers = request.POST.get('q' + str(i))
+            for answer in answers:
+                result += '&' + answer
+            i += 1
+        sub_task_id = request.session.get('sub_task_id', None)
+        if sub_task_id:
+            sub_task = models.SubTask.objects.get(pk=sub_task_id)
+            print(sub_task)
+            label = models.Label.objects.create()
+            label.user = current_user
+            label.result = result
+            label.sub_task = sub_task
+            label.save()
+            sub_task.num_tagged += 1
+            sub_task.users.add(current_user)
+            sub_task.save()
+            request.session['sub_task_id'] = None
 
-    my_task = models.Task.objects.get(id=request.session['task_id'])
     qa_list = []
-    contents = my_task.content.split('|')
+    contents = task.content.split('|')
     for item in contents[1:]:
         qa = item.split('&')
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
-
-    # img_files = []
-    # sub_tasks = my_task.subtask_set.all()
-    # for sub_task in sub_tasks:
-    #     img_file = sub_task.image.name
-    #     img_files.append(img_file)
-
+    sub_task = models.get_untagged_sub_task(task, current_user)
+    if sub_task:
+        request.session['sub_task_id'] = sub_task.id
+        img_file = sub_task.image
+        print(img_file)
+    else:
+        print('所有图片已标注')
     return render(request, 'enter_task.html', locals())
-
-
-def task(request):
-    if not request.session.get('is_login', None):
-        messages.warning(request, "您没有权限查看该页面！")
-        return redirect("/index/")
-
-    return render(request, 'login/task.html', locals())
 
 
 def get_all_tasks(request):

@@ -109,10 +109,12 @@
                                 <h3 class="faq-question">
                                     <a href="#">{{ qa.question }}</a>
                                 </h3>
+                                {% set i = loop.index %}
                                 <div class="faq-answer">
                                     {% for answer in qa.answers %}
                                         <!-- <a.contents是问题的候选答案 /> -->
-                                        <input type="checkbox" name="{{ qa.question }}" value="{{ answer }}"/>
+                                        <label><input type="checkbox" name="q{{ i }}"
+                                                      value="a{{ loop.index }}"/> {{ answer }} </label>
                                     {% endfor %}
                                 </div>
                             </article>
@@ -311,13 +313,7 @@
 
 </footer>
 <!-- End of Footer -->
-{% for qa in qa_list %}
-    <a href="#">{{ qa.question }}</a>
-    {% for answer in qa.answers %}
-        <!-- <a.contents是问题的候选答案 /> -->
-        <input type="checkbox" name="{{ qa.question }}" value="{{ answer }}"/>
-    {% endfor %}
-{% endfor %}
+
 <a href="#top" id="scroll-top"></a>
 
 <!-- script -->

@@ -242,7 +242,8 @@
                                     <span class="badge badge-success pull-right">{{ updates_num }}</span> Updates</a>
                                 <a href="#">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ task_num }}</span> Unfinished
+                                    <span class="badge badge-danger pull-right">{{ favorite_task_num }}</span>
+                                    Unfinished
                                     Tasks</a>
                                 <a href="#"><i class="fa fa-magnet fa-fw pull-right"></i>
                                     <span class="badge badge-info pull-right">{{ rank }}</span> My Rank</a>
@@ -385,12 +386,14 @@
                                     <th>Type</th>
                                     <th>Manager</th>
                                     <!-- <th>Client</th> -->
-                                    <th>Details</th>
+                                    {#                                    <th>Details</th>#}
                                     <th>Release Time</th>
                                     <!-- <th>Price</th> -->
                                     <th>Status</th>
                                     <th>Progress</th>
-                                    <th>Operation</th>
+                                    {% if request.session.is_login %}
+                                        <th>Operation</th>
+                                    {% endif %}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -402,7 +405,7 @@
                                             <td>{{ task.name }}</td>
                                             <td>{{ template_list[task.template] }}</td>
                                             <td>{{ task.admin }}</td>
-                                            <td>{{ task.details }}</td>
+                                            {#                                            <td>{{ task.details }}</td>#}
                                             <!-- <td>Steve</td> -->
                                             <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                             <!-- <td>$1500</td> -->
@@ -419,10 +422,11 @@
                                                                 class="btn btn-default btn-xs"><i
                                                                 class="fa fa-star"></i>Collect
                                                         </button>
+                                                        <button type="submit" name="enter" value="{{ task.id }}"
+                                                                class="btn btn-default btn-xs"><i
+                                                                class="fa fa-pencil"></i>Enter
+                                                        </button>
                                                     {% endif %}
-                                                    <button type="submit" name="enter" value="{{ task.id }}"
-                                                            class="btn btn-default btn-xs"><i class="fa fa-pencil"></i>Enter
-                                                    </button>
                                                 </div>
                                             </td>
                                         </form>
@@ -444,11 +448,11 @@
                                 Favorite Tasks
                             </header>
                             <div class="panel-body">
+                                <form action="/all_task/" method="post">
+                                    <div class="task-content">
 
-                                <div class="task-content">
+                                        <ul class="task-list">
 
-                                    <ul class="task-list">
-                                        <form action="/all_task/" method="post">
                                             {{ csrf_input }}
                                             {% for task in favorite_task_list %}
                                                 <li>
@@ -463,7 +467,7 @@
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
                                                         <td>{{ task.admin }}</td>
-                                                        <td>{{ task.details }}</td>
+                                                        {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
                                                         <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                                         <!-- <td>$1500</td> -->
@@ -473,7 +477,7 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
-                                                                class="label label-primary">2 participates needed</span>
+                                                                class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -486,13 +490,12 @@
                                                     </div>
                                                 </li>
                                             {% endfor %}
-                                        </form>
-                                    </ul>
-                                </div>
-
-                                <div class=" add-task-row">
-                                    <a class="btn btn-success btn-sm pull-left" href="#">Remove Tasks</a>
-                                </div>
+                                        </ul>
+                                    </div>
+                                    <div class=" add-task-row">
+                                        <a class="btn btn-success btn-sm pull-left" href="#">Remove Tasks</a>
+                                    </div>
+                                </form>
                             </div>
                         </section>
                     </div>

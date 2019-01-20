@@ -15,10 +15,10 @@ def img_directory_path(instance, filename):
     return 'task_{0}/{1}'.format(instance.task.id, filename)
 
 
-def get_untagged_sub_task(task, username):
-    sub_task_set = task.subtask_set.all()
+def get_untagged_sub_task(task, user):
+    sub_task_set = task.subtask_set.filter(num_tagged__lt=task.max_tagged_num)
     for sub_task in sub_task_set:
-        if not sub_task.users.filter(name=username).exists():
+        if not sub_task.users.filter(pk=user.id).exists():
             return sub_task
     return None
 
@@ -28,7 +28,7 @@ class User(models.Model):
     password = models.CharField(max_length=128)
     email = models.EmailField(unique=True)
     is_admin = models.BooleanField(default=False)
-    c_time = models.DateTimeField(auto_now_add=True)  # 保存创建时间，不可修改
+    c_time = models.DateTimeField(auto_now_add=True)  # 保存用户创建时间
     favorite_tasks = models.ManyToManyField('Task')
 
     def __str__(self):
@@ -63,7 +63,7 @@ class SubTask(models.Model):
     image = models.ImageField(max_length=256, upload_to=img_directory_path)
     task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
     result = models.TextField(max_length=1024)  # 保存最终标记结果
-    num_tagged = models.IntegerField(default=1)
+    num_tagged = models.IntegerField(default=0)
     users = models.ManyToManyField('User', related_name='sub_tasks_tagged')
 
 
