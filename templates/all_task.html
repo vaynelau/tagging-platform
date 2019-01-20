@@ -144,11 +144,11 @@
                     <li class="dropdown tasks-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-tasks"></i>
-                            <span class="label label-danger">{{ favorite_tasks_num }}</span>
+                            <span class="label label-danger">{{ favorite_task_num }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <a href="#favorite_tasks">
-                                <li class="header">You have {{ favorite_tasks_num }} favorite tasks</li>
+                                <li class="header">You have {{ favorite_task_num }} favorite tasks</li>
                             </a>
                             <li>
                                 <!-- inner menu: contains the actual data -->
@@ -288,7 +288,7 @@
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     {% else %}
                         <p>请先登录</p>
-                        <a href="#"><i class="fa fa-circle text-danger"></i> Offline</a>
+                        <a href="/login/"><i class="fa fa-circle text-danger"></i> Offline</a>
                     {% endif %}
                 </div>
             </div>
@@ -400,19 +400,26 @@
                                             {{ csrf_input }}
                                             <td>{{ task.id }}</td>
                                             <td>{{ task.name }}</td>
-                                            <td>{{ task.template }}</td>
+                                            <td>{{ template_list[task.template] }}</td>
                                             <td>{{ task.admin }}</td>
                                             <td>{{ task.details }}</td>
                                             <!-- <td>Steve</td> -->
                                             <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                             <!-- <td>$1500</td> -->
-                                            <td><span class="label label-danger">in progress</span></td>
+                                            {% if not task.is_closed %}
+                                                <td><span class="label label-danger">in progress</span></td>
+                                            {% else %}
+                                                <td><span class="label label-danger">finished</span></td>
+                                            {% endif %}
                                             <td><span class="badge badge-info">50%</span></td>
                                             <td>
-                                                <div class="pull-right hidden-phone">
-                                                    <button type="submit" name="collect" value="{{ task.id }}"
-                                                            class="btn btn-default btn-xs"><i class="fa fa-star"></i>Collect
-                                                    </button>
+                                                <div class="hidden-phone">
+                                                    {% if request.session.is_login %}
+                                                        <button type="submit" name="collect" value="{{ task.id }}"
+                                                                class="btn btn-default btn-xs"><i
+                                                                class="fa fa-star"></i>Collect
+                                                        </button>
+                                                    {% endif %}
                                                     <button type="submit" name="enter" value="{{ task.id }}"
                                                             class="btn btn-default btn-xs"><i class="fa fa-pencil"></i>Enter
                                                     </button>
@@ -443,7 +450,7 @@
                                     <ul class="task-list">
                                         <form action="/all_task/" method="post">
                                             {{ csrf_input }}
-                                            {% for task in task_list %}
+                                            {% for task in favorite_task_list %}
                                                 <li>
                                                     <div class="task-checkbox">
                                                         <!-- <input type="checkbox" class="list-child" value=""  /> -->
@@ -460,7 +467,11 @@
                                                         <!-- <td>Steve</td> -->
                                                         <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                                         <!-- <td>$1500</td> -->
-                                                        <td><span class="label label-danger">in progress</span></td>
+                                                        {% if not task.is_closed %}
+                                                            <td><span class="label label-danger">in progress</span></td>
+                                                        {% else %}
+                                                            <td><span class="label label-danger">finished</span></td>
+                                                        {% endif %}
                                                         <td><span
                                                                 class="label label-primary">2 participates needed</span>
                                                         </td>

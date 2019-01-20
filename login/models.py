@@ -29,6 +29,7 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     is_admin = models.BooleanField(default=False)
     c_time = models.DateTimeField(auto_now_add=True)  # 保存创建时间，不可修改
+    favorite_tasks = models.ManyToManyField('Task')
 
     def __str__(self):
         return self.name
@@ -45,8 +46,8 @@ class Task(models.Model):
     name = models.CharField(max_length=128)
     admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created')
     details = models.TextField(max_length=1024)
-    c_time = models.DateTimeField(auto_now=True)
-    max_num = models.IntegerField(default=1)
+    c_time = models.DateTimeField(auto_now_add=True)
+    max_tagged_num = models.IntegerField(default=1)
     is_closed = models.BooleanField(default=False)
 
     def __str__(self):

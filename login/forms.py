@@ -12,10 +12,6 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    gender = (
-        ('male', "男"),
-        ('female', "女"),
-    )
     username = forms.CharField(label="用户名", max_length=128, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'username', 'placeholder': 'Your Username',
                'style': 'margin-bottom: 20px;'}))

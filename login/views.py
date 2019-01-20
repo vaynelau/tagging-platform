@@ -9,6 +9,9 @@ from django.contrib import messages
 
 from login import forms
 from login import models
+import re
+
+digit = re.compile("^\d{1,10}$")
 
 
 def index(request):
@@ -29,10 +32,10 @@ def login(request):
         username = login_form.cleaned_data['username']
         password = login_form.cleaned_data['password']
 
-        if not models.User.objects.filter(name=username).exists():
+        user = models.User.objects.filter(name=username).first()
+        if not user:
             messages.error(request, "用户名未注册！")
             return render(request, 'login.html', locals())
-        user = models.User.objects.get(name=username)
         if user.password != models.gen_md5(password, username):
             messages.error(request, "密码错误！")
             return render(request, 'login.html', locals())
@@ -111,9 +114,7 @@ def release_task(request):
 
     if request.method == "POST":
         print(request.POST)
-        print(type(request.POST))
         print(request.FILES)
-        print(type(request.FILES))
         task_form = forms.TaskForm(request.POST, request.FILES)
         if not task_form.is_valid():
             messages.error(request, "表单信息有误，请重新填写！")
@@ -163,22 +164,65 @@ def release_task(request):
             label.sub_task = sub_task
             label.save()
 
-        messages.success(request, "任务发布成功！")
-        return redirect('/index/')
+        # messages.success(request, "任务发布成功！")
+        return redirect('/all_task/')
 
     task_form = forms.TaskForm()
     return render(request, 'release_task.html', locals())
 
 
+def collect_task(request):
+    if not request.session.get('is_login', None) or not digit.match(request.POST.get('collect')):
+        return
+    task_id = int(request.POST.get('collect'))
+    favorite_task = models.Task.objects.filter(pk=task_id).first()
+    if not favorite_task:
+        print('该任务不存在！')
+        return
+    current_user = models.User.objects.get(name=request.session['username'])
+    current_user.favorite_tasks.add(favorite_task)
+
+
 def all_task(request):
     task_list = models.Task.objects.all()
-    num_task = len(task_list)
+    num_task = task_list.count()
+    template_list = ['', '问答式', '标记式', '书写式']
+
     if request.method == "POST":
         print(request.POST)
+        if 'collect' in request.POST:
+            collect_task(request)
+        elif 'enter' in request.POST:
+            if digit.match(request.POST.get('enter')):
+                request.session['task_id'] = int(request.POST.get('enter'))
+                return redirect('/enter_task/')
+
+    if request.session.get('is_login', None):
+        current_user = models.User.objects.get(name=request.session['username'])
+        favorite_task_list = current_user.favorite_tasks.all()
+        favorite_task_num = favorite_task_list.count()
     return render(request, 'all_task.html', locals())
 
 
 def enter_task(request):
+    if not request.session.get('task_id', None):
+        return redirect('/all_task/')
+    if request.method == "POST":
+        print(request.POST)
+
+    my_task = models.Task.objects.get(id=request.session['task_id'])
+    qa_list = []
+    contents = my_task.content.split('|')
+    for item in contents[1:]:
+        qa = item.split('&')
+        qa_list.append({'question': qa[0], 'answers': qa[1:]})
+
+    # img_files = []
+    # sub_tasks = my_task.subtask_set.all()
+    # for sub_task in sub_tasks:
+    #     img_file = sub_task.image.name
+    #     img_files.append(img_file)
+
     return render(request, 'enter_task.html', locals())
 
 
