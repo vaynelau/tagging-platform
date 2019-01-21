@@ -33,6 +33,7 @@ class User(models.Model):
     login_time = models.DateTimeField(default=timezone.now)  # 保存此次登录时间
     last_login_time = models.DateTimeField(default=timezone.now)  # 保存上次登录时间
     favorite_tasks = models.ManyToManyField('Task')
+    total_credits = models.IntegerField(default=1000)
 
     def __str__(self):
         return self.name
@@ -52,6 +53,7 @@ class Task(models.Model):
     c_time = models.DateTimeField(auto_now_add=True)
     max_tagged_num = models.IntegerField(default=1)
     is_closed = models.BooleanField(default=False)
+    credit = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name

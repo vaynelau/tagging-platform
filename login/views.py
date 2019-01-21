@@ -124,15 +124,31 @@ def release_task(request):
         if not task_form.is_valid():
             messages.error(request, "表单信息有误，请重新填写！")
             return render(request, 'release_task.html', locals())
+
+        img_files = request.FILES.getlist('image')  # exception
+        print(img_files)
+        print(type(img_files))
+
         template = task_form.cleaned_data['template']
         name = task_form.cleaned_data['name']
         details = task_form.cleaned_data['details']
-
+        max_tagged_num = task_form.cleaned_data['max_tagged_num']
+        credit = task_form.cleaned_data['credit']
+        print(max_tagged_num, credit)  # ##################
+        max_tagged_num = int(max_tagged_num)
+        credit = int(credit)
+        current_user = models.User.objects.get(name=request.session['username'])
+        if current_user.total_credits < credit * len(img_files):
+            messages.error(request, "您的信用积分不足，无法发布任务！")
+            return render(request, 'release_task.html', locals())
+        current_user.total_credits -= credit * len(img_files)
         new_task = models.Task.objects.create()
-        new_task.admin = models.User.objects.get(name=request.session['username'])
+        new_task.admin = current_user
         new_task.template = int(template)
         new_task.name = name
         new_task.details = details
+        new_task.max_tagged_num = max_tagged_num
+        new_task.credit = credit
 
         # save questions and answers
         i = 1
@@ -156,15 +172,11 @@ def release_task(request):
         new_task.save()
 
         # save images
-        img_files = request.FILES.getlist('image')
-        print(img_files)
-        print(type(img_files))
         for f in img_files:
             sub_task = models.SubTask.objects.create()
             sub_task.image = f
             sub_task.task = new_task
             sub_task.save()
-
             # label = models.Label.objects.create()
             # label.sub_task = sub_task
             # label.save()
@@ -188,6 +200,21 @@ def collect_task(request):
     current_user.favorite_tasks.add(favorite_task)
 
 
+def remove_task(request):
+    if not request.session.get('is_login', None):
+        return
+    current_user = models.User.objects.get(name=request.session['username'])
+    task_id_list = request.POST.get('removed_task_id_list')
+    for task_id in task_id_list:
+        if not digit.match(task_id):
+            continue
+        task = models.Task.objects.filter(pk=task_id).first()
+        if not task:
+            print('该任务不存在！')
+            continue
+        current_user.favorite_tasks.remove(task)  # exception?
+
+
 def all_task(request):
     task_list = models.Task.objects.all()
     num_task = task_list.count()
@@ -197,6 +224,8 @@ def all_task(request):
         print(request.POST)
         if 'collect' in request.POST:
             collect_task(request)
+        elif 'remove' in request.POST:
+            remove_task(request)
         elif 'enter' in request.POST:
             if digit.match(request.POST.get('enter')):
                 request.session['task_id'] = int(request.POST.get('enter'))
@@ -242,6 +271,8 @@ def enter_task(request):
             sub_task.num_tagged += 1
             sub_task.users.add(current_user)
             sub_task.save()
+            current_user.total_credits += task.credits
+            current_user.save()
             request.session['sub_task_id'] = None
 
     qa_list = []
