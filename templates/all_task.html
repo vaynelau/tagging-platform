@@ -144,11 +144,11 @@
                     <li class="dropdown tasks-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-tasks"></i>
-                            <span class="label label-danger">{{ favorite_task_num }}</span>
+                            <span class="label label-danger">{{ num_favorite_task }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <a href="#favorite_tasks">
-                                <li class="header">You have {{ favorite_task_num }} favorite tasks</li>
+                                <li class="header">You have {{ num_favorite_task }} favorite tasks</li>
                             </a>
                             <li>
                                 <!-- inner menu: contains the actual data -->
@@ -239,10 +239,10 @@
                             <li>
                                 <a href="#">
                                     <i class="fa fa-clock-o fa-fw pull-right"></i>
-                                    <span class="badge badge-success pull-right">{{ updates_num }}</span> Updates</a>
+                                    <span class="badge badge-success pull-right">{{ num_task_updated }}</span> Updates</a>
                                 <a href="#">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ favorite_task_num }}</span>
+                                    <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
                                     Unfinished
                                     Tasks</a>
                                 <a href="#"><i class="fa fa-magnet fa-fw pull-right"></i>

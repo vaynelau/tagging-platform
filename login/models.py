@@ -1,5 +1,6 @@
 # login/models.py
 from django.db import models
+from django.utils import timezone
 import hashlib
 
 
@@ -29,6 +30,8 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     is_admin = models.BooleanField(default=False)
     c_time = models.DateTimeField(auto_now_add=True)  # 保存用户创建时间
+    login_time = models.DateTimeField(default=timezone.now)  # 保存此次登录时间
+    last_login_time = models.DateTimeField(default=timezone.now)  # 保存上次登录时间
     favorite_tasks = models.ManyToManyField('Task')
 
     def __str__(self):

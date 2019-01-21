@@ -46,6 +46,9 @@ def login(request):
         request.session['username'] = username
         # messages.success(request, "登录成功！")
         request.session.set_expiry(3600)
+        user.last_login_time = user.login_time
+        user.login_time = timezone.now()
+        user.save()
         return redirect('/all_task/')
 
     login_form = forms.LoginForm()
@@ -91,6 +94,8 @@ def register(request):
         request.session['username'] = username
         request.session.set_expiry(3600)
         messages.success(request, "注册成功！")
+        new_user.last_login_time = new_user.login_time = timezone.now()
+        new_user.save()
         return redirect('/index/')
 
     register_form = forms.RegisterForm()
@@ -200,7 +205,10 @@ def all_task(request):
     if request.session.get('is_login', None):
         current_user = models.User.objects.get(name=request.session['username'])
         favorite_task_list = current_user.favorite_tasks.all()
-        favorite_task_num = favorite_task_list.count()
+        num_favorite_task = favorite_task_list.count()
+        current_user.login_time = timezone.now()
+        current_user.save()
+        num_task_updated = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
         # num_task_unfinished = models.Task.objects.filter(is_closed=False).count()
 
     return render(request, 'all_task.html', locals())
