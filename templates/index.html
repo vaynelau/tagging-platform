@@ -63,6 +63,7 @@
                         {% if request.session.is_login %}
                             <li><a href="#">User: {{ request.session.username }}</a></li>
                             <li><a href="/release_task/">Release Task</a></li>
+                            <li><a href="/all_task/">All Task</a></li>
                             <li><a href="/logout/">Log Out</a></li>
                         {% else %}
                             <li><a href="/login/">Log In</a></li>
