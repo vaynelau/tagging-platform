@@ -83,28 +83,20 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/2.0.5/ref/settings/#databases
 
 DATABASES = {
-    #'default': {
-     #   'ENGINE': 'django.db.backends.mysql',
-        #
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+      
         # 'NAME': 'tag',
         # "USER": 'root',
         # "PASSWORD": 'hjy19980717',
 
-     #   'NAME': 'TaggingSystem',  # 数据库名字
-     #   'USER': 'django',  # 账号
-      #  'PASSWORD': '123456',  # 密码
+        'NAME': 'TaggingSystem',  # 数据库名字
+        'USER': 'django',  # 账号
+        'PASSWORD': '123456',  # 密码
 
-       # 'HOST': '127.0.0.1',  # 本机地址
-       # 'PORT': '3306',  # 端口
-    #}
-     'default': {
-             'ENGINE': 'django.db.backends.mysql',
-             'NAME': 'MySQL',
-             "USER": 'dbUser',
-             "PASSWORD": 'zkn980516',
-             'HOST': '127.0.0.1',  # 本机地址
-             'PORT': '3306',  # 端口
-         }
+        'HOST': '127.0.0.1',  # 本机地址
+        'PORT': '3306',  # 端口
+    }
 }
 
 # Password validation
@@ -136,7 +128,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0.5/howto/static-files/

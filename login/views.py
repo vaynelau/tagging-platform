@@ -9,9 +9,6 @@ from django.contrib import messages
 
 from login import forms
 from login import models
-import re
-
-digit = re.compile("^\d{1,10}$")
 
 
 def index(request):
@@ -32,10 +29,10 @@ def login(request):
         username = login_form.cleaned_data['username']
         password = login_form.cleaned_data['password']
 
-        user = models.User.objects.filter(name=username).first()
-        if not user:
+        if not models.User.objects.filter(name=username).exists():
             messages.error(request, "用户名未注册！")
             return render(request, 'login.html', locals())
+        user = models.User.objects.get(name=username)
         if user.password != models.gen_md5(password, username):
             messages.error(request, "密码错误！")
             return render(request, 'login.html', locals())
@@ -46,10 +43,7 @@ def login(request):
         request.session['username'] = username
         # messages.success(request, "登录成功！")
         request.session.set_expiry(3600)
-        user.last_login_time = user.login_time
-        user.login_time = timezone.now()
-        user.save()
-        return redirect('/all_task/')
+        return redirect('/index/')
 
     login_form = forms.LoginForm()
     return render(request, 'login.html', locals())
@@ -94,8 +88,6 @@ def register(request):
         request.session['username'] = username
         request.session.set_expiry(3600)
         messages.success(request, "注册成功！")
-        new_user.last_login_time = new_user.login_time = timezone.now()
-        new_user.save()
         return redirect('/index/')
 
     register_form = forms.RegisterForm()
@@ -119,7 +111,9 @@ def release_task(request):
 
     if request.method == "POST":
         print(request.POST)
+        print(type(request.POST))
         print(request.FILES)
+        print(type(request.FILES))
         task_form = forms.TaskForm(request.POST, request.FILES)
         if not task_form.is_valid():
             messages.error(request, "表单信息有误，请重新填写！")
@@ -164,108 +158,24 @@ def release_task(request):
             sub_task.image = f
             sub_task.task = new_task
             sub_task.save()
+            label = models.Label.objects.create()
+            label.task = new_task
+            label.sub_task = sub_task
+            label.save()
 
-            # label = models.Label.objects.create()
-            # label.sub_task = sub_task
-            # label.save()
-
-        # messages.success(request, "任务发布成功！")
-        return redirect('/all_task/')
+        messages.success(request, "任务发布成功！")
+        return redirect('/index/')
 
     task_form = forms.TaskForm()
     return render(request, 'release_task.html', locals())
 
 
-def collect_task(request):
-    if not request.session.get('is_login', None) or not digit.match(request.POST.get('collect')):
-        return
-    task_id = int(request.POST.get('collect'))
-    favorite_task = models.Task.objects.filter(pk=task_id).first()
-    if not favorite_task:
-        print('该任务不存在！')
-        return
-    current_user = models.User.objects.get(name=request.session['username'])
-    current_user.favorite_tasks.add(favorite_task)
+def task(request):
+    if not request.session.get('is_login', None):
+        messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
 
-
-def all_task(request):
-    task_list = models.Task.objects.all()
-    num_task = task_list.count()
-    template_list = ['', '问答式', '标记式', '书写式']
-
-    if request.method == "POST":
-        print(request.POST)
-        if 'collect' in request.POST:
-            collect_task(request)
-        elif 'enter' in request.POST:
-            if digit.match(request.POST.get('enter')):
-                request.session['task_id'] = int(request.POST.get('enter'))
-                return redirect('/enter_task/')
-
-    if request.session.get('is_login', None):
-        current_user = models.User.objects.get(name=request.session['username'])
-        favorite_task_list = current_user.favorite_tasks.all()
-        num_favorite_task = favorite_task_list.count()
-        current_user.login_time = timezone.now()
-        current_user.save()
-        num_task_updated = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
-        # num_task_unfinished = models.Task.objects.filter(is_closed=False).count()
-
-    return render(request, 'all_task.html', locals())
-
-
-def recharge(request):
-    return render(request, 'recharge.html', locals())
-
-
-def check_task(request):
-    return render(request, 'check_task.html', locals())
-
-
-
-def enter_task(request):
-    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
-        return redirect('/all_task/')
-    current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
-
-    if request.method == "POST":
-        print(request.POST)
-        i = 1
-        result = ''
-        while 'q' + str(i) in request.POST:
-            result += '|' + 'q' + str(i)
-            answers = request.POST.get('q' + str(i))
-            for answer in answers:
-                result += '&' + answer
-            i += 1
-        sub_task_id = request.session.get('sub_task_id', None)
-        if sub_task_id:
-            sub_task = models.SubTask.objects.get(pk=sub_task_id)
-            print(sub_task)
-            label = models.Label.objects.create()
-            label.user = current_user
-            label.result = result
-            label.sub_task = sub_task
-            label.save()
-            sub_task.num_tagged += 1
-            sub_task.users.add(current_user)
-            sub_task.save()
-            request.session['sub_task_id'] = None
-
-    qa_list = []
-    contents = task.content.split('|')
-    for item in contents[1:]:
-        qa = item.split('&')
-        qa_list.append({'question': qa[0], 'answers': qa[1:]})
-    sub_task = models.get_untagged_sub_task(task, current_user)
-    if sub_task:
-        request.session['sub_task_id'] = sub_task.id
-        img_file = sub_task.image
-        print(img_file)
-    else:
-        print('所有图片已标注')
-    return render(request, 'enter_task.html', locals())
+    return render(request, 'login/task.html', locals())
 
 
 def get_all_tasks(request):
