@@ -190,6 +190,7 @@ def release_task(request):
 
 def collect_task(request):
     if not request.session.get('is_login', None) or not digit.match(request.POST.get('collect')):
+        print('用户未登录或该task_id不合法！')
         return
     task_id = int(request.POST.get('collect'))
     favorite_task = models.Task.objects.filter(pk=task_id).first()
@@ -204,15 +205,17 @@ def remove_task(request):
     if not request.session.get('is_login', None):
         return
     current_user = models.User.objects.get(name=request.session['username'])
-    task_id_list = request.POST.get('removed_task_id_list')
+    task_id_list = request.POST.getlist('removed_task_id_list')
     for task_id in task_id_list:
         if not digit.match(task_id):
+            print('该task_id不合法！')
             continue
+        task_id = int(task_id)
         task = models.Task.objects.filter(pk=task_id).first()
         if not task:
             print('该任务不存在！')
             continue
-        current_user.favorite_tasks.remove(task)  # exception?
+        current_user.favorite_tasks.remove(task)  # when not exist, no exception.
 
 
 def all_task(request):

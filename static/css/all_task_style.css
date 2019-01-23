@@ -1,3 +1,8 @@
+.sort_able{cursor:pointer;padding:0 28px;background:url(small.gif) no-repeat right center;}
+.sort_asc{background:url(asc.png) no-repeat right center;color:#ffffff;cursor:pointer;padding:0 28px;}
+.sort_desc{background:url(desc.png) no-repeat right center;color:#ffffff;cursor:pointer;padding:0 28px;}
+
+
 /*@import url(//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
 @import url(//fonts.googleapis.com/css?family=Kaushan+Script);*/
 
