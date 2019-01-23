@@ -12,10 +12,6 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    gender = (
-        ('male', "男"),
-        ('female', "女"),
-    )
     username = forms.CharField(label="用户名", max_length=128, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'username', 'placeholder': 'Your Username',
                'style': 'margin-bottom: 20px;'}))
@@ -51,5 +47,5 @@ class TaskForm(forms.Form):
     details = forms.CharField(label="任务详情", max_length=1024, required=False, widget=forms.Textarea(
         attrs={'class': 'form-control', 'style': 'margin-top: 30px;', 'placeholder': 'remarks'}))
 
-    # users = forms.ModelMultipleChoiceField(label="选择用户", queryset=models.User.objects.filter(is_admin=False),
+    # users = forms.ModelMultipleChoiceField(label="选择用户", queryset=models.User.objects.all(),
     #                                        required=False, widget=forms.CheckboxSelectMultiple())
