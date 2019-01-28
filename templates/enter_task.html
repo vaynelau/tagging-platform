@@ -114,7 +114,7 @@
                                     {% for answer in qa.answers %}
                                         <!-- <a.contents是问题的候选答案 /> -->
                                         <label><input type="checkbox" name="q{{ i }}"
-                                                      value="a{{ loop.index }}"/> {{ answer }} </label>
+                                                      value="{{ loop.index }}"/> {{ answer }} </label>
                                     {% endfor %}
                                 </div>
                             </article>

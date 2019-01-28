@@ -48,7 +48,7 @@ class Task(models.Model):
     template = models.IntegerField(default=1)
     content = models.TextField(max_length=1024)
     name = models.CharField(max_length=128)
-    admin = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='tasks_created')
+    admin = models.ForeignKey('User', on_delete=models.CASCADE, null=True, related_name='released_tasks')
     details = models.TextField(max_length=1024)
     c_time = models.DateTimeField(auto_now_add=True)
     max_tagged_num = models.IntegerField(default=1)
