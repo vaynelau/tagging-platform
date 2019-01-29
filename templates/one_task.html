@@ -365,7 +365,7 @@
                                     {#                                        <td><span class="label label-danger">finished</span></td>#}
                                     {#                                    {% endif %}#}
                                     <td><span
-                                            class="badge badge-info">{{ sub_task.num_tagged/task.max_tagged_num*100 }}%</span>
+                                            class="badge badge-info">{{ sub_task.users.count()*100//task.max_tagged_num }}%</span>
                                     </td>
                                     <td>
                                         <div class="hidden-phone">

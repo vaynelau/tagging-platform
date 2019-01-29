@@ -294,10 +294,10 @@
                                                 <td>{{ label.user.name }}</td>
                                                 <td>{{ label.user.email }}</td>
                                                 <td>
-                                                    <button type="submit" class="btn btn-success" id="commit"
+                                                    <button type="submit" class="btn btn-success" name="commit"
                                                             value="{{ label.id }}">通过
                                                     </button>
-                                                    <button type="submit" class="btn btn-success" id="back"
+                                                    <button type="submit" class="btn btn-success" name="back"
                                                             value="{{ label.id }}">退回
                                                     </button>
                                                 </td>
@@ -348,6 +348,8 @@
                         $('div.sidebar-collapse').removeClass('collapse')
                     }
                 });
+
+
                 {% for qa in qa_list %}
                 /* MORRIS BAR CHART
                 -----------------------------------------*/

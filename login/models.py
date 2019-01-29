@@ -17,11 +17,9 @@ def img_directory_path(instance, filename):
 
 
 def get_untagged_sub_task(task, user):
-    sub_task_set = task.subtask_set.filter(num_tagged__lt=task.max_tagged_num)
-    for sub_task in sub_task_set:
-        if not sub_task.users.filter(pk=user.id).exists():
-            return sub_task
-    return None
+    sub_task_set = task.subtask_set.exclude(users__id=user.id)
+    print('sub_task_set', sub_task_set)
+    return sub_task_set.first()  # if not exist, return None.
 
 
 class User(models.Model):
@@ -32,7 +30,7 @@ class User(models.Model):
     c_time = models.DateTimeField(auto_now_add=True)  # 保存用户创建时间
     login_time = models.DateTimeField(default=timezone.now)  # 保存此次登录时间
     last_login_time = models.DateTimeField(default=timezone.now)  # 保存上次登录时间
-    favorite_tasks = models.ManyToManyField('Task')
+    # favorite_tasks = models.ManyToManyField('Task')
     total_credits = models.IntegerField(default=1000)
 
     def __str__(self):
@@ -54,9 +52,21 @@ class Task(models.Model):
     max_tagged_num = models.IntegerField(default=1)
     is_closed = models.BooleanField(default=False)
     credit = models.IntegerField(default=1)
+    users = models.ManyToManyField('User', related_name='favorite_tasks', through='TaskUser')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["c_time"]
+
+
+class TaskUser(models.Model):
+    task = models.ForeignKey('Task', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    # is_rejected = models.BooleanField(default=False)
+    # is_unreviewed = models.NullBooleanField(default=None)
+    c_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["c_time"]
@@ -68,15 +78,21 @@ class SubTask(models.Model):
     image = models.ImageField(max_length=256, upload_to=img_directory_path)
     task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
     result = models.TextField(max_length=1024)  # 保存最终标记结果
-    num_tagged = models.IntegerField(default=0)
-    users = models.ManyToManyField('User', related_name='sub_tasks_tagged')
+    # num_tagged = models.IntegerField(default=0)
+    users = models.ManyToManyField('User', related_name='sub_tasks_tagged', through='Label')
 
 
 class Label(models.Model):
     """标签表"""
 
-    sub_task = models.ForeignKey('SubTask', null=True, on_delete=models.CASCADE)
+    sub_task = models.ForeignKey('SubTask', on_delete=models.CASCADE, null=True)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     result = models.TextField(max_length=1024)  # 保存标记结果
     m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间
-    is_tagged = models.BooleanField(default=False)
+    # is_tagged = models.BooleanField(default=False)
+    is_rejected = models.BooleanField(default=False)
+    is_unreviewed = models.BooleanField(default=True)
+    task_user = models.ForeignKey('TaskUser', on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        ordering = ["m_time"]
