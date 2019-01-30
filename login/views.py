@@ -352,8 +352,8 @@ def enter_task(request):
             # sub_task.num_tagged += 1
             # sub_task.users.add(current_user)
             # sub_task.save()
-            current_user.total_credits += task.credit
-            current_user.save()
+            # current_user.total_credits += task.credit
+            # current_user.save()
             request.session['sub_task_id'] = None
 
     qa_list = []
@@ -401,6 +401,8 @@ def accept_label(request):
     label.is_rejected = False
     label.is_unreviewed = False
     label.save()
+    label.user.total_credits += label.sub_task.task.credit
+    label.user.save()
 
 
 def check_task(request):

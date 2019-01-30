@@ -281,6 +281,7 @@
                                         <th>No.</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Result</th>
                                         <th>operation</th>
                                     </tr>
                                     </thead>
@@ -293,6 +294,8 @@
                                                 <td>{{ loop.index }}</td>
                                                 <td>{{ label.user.name }}</td>
                                                 <td>{{ label.user.email }}</td>
+                                                <td>{{ label.result }}</td>
+
                                                 <td>
                                                     {% if label.is_unreviewed %}
                                                         <button type="submit" class="btn btn-success" name="commit"
