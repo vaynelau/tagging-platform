@@ -22,6 +22,12 @@ def get_untagged_sub_task(task, user):
     return sub_task_set.first()  # if not exist, return None.
 
 
+def get_rejected_sub_task(task, user):
+    sub_task_set = task.subtask_set.filter(users__id=user.id)
+    print('sub_task_set', sub_task_set)
+    return sub_task_set.first()  # if not exist, return None.
+
+
 class User(models.Model):
     name = models.CharField(max_length=128, unique=True)
     password = models.CharField(max_length=128)

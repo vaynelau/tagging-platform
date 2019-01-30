@@ -285,6 +285,15 @@ def all_task(request):
             if digit.match(request.POST.get('review')):
                 request.session['task_id'] = int(request.POST.get('review'))
                 return redirect('/one_task/')
+        elif 'abandon' in request.POST:
+            if digit.match(request.POST.get('abandon')) and request.session.get('is_login', None):
+                task_id = int(request.POST.get('abandon'))
+                current_user = models.User.objects.get(name=request.session['username'])
+                current_user.taskuser_set.filter(task__id=task_id).delete()
+        # elif 'redo' in request.POST:
+        #     if digit.match(request.POST.get('redo')):
+        #         request.session['task_id'] = int(request.POST.get('redo'))
+        #         return redirect('/enter_task/')
 
     if request.session.get('is_login', None):
         current_user = models.User.objects.get(name=request.session['username'])
@@ -359,6 +368,8 @@ def enter_task(request):
         print(img_file)
     else:
         print('所有图片已标注')
+        messages.success(request, "任务标注完成！")
+        return redirect('/all_task/')
     return render(request, 'enter_task.html', locals())
 
 
