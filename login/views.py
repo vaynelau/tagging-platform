@@ -368,7 +368,7 @@ def enter_task(request):
         print(img_file)
     else:
         print('所有图片已标注')
-        messages.success(request, "任务标注完成！")
+        # messages.success(request, "任务标注完成！")
         return redirect('/all_task/')
     return render(request, 'enter_task.html', locals())
 
