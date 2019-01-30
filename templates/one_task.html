@@ -352,7 +352,7 @@
                                 <form action="/one_task/" method="post">
                                     {{ csrf_input }}
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ sub_task.image }}</td>
+                                    <td>{{ sub_task.image.name }}</td>
                                     {#                                    <td>{{ template_list[task.template] }}</td>#}
                                     {#                                    <td>{{ task.admin }}</td>#}
                                     {#                                            <td>{{ task.details }}</td>#}
