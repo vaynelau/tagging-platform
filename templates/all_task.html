@@ -29,7 +29,11 @@
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <!-- Theme style -->
     <link href="{{ static('css/all_task_style.css') }}" rel="stylesheet" type="text/css"/>
+<<<<<<< HEAD
 <script type="text/javascript" src="{{ static('js/sorttable.js') }}"></script>
+=======
+    <script type="text/javascript" src="{{ static('js/sorttable.js') }}"></script>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -226,7 +230,11 @@
                         {% if request.session.is_login %}
                             <span>{{ request.session.username }} <i class="caret"></i></span>
                         {% else %}
+<<<<<<< HEAD
                            <span>请先登录<i class="caret"></i></span>
+=======
+                            <span>请先登录<i class="caret"></i></span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                         {% endif %}
                     </a>
                     {% if request.session.is_login %}
@@ -236,7 +244,12 @@
                             <li>
                                 <a href="#Task_List">
                                     <i class="fa fa-clock-o fa-fw pull-right"></i>
+<<<<<<< HEAD
                                     <span class="badge badge-success pull-right">{{ num_task_updated }}</span> Updates</a>
+=======
+                                    <span class="badge badge-success pull-right">{{ num_updated_task }}</span>
+                                    Updates</a>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                 <a href="#Favorite_Tasks">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
                                     <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
@@ -246,8 +259,13 @@
 
                                 <a href="#Unreviewed_Tasks">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
+<<<<<<< HEAD
                                     <span class="badge badge-danger pull-right">{{ num_unreviewed_tasks }}</span>
                                    Unreviewed
+=======
+                                    <span class="badge badge-danger pull-right">{{ num_unreviewed_task }}</span>
+                                    Unreviewed
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                     Tasks</a>
                                 <a href="#Rejected_Tasks">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
@@ -256,16 +274,28 @@
                                     Tasks</a>
                                 <a href="#Released_Tasks">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
+<<<<<<< HEAD
                                     <span class="badge badge-danger pull-right">{{ my_task }}</span>
                                     Released
                                     Tasks</a>
                                 <a href="/recharge/"><i class="fa fa-magnet fa-fw pull-right"></i>
                                     <span class="badge badge-info pull-right">{{  reward_point }}</span> My Reward Point</a>
+=======
+                                    <span class="badge badge-danger pull-right">{{ num_released_task }}</span>
+                                    Released
+                                    Tasks</a>
+                                <a href="/recharge/"><i class="fa fa-magnet fa-fw pull-right"></i>
+                                    <span class="badge badge-info pull-right">{{ current_user.total_credits }}</span> My
+                                    Reward Point</a>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
 
                             </li>
 
                             <li class="divider"></li>
+<<<<<<< HEAD
 
+=======
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             <li>
                                 <a data-toggle="modal" href="/release_task/">
                                     <i class="fa fa-cog fa-fw pull-right"></i>
@@ -274,7 +304,10 @@
                             </li>
 
                             <li class="divider"></li>
+<<<<<<< HEAD
 
+=======
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             <li>
                                 <a href="/logout/"><i class="fa fa-ban fa-fw pull-right"></i> Log out</a>
                             </li>
@@ -368,7 +401,11 @@
                     <div class="sm-st clearfix">
                         <span class="sm-st-icon st-blue"><i class="fa fa-dollar"></i></span>
                         <div class="sm-st-info">
+<<<<<<< HEAD
                             <span>100,320</span>
+=======
+                            <span>{{ num_user }}</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             Total Participants
                         </div>
                     </div>
@@ -391,6 +428,7 @@
                         <header class="panel-heading">
                             Task List
                         </header>
+<<<<<<< HEAD
                     <br>
                     <form action="/all_task/" method="post">
                     <label>排序选项</label>
@@ -447,6 +485,81 @@
                       <br>
                         <div class="panel-body table-responsive">
                             <table class="table table-hover" >
+=======
+                        <div class="panel-body table-responsive">
+
+                            <form action="/all_task/" method="post">
+                                <br>
+                                {{ csrf_input }}
+                                <label>排序选项</label>
+                                <div>
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="radio" name="order" value="time_asc"
+                                            {% if not request.POST.order == 'time_desc' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 时间升序 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="radio" name="order" value="time_desc"
+                                            {% if request.POST.order == 'time_desc' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 时间降序 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                </div>
+                                <button type="submit" name="task_sort" class="btn btn-warning btn-sm pull-left">执行排序
+                                </button>
+                                {#                            </form>#}
+                                </br>
+
+                                <br>
+                                {#                            <form action="/all_task/" method="post">#}
+                                {#                                {{ csrf_input }}#}
+                                <label>任务类别筛选</label>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp1"
+                                            {% if 'temp1' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示问答式 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp2"
+                                            {% if 'temp2' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示标记式 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp3"
+                                            {% if 'temp3' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示书写式 </label>
+                                </div>
+                                <button type="submit" name="task_filter" class="btn btn-success btn-sm pull-left">执行筛选
+                                </button>
+                                {#                            </form>#}
+                                </br>
+
+                                <br>
+                                {#                            <form action="/all_task/" method="post">#}
+                                {#                                {{ csrf_input }}#}
+                                <label>人数筛选</label>
+                                <div>
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="radio" name="tagged_num" value="single"
+                                            {% if request.POST.tagged_num == 'single' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 单人任务 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="radio" name="tagged_num" value="multi"
+                                            {% if request.POST.tagged_num == 'multi' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 多人任务 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                </div>
+                                <button type="submit" name="task_filter" class="btn btn-danger btn-sm pull-left">执行筛选
+                                </button>
+                                </br>
+                            </form>
+
+                            <table class="table table-hover">
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -455,7 +568,11 @@
                                     <th>Manager</th>
                                     <!-- <th>Client</th> -->
                                     {#                                    <th>Details</th>#}
+<<<<<<< HEAD
                                     <th><span >Release Time</span></th>
+=======
+                                    <th><span>Release Time</span></th>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                     <!-- <th>Price</th> -->
                                     <th>Status</th>
                                     <th>Progress</th>
@@ -482,7 +599,13 @@
                                             {% else %}
                                                 <td><span class="label label-danger">finished</span></td>
                                             {% endif %}
+<<<<<<< HEAD
                                             <td><span class="badge badge-info">50%</span></td>
+=======
+                                            <td><span
+                                                    class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+                                            </td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                             <td>
                                                 <div class="hidden-phone">
                                                     {% if request.session.is_login %}
@@ -508,6 +631,10 @@
 
                 </div><!--end col-6 -->
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
             {% if request.session.is_login %}
                 <div class="row" id="Favorite_Tasks">
                     <div class="col-md-7">
@@ -515,6 +642,7 @@
                             <header class="panel-heading">
                                 Favorite Tasks
                             </header>
+<<<<<<< HEAD
                             <div class="panel-body table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -552,6 +680,50 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
+=======
+
+                            <div class="panel-body table-responsive">
+                                <form action="/all_task/" method="post">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>Project</th>
+                                            <th>Type</th>
+                                            <th>Manager</th>
+                                            <!-- <th>Client</th> -->
+                                            {#                                    <th>Details</th>#}
+                                            <th>Release Time</th>
+                                            <!-- <th>Price</th> -->
+                                            <th>Status</th>
+                                            <th>Progress</th>
+                                            {% if request.session.is_login %}
+                                                <th>Operation</th>
+                                            {% endif %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in favorite_task_list %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="task-checkbox">
+                                                            <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                                            <input type="checkbox" name="removed_task_id_list"
+                                                                   value="{{ task.id }}"
+                                                                   class="flat-grey list-child"/>
+                                                            <!-- <input type="checkbox" class="square-grey"/> -->
+                                                        </div>
+                                                    </td>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -563,7 +735,11 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
+<<<<<<< HEAD
                                                                 class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -574,6 +750,7 @@
                                                             </div>
                                                         </td>
                                                     </div>
+<<<<<<< HEAD
                                             {% endfor %}
                                     </div>
 
@@ -582,13 +759,32 @@
                                 </tbody></table><div class=" add-task-row">
                                         <button type="submit" name="remove_tasks"class="btn btn-success btn-sm pull-left">Remove Tasks</button>
                                     </div>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                        </tbody>
+                                    </table>
+                                    <div class=" add-task-row">
+                                        <button type="submit" name="remove"
+                                                class="btn btn-success btn-sm pull-left">
+                                            Remove Tasks
+                                        </button>
+                                    </div>
+                                </form>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             </div>
                         </section>
                     </div>
                 </div>
             {% endif %}
             <!-- row end -->
+<<<<<<< HEAD
         {% if request.session.is_login %}
+=======
+
+            {% if request.session.is_login %}
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                 <div class="row" id="Released_Tasks">
                     <div class="col-md-7">
                         <section id="released_tasks" class="panel tasks-widget">
@@ -596,6 +792,7 @@
                                 Released Tasks
                             </header>
                             <div class="panel-body table-responsive">
+<<<<<<< HEAD
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
@@ -632,6 +829,47 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
+=======
+                                <form action="/all_task/" method="post">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>Project</th>
+                                            <th>Type</th>
+                                            <th>Manager</th>
+                                            <!-- <th>Client</th> -->
+                                            {#                                    <th>Details</th>#}
+                                            <th>Release Time</th>
+                                            <!-- <th>Price</th> -->
+                                            <th>Status</th>
+                                            <th>Progress</th>
+                                            {% if request.session.is_login %}
+                                                <th>Operation</th>
+                                            {% endif %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in released_task_list %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="task-checkbox">
+                                                            <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                                            <input type="checkbox" name="canceled_task_id_list"
+                                                                   value="{{ task.id }}"
+                                                                   class="flat-grey list-child"/>
+                                                            <!-- <input type="checkbox" class="square-grey"/> -->
+                                                        </div>
+                                                    </td>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -643,18 +881,28 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
+<<<<<<< HEAD
                                                                 class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
                                                         </td>
                                                         <td>
 
                                                             <div class="pull-right hidden-phone">
                                                                 <button type="submit" name="review" value="{{ task.id }}"
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="pull-right hidden-phone">
+                                                                <button type="submit" name="review"
+                                                                        value="{{ task.id }}"
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Review
                                                                 </button>
                                                             </div>
                                                         </td>
                                                     </div>
+<<<<<<< HEAD
                                             {% endfor %}
                                     </div>
 
@@ -663,13 +911,32 @@
                                 </tbody></table><div class=" add-task-row">
                                         <button type="submit" name="remove_tasks"class="btn btn-warning btn-sm pull-left">Cancel task</button>
                                     </div>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                        </tbody>
+                                    </table>
+                                    <div class="add-task-row">
+                                        <button type="submit" name="cancel_tasks"
+                                                class="btn btn-warning btn-sm pull-left">
+                                            Cancel task
+                                        </button>
+                                    </div>
+                                </form>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             </div>
                         </section>
                     </div>
                 </div>
             {% endif %}
             <!-- row end -->
+<<<<<<< HEAD
         {% if request.session.is_login %}
+=======
+
+            {% if request.session.is_login %}
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                 <div class="row" id="Rejected_Tasks">
                     <div class="col-md-7">
                         <section id="rejected_tasks" class="panel tasks-widget">
@@ -677,6 +944,7 @@
                                 Rejected Tasks
                             </header>
                             <div class="panel-body table-responsive">
+<<<<<<< HEAD
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
@@ -706,6 +974,38 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
+=======
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+
+                                        <th>Project</th>
+                                        <th>Type</th>
+                                        <th>Manager</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>Release Time</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        {% if request.session.is_login %}
+                                            <th>Operation</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <form action="/all_task/" method="post">
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in rejected_task_list %}
+                                                <tr>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -717,7 +1017,11 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
+<<<<<<< HEAD
                                                                 class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -725,19 +1029,33 @@
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Redo
                                                                 </button>
+<<<<<<< HEAD
                                                                 <button type="submit" name="abandon" value="{{ task.id }}"
+=======
+                                                                <button type="submit" name="abandon"
+                                                                        value="{{ task.id }}"
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Abandon
                                                                 </button>
                                                             </div>
                                                         </td>
                                                     </div>
+<<<<<<< HEAD
                                             {% endfor %}
                                     </div>
 
                                 </form>
                                 </tr>
                                 </tbody></table>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                    </form>
+                                    </tbody>
+                                </table>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             </div>
                         </section>
                     </div>
@@ -745,7 +1063,11 @@
             {% endif %}
             <!-- row end -->
 
+<<<<<<< HEAD
         {% if request.session.is_login %}
+=======
+            {% if request.session.is_login %}
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                 <div class="row" id="Unreviewed_Tasks">
                     <div class="col-md-7">
                         <section id="rejected_tasks" class="panel tasks-widget">
@@ -753,6 +1075,7 @@
                                 Unreviewed tasks
                             </header>
                             <div class="panel-body table-responsive">
+<<<<<<< HEAD
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
@@ -782,6 +1105,38 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
+=======
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+
+                                        <th>Project</th>
+                                        <th>Type</th>
+                                        <th>Manager</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>Release Time</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        {% if request.session.is_login %}
+                                            <th>Operation</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <form action="/all_task/" method="post">
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in  unreviewed_task_list %}
+                                                <tr>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -793,7 +1148,11 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
+<<<<<<< HEAD
                                                                 class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -801,19 +1160,33 @@
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Redo
                                                                 </button>
+<<<<<<< HEAD
                                                                 <button type="submit" name="abandon" value="{{ task.id }}"
+=======
+                                                                <button type="submit" name="abandon"
+                                                                        value="{{ task.id }}"
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Abandon
                                                                 </button>
                                                             </div>
                                                         </td>
                                                     </div>
+<<<<<<< HEAD
                                             {% endfor %}
                                     </div>
 
                                 </form>
                                 </tr>
                                 </tbody></table>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                    </form>
+                                    </tbody>
+                                </table>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                             </div>
                         </section>
                     </div>
@@ -822,6 +1195,7 @@
             <!-- row end -->
 
 
+<<<<<<< HEAD
 
 
         </section><!-- /.content -->
@@ -833,13 +1207,24 @@
 
 
     </aside><!-- /.right-side -->
+=======
+        </section><!-- /.content -->
+    </aside><!-- /.right-side -->
+</div><!-- ./wrapper -->
+
+
+</aside><!-- /.right-side -->
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
 
 </div><!-- ./wrapper -->
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
 <!-- jQuery 2.0.2 -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="{{ static('js/all_task_jquery.min.js') }}" type="text/javascript"></script>
