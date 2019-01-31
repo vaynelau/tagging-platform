@@ -126,3 +126,4 @@ venv.bak/
 .idea/
 login/__pycache__/
 mysite/__pycache__/
+*.py

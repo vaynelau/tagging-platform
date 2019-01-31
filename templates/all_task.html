@@ -29,7 +29,15 @@
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <!-- Theme style -->
     <link href="{{ static('css/all_task_style.css') }}" rel="stylesheet" type="text/css"/>
+<<<<<<< HEAD
 <script type="text/javascript" src="{{ static('js/sorttable.js') }}"></script>
+=======
+<<<<<<< HEAD
+<script type="text/javascript" src="{{ static('js/sorttable.js') }}"></script>
+=======
+    <script type="text/javascript" src="{{ static('js/sorttable.js') }}"></script>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -226,7 +234,15 @@
                         {% if request.session.is_login %}
                             <span>{{ request.session.username }} <i class="caret"></i></span>
                         {% else %}
+<<<<<<< HEAD
                            <span>请先登录<i class="caret"></i></span>
+=======
+<<<<<<< HEAD
+                           <span>请先登录<i class="caret"></i></span>
+=======
+                            <span>请先登录<i class="caret"></i></span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
                         {% endif %}
                     </a>
                     {% if request.session.is_login %}
@@ -236,12 +252,22 @@
                             <li>
                                 <a href="#Task_List">
                                     <i class="fa fa-clock-o fa-fw pull-right"></i>
+<<<<<<< HEAD
                                     <span class="badge badge-success pull-right">{{ num_task_updated }}</span> Updates</a>
+=======
+<<<<<<< HEAD
+                                    <span class="badge badge-success pull-right">{{ num_task_updated }}</span> Updates</a>
+=======
+                                    <span class="badge badge-success pull-right">{{ num_updated_task }}</span>
+                                    Updates</a>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
                                 <a href="#Favorite_Tasks">
                                     <i class="fa fa-envelope-o fa-fw pull-right"></i>
                                     <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
                                     Unfinished
                                     Tasks</a>
+<<<<<<< HEAD
 
 
                                 <a href="#Unreviewed_Tasks">
@@ -520,6 +546,400 @@
                                 <thead>
                                 <tr>
                                     <th>  </th>
+=======
+
+
+                                <a href="#Unreviewed_Tasks">
+                                    <i class="fa fa-envelope-o fa-fw pull-right"></i>
+<<<<<<< HEAD
+                                    <span class="badge badge-danger pull-right">{{ num_unreviewed_tasks }}</span>
+                                   Unreviewed
+=======
+                                    <span class="badge badge-danger pull-right">{{ num_unreviewed_task }}</span>
+                                    Unreviewed
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                    Tasks</a>
+                                <a href="#Rejected_Tasks">
+                                    <i class="fa fa-envelope-o fa-fw pull-right"></i>
+                                    <span class="badge badge-danger pull-right">{{ num_rejected_task }}</span>
+                                    Rejected
+                                    Tasks</a>
+                                <a href="#Released_Tasks">
+                                    <i class="fa fa-envelope-o fa-fw pull-right"></i>
+<<<<<<< HEAD
+                                    <span class="badge badge-danger pull-right">{{ my_task }}</span>
+                                    Released
+                                    Tasks</a>
+                                <a href="/recharge/"><i class="fa fa-magnet fa-fw pull-right"></i>
+                                    <span class="badge badge-info pull-right">{{  reward_point }}</span> My Reward Point</a>
+=======
+                                    <span class="badge badge-danger pull-right">{{ num_released_task }}</span>
+                                    Released
+                                    Tasks</a>
+                                <a href="/recharge/"><i class="fa fa-magnet fa-fw pull-right"></i>
+                                    <span class="badge badge-info pull-right">{{ current_user.total_credits }}</span> My
+                                    Reward Point</a>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+
+                            </li>
+
+                            <li class="divider"></li>
+<<<<<<< HEAD
+
+=======
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                            <li>
+                                <a data-toggle="modal" href="/release_task/">
+                                    <i class="fa fa-cog fa-fw pull-right"></i>
+                                    Release Task
+                                </a>
+                            </li>
+
+                            <li class="divider"></li>
+<<<<<<< HEAD
+
+=======
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                            <li>
+                                <a href="/logout/"><i class="fa fa-ban fa-fw pull-right"></i> Log out</a>
+                            </li>
+                        </ul>
+                        </li>
+                        </ul>
+                    {% endif %}
+        </div>
+    </nav>
+</header>
+<div class="wrapper row-offcanvas row-offcanvas-left">
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="left-side sidebar-offcanvas">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- Sidebar user panel -->
+            <div class="user-panel">
+                <div class="pull-left image">
+                    {% if request.session.is_login %}
+                        <img src="{{ static('img/26115.jpg') }}" class="img-circle" alt="User Image"/>
+                    {% endif %}
+                </div>
+                <div class="pull-left info">
+                    {% if request.session.is_login %}
+                        <p>Hello, {{ request.session.username }}</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    {% else %}
+                        <p>请先登录</p>
+                        <a href="/login/"><i class="fa fa-circle text-danger"></i> Offline</a>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- search form -->
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                    <span class="input-group-btn">
+                                        <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i
+                                                class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </form>
+            <!-- /.search form -->
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="/index/">
+                        <i class="fa fa-dashboard"></i> <span>Home Page</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/all_task/">
+                        <i class="fa fa-gavel"></i> <span>Task List</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/release_task/">
+                        <i class="fa fa-globe"></i> <span>Release Task</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+    <aside class="right-side">
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row" style="margin-bottom:5px;">
+                <div class="col-md-3">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-red"><i class="fa fa-check-square-o"></i></span>
+                        <div class="sm-st-info">
+                            <span>{{ num_task }}</span>
+                            Total Tasks
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-violet"><i class="fa fa-envelope-o"></i></span>
+                        <div class="sm-st-info">
+                            <span>2200</span>
+                            Total Messages
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-blue"><i class="fa fa-dollar"></i></span>
+                        <div class="sm-st-info">
+<<<<<<< HEAD
+                            <span>100,320</span>
+=======
+                            <span>{{ num_user }}</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                            Total Participants
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-green"><i class="fa fa-paperclip"></i></span>
+                        <div class="sm-st-info">
+                            <span>4567</span>
+                            Total Documents
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main row -->
+            <div class="row" id="Task_List">
+                <div class="col-md-8">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            Task List
+                        </header>
+<<<<<<< HEAD
+                    <br>
+                    <form action="/all_task/" method="post">
+                    <label>排序选项</label>
+                    <div >
+                        <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                        <input type="radio" name="排序"value="Time Ascending"
+                               class="flat-grey list-child"/>
+                        <label> 时间升序 </label>
+                        <!-- <input type="checkbox" class="square-grey"/> -->
+                        <input type="radio" name="排序" value="Time Descending"
+                               class="flat-grey list-child"/>
+                        <label> 时间降序 </label>
+                        <!-- <input type="checkbox" class="square-grey"/> -->
+                    </div>
+                        <button type="submit" name="排序"class="btn btn-warning btn-sm pull-left">执行排序</button>
+                    </form>
+<br></br>
+                    <form action="/all_task/" method="post">
+                    <label>任务类别筛选</label>
+                    <div class="task-checkbox">
+                        <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                        <input type="checkbox" value="不显示问答式"
+                               class="flat-grey list-child"/>
+                        <label> 不显示问答式 </label>
+                        <!-- <input type="checkbox" class="square-grey"/> -->
+                        <input type="checkbox" value="不显示标记式"
+                               class="flat-grey list-child"/>
+                        <label> 不显示标记式 </label>
+                        <!-- <input type="checkbox" class="square-grey"/> -->
+                        <input type="checkbox" value="不显示书写式"
+                               class="flat-grey list-child"/>
+                        <label> 不显示书写式 </label>
+                    </div>
+                    <button type="submit" name="筛选"class="btn btn-success btn-sm pull-left">执行筛选</button>
+
+                    </form>
+                     <br><br>
+                    <form action="/all_task/" method="post">
+                    <label>人数筛选</label>
+                    <div >
+                        <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                        <input type="radio" name="人数"value="单人任务"
+                               class="flat-grey list-child"/>
+                        <label> 单人任务 </label>
+                        <!-- <input type="checkbox" class="square-grey"/> -->
+                        <input type="radio" name="人数" value="多人任务"
+                               class="flat-grey list-child"/>
+                        <label> 多人任务 </label>
+                        <!-- <input type="checkbox" class="square-grey"/> -->
+                    </div>
+                        <button type="submit" name="排序"class="btn btn-danger btn-sm pull-left">执行筛选</button>
+                    </form>
+                    <br>
+                      <br>
+                        <div class="panel-body table-responsive">
+                            <table class="table table-hover" >
+=======
+                        <div class="panel-body table-responsive">
+
+                            <form action="/all_task/" method="post">
+                                <br>
+                                {{ csrf_input }}
+                                <label>排序选项</label>
+                                <div>
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="radio" name="order" value="time_asc"
+                                            {% if not request.POST.order == 'time_desc' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 时间升序 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="radio" name="order" value="time_desc"
+                                            {% if request.POST.order == 'time_desc' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 时间降序 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                </div>
+                                <button type="submit" name="task_sort" class="btn btn-warning btn-sm pull-left">执行排序
+                                </button>
+                                {#                            </form>#}
+                                </br>
+
+                                <br>
+                                {#                            <form action="/all_task/" method="post">#}
+                                {#                                {{ csrf_input }}#}
+                                <label>任务类别筛选</label>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp1"
+                                            {% if 'temp1' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示问答式 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp2"
+                                            {% if 'temp2' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示标记式 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp3"
+                                            {% if 'temp3' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示书写式 </label>
+                                </div>
+                                <button type="submit" name="task_filter" class="btn btn-success btn-sm pull-left">执行筛选
+                                </button>
+                                {#                            </form>#}
+                                </br>
+
+                                <br>
+                                {#                            <form action="/all_task/" method="post">#}
+                                {#                                {{ csrf_input }}#}
+                                <label>人数筛选</label>
+                                <div>
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="radio" name="tagged_num" value="single"
+                                            {% if request.POST.tagged_num == 'single' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 单人任务 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="radio" name="tagged_num" value="multi"
+                                            {% if request.POST.tagged_num == 'multi' %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 多人任务 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                </div>
+                                <button type="submit" name="task_filter" class="btn btn-danger btn-sm pull-left">执行筛选
+                                </button>
+                                </br>
+                            </form>
+
+                            <table class="table table-hover">
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Project</th>
+                                    <th>Type</th>
+                                    <th>Manager</th>
+                                    <!-- <th>Client</th> -->
+                                    {#                                    <th>Details</th>#}
+<<<<<<< HEAD
+                                    <th><span >Release Time</span></th>
+=======
+                                    <th><span>Release Time</span></th>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                    <!-- <th>Price</th> -->
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    {% if request.session.is_login %}
+                                        <th>Operation</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for task in task_list %}
+                                    <tr>
+                                        <form action="/all_task/" method="post">
+                                            {{ csrf_input }}
+                                            <td>{{ task.id }}</td>
+                                            <td>{{ task.name }}</td>
+                                            <td>{{ template_list[task.template] }}</td>
+                                            <td>{{ task.admin }}</td>
+                                            {#                                            <td>{{ task.details }}</td>#}
+                                            <!-- <td>Steve</td> -->
+                                            <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                            <!-- <td>$1500</td> -->
+                                            {% if not task.is_closed %}
+                                                <td><span class="label label-danger">in progress</span></td>
+                                            {% else %}
+                                                <td><span class="label label-danger">finished</span></td>
+                                            {% endif %}
+<<<<<<< HEAD
+                                            <td><span class="badge badge-info">50%</span></td>
+=======
+                                            <td><span
+                                                    class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+                                            </td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                            <td>
+                                                <div class="hidden-phone">
+                                                    {% if request.session.is_login %}
+                                                        <button type="submit" name="collect" value="{{ task.id }}"
+                                                                class="btn btn-default btn-xs"><i
+                                                                class="fa fa-star"></i>Collect
+                                                        </button>
+                                                        <button type="submit" name="enter" value="{{ task.id }}"
+                                                                class="btn btn-default btn-xs"><i
+                                                                class="fa fa-pencil"></i>Enter
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+
+                </div><!--end col-6 -->
+            </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+            {% if request.session.is_login %}
+                <div class="row" id="Favorite_Tasks">
+                    <div class="col-md-7">
+                        <section id="favorite_tasks" class="panel tasks-widget">
+                            <header class="panel-heading">
+                                Favorite Tasks
+                            </header>
+<<<<<<< HEAD
+                            <div class="panel-body table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>  </th>
                                     <th>#</th>
 
                                     <th>Project</th>
@@ -552,6 +972,443 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
+=======
+
+                            <div class="panel-body table-responsive">
+                                <form action="/all_task/" method="post">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>Project</th>
+                                            <th>Type</th>
+                                            <th>Manager</th>
+                                            <!-- <th>Client</th> -->
+                                            {#                                    <th>Details</th>#}
+                                            <th>Release Time</th>
+                                            <!-- <th>Price</th> -->
+                                            <th>Status</th>
+                                            <th>Progress</th>
+                                            {% if request.session.is_login %}
+                                                <th>Operation</th>
+                                            {% endif %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in favorite_task_list %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="task-checkbox">
+                                                            <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                                            <input type="checkbox" name="removed_task_id_list"
+                                                                   value="{{ task.id }}"
+                                                                   class="flat-grey list-child"/>
+                                                            <!-- <input type="checkbox" class="square-grey"/> -->
+                                                        </div>
+                                                    </td>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                        <td>{{ task.admin }}</td>
+                                                        {#                                                        <td>{{ task.details }}</td>#}
+                                                        <!-- <td>Steve</td> -->
+                                                        <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                                        <!-- <td>$1500</td> -->
+                                                        {% if not task.is_closed %}
+                                                            <td><span class="label label-danger">in progress</span></td>
+                                                        {% else %}
+                                                            <td><span class="label label-danger">finished</span></td>
+                                                        {% endif %}
+                                                        <td><span
+<<<<<<< HEAD
+                                                                class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                        </td>
+                                                        <td>
+                                                            <div class="pull-right hidden-phone">
+                                                                <button type="submit" name="enter" value="{{ task.id }}"
+                                                                        class="btn btn-default btn-xs"><i
+                                                                        class="fa fa-pencil"></i>Enter
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </div>
+<<<<<<< HEAD
+                                            {% endfor %}
+                                    </div>
+
+                                </form>
+                                </tr>
+                                </tbody></table><div class=" add-task-row">
+                                        <button type="submit" name="remove_tasks"class="btn btn-success btn-sm pull-left">Remove Tasks</button>
+                                    </div>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                        </tbody>
+                                    </table>
+                                    <div class=" add-task-row">
+                                        <button type="submit" name="remove"
+                                                class="btn btn-success btn-sm pull-left">
+                                            Remove Tasks
+                                        </button>
+                                    </div>
+                                </form>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            {% endif %}
+            <!-- row end -->
+<<<<<<< HEAD
+        {% if request.session.is_login %}
+=======
+
+            {% if request.session.is_login %}
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                <div class="row" id="Released_Tasks">
+                    <div class="col-md-7">
+                        <section id="released_tasks" class="panel tasks-widget">
+                            <header class="panel-heading">
+                                Released Tasks
+                            </header>
+                            <div class="panel-body table-responsive">
+<<<<<<< HEAD
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>  </th>
+                                    <th>#</th>
+
+                                    <th>Project</th>
+                                    <th>Type</th>
+                                    <th>Manager</th>
+                                    <!-- <th>Client</th> -->
+                                    {#                                    <th>Details</th>#}
+                                    <th>Release Time</th>
+                                    <!-- <th>Price</th> -->
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    {% if request.session.is_login %}
+                                        <th>Operation</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <form action="/all_task/" method="post">
+                                    <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in release_task_list %}
+                                                    <td><div class="task-checkbox">
+                                                        <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                                        <input type="checkbox" value="{{ task.id }}"
+                                                               class="flat-grey list-child"/>
+                                                        <!-- <input type="checkbox" class="square-grey"/> -->
+                                                    </div></td>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ task.template }}</td>
+=======
+                                <form action="/all_task/" method="post">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>Project</th>
+                                            <th>Type</th>
+                                            <th>Manager</th>
+                                            <!-- <th>Client</th> -->
+                                            {#                                    <th>Details</th>#}
+                                            <th>Release Time</th>
+                                            <!-- <th>Price</th> -->
+                                            <th>Status</th>
+                                            <th>Progress</th>
+                                            {% if request.session.is_login %}
+                                                <th>Operation</th>
+                                            {% endif %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in released_task_list %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="task-checkbox">
+                                                            <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                                            <input type="checkbox" name="canceled_task_id_list"
+                                                                   value="{{ task.id }}"
+                                                                   class="flat-grey list-child"/>
+                                                            <!-- <input type="checkbox" class="square-grey"/> -->
+                                                        </div>
+                                                    </td>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                        <td>{{ task.admin }}</td>
+                                                        {#                                                        <td>{{ task.details }}</td>#}
+                                                        <!-- <td>Steve</td> -->
+                                                        <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                                        <!-- <td>$1500</td> -->
+                                                        {% if not task.is_closed %}
+                                                            <td><span class="label label-danger">in progress</span></td>
+                                                        {% else %}
+                                                            <td><span class="label label-danger">finished</span></td>
+                                                        {% endif %}
+                                                        <td><span
+<<<<<<< HEAD
+                                                                class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+                                                        </td>
+                                                        <td>
+
+                                                            <div class="pull-right hidden-phone">
+                                                                <button type="submit" name="review" value="{{ task.id }}"
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="pull-right hidden-phone">
+                                                                <button type="submit" name="review"
+                                                                        value="{{ task.id }}"
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                                        class="btn btn-default btn-xs"><i
+                                                                        class="fa fa-pencil"></i>Review
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </div>
+<<<<<<< HEAD
+                                            {% endfor %}
+                                    </div>
+
+                                </form>
+                                </tr>
+                                </tbody></table><div class=" add-task-row">
+                                        <button type="submit" name="remove_tasks"class="btn btn-warning btn-sm pull-left">Cancel task</button>
+                                    </div>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                        </tbody>
+                                    </table>
+                                    <div class="add-task-row">
+                                        <button type="submit" name="cancel_tasks"
+                                                class="btn btn-warning btn-sm pull-left">
+                                            Cancel task
+                                        </button>
+                                    </div>
+                                </form>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            {% endif %}
+            <!-- row end -->
+<<<<<<< HEAD
+        {% if request.session.is_login %}
+=======
+
+            {% if request.session.is_login %}
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                <div class="row" id="Rejected_Tasks">
+                    <div class="col-md-7">
+                        <section id="rejected_tasks" class="panel tasks-widget">
+                            <header class="panel-heading">
+                                Rejected Tasks
+                            </header>
+                            <div class="panel-body table-responsive">
+<<<<<<< HEAD
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+
+                                    <th>Project</th>
+                                    <th>Type</th>
+                                    <th>Manager</th>
+                                    <!-- <th>Client</th> -->
+                                    {#                                    <th>Details</th>#}
+                                    <th>Release Time</th>
+                                    <!-- <th>Price</th> -->
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    {% if request.session.is_login %}
+                                        <th>Operation</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <form action="/all_task/" method="post">
+                                    <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in rejected_task_list %}
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ task.template }}</td>
+=======
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+
+                                        <th>Project</th>
+                                        <th>Type</th>
+                                        <th>Manager</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>Release Time</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        {% if request.session.is_login %}
+                                            <th>Operation</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <form action="/all_task/" method="post">
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in rejected_task_list %}
+                                                <tr>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                        <td>{{ task.admin }}</td>
+                                                        {#                                                        <td>{{ task.details }}</td>#}
+                                                        <!-- <td>Steve</td> -->
+                                                        <td>{{ task.c_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                                        <!-- <td>$1500</td> -->
+                                                        {% if not task.is_closed %}
+                                                            <td><span class="label label-danger">in progress</span></td>
+                                                        {% else %}
+                                                            <td><span class="label label-danger">finished</span></td>
+                                                        {% endif %}
+                                                        <td><span
+<<<<<<< HEAD
+                                                                class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                        </td>
+                                                        <td>
+                                                            <div class="pull-right hidden-phone">
+                                                                <button type="submit" name="redo" value="{{ task.id }}"
+                                                                        class="btn btn-default btn-xs"><i
+                                                                        class="fa fa-pencil"></i>Redo
+                                                                </button>
+<<<<<<< HEAD
+                                                                <button type="submit" name="abandon" value="{{ task.id }}"
+=======
+                                                                <button type="submit" name="abandon"
+                                                                        value="{{ task.id }}"
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                                                                        class="btn btn-default btn-xs"><i
+                                                                        class="fa fa-pencil"></i>Abandon
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </div>
+<<<<<<< HEAD
+                                            {% endfor %}
+                                    </div>
+
+                                </form>
+                                </tr>
+                                </tbody></table>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                    </form>
+                                    </tbody>
+                                </table>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            {% endif %}
+            <!-- row end -->
+
+<<<<<<< HEAD
+        {% if request.session.is_login %}
+=======
+            {% if request.session.is_login %}
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+                <div class="row" id="Unreviewed_Tasks">
+                    <div class="col-md-7">
+                        <section id="rejected_tasks" class="panel tasks-widget">
+                            <header class="panel-heading">
+                                Unreviewed tasks
+                            </header>
+                            <div class="panel-body table-responsive">
+<<<<<<< HEAD
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+>>>>>>> dev_lw_new
+                                    <th>#</th>
+
+                                    <th>Project</th>
+                                    <th>Type</th>
+                                    <th>Manager</th>
+                                    <!-- <th>Client</th> -->
+                                    {#                                    <th>Details</th>#}
+                                    <th>Release Time</th>
+                                    <!-- <th>Price</th> -->
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    {% if request.session.is_login %}
+                                        <th>Operation</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <form action="/all_task/" method="post">
+                                    <div class="task-content">
+                                            {{ csrf_input }}
+<<<<<<< HEAD
+                                            {% for task in favorite_task_list %}
+                                                    <td><div class="task-checkbox">
+                                                        <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                                        <input type="checkbox" value="{{ task.id }}"
+                                                               class="flat-grey list-child"/>
+                                                        <!-- <input type="checkbox" class="square-grey"/> -->
+                                                    </div></td>
+=======
+                                            {% for task in  unreviewed_task_list %}
+>>>>>>> dev_lw_new
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ task.template }}</td>
+<<<<<<< HEAD
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -706,6 +1563,40 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task.template }}</td>
+=======
+=======
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+
+                                        <th>Project</th>
+                                        <th>Type</th>
+                                        <th>Manager</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>Release Time</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        {% if request.session.is_login %}
+                                            <th>Operation</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <form action="/all_task/" method="post">
+                                        <div class="task-content">
+                                            {{ csrf_input }}
+                                            {% for task in  unreviewed_task_list %}
+                                                <tr>
+                                                    <div class="task-title">
+                                                        <td>{{ task.id }}</td>
+                                                        <td>{{ task.name }}</td>
+                                                        <td>{{ template_list[task.template] }}</td>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -717,7 +1608,15 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
+<<<<<<< HEAD
                                                                 class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+<<<<<<< HEAD
+                                                                class="label label-primary">{{ task.max_tagged_num }} participates needed</span>
+=======
+                                                                class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -725,13 +1624,23 @@
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Redo
                                                                 </button>
+<<<<<<< HEAD
                                                                 <button type="submit" name="abandon" value="{{ task.id }}"
+=======
+<<<<<<< HEAD
+                                                                <button type="submit" name="abandon" value="{{ task.id }}"
+=======
+                                                                <button type="submit" name="abandon"
+                                                                        value="{{ task.id }}"
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>Abandon
                                                                 </button>
                                                             </div>
                                                         </td>
                                                     </div>
+<<<<<<< HEAD
                                             {% endfor %}
                                     </div>
 
@@ -814,6 +1723,23 @@
                                 </form>
                                 </tr>
                                 </tbody></table>
+=======
+<<<<<<< HEAD
+                                            {% endfor %}
+                                    </div>
+
+                                </form>
+                                </tr>
+                                </tbody></table>
+=======
+                                                </tr>
+                                            {% endfor %}
+                                        </div>
+                                    </form>
+                                    </tbody>
+                                </table>
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+>>>>>>> dev_lw_new
                             </div>
                         </section>
                     </div>
@@ -822,6 +1748,10 @@
             <!-- row end -->
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> dev_lw_new
 
 
         </section><!-- /.content -->
@@ -829,17 +1759,26 @@
     </aside><!-- /.right-side -->
 
 </div><!-- ./wrapper -->
+<<<<<<< HEAD
 
 
 
     </aside><!-- /.right-side -->
 
 </div><!-- ./wrapper -->
+=======
+>>>>>>> dev_lw_new
 
 
 
+    </aside><!-- /.right-side -->
+=======
+        </section><!-- /.content -->
+    </aside><!-- /.right-side -->
+</div><!-- ./wrapper -->
 
 
+<<<<<<< HEAD
 <!-- jQuery 2.0.2 -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script src="{{ static('js/all_task_jquery.min.js') }}" type="text/javascript"></script>
@@ -852,6 +1791,32 @@
 
 <script src="{{ static('js/plugins/chart.js') }}" type="text/javascript"></script>
 
+=======
+</aside><!-- /.right-side -->
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+
+</div><!-- ./wrapper -->
+
+
+<<<<<<< HEAD
+
+
+
+=======
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+<!-- jQuery 2.0.2 -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script src="{{ static('js/all_task_jquery.min.js') }}" type="text/javascript"></script>
+<!-- jQuery UI 1.10.3 -->
+<script src="{{ static('js/all_task_jquery-ui-1.10.3.min.js') }}" type="text/javascript"></script>
+<!-- Bootstrap -->
+<script src="{{ static('js/all_task_bootstrap.min.js') }}" type="text/javascript"></script>
+<!-- daterangepicker -->
+<script src="{{ static('js/plugins/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
+
+<script src="{{ static('js/plugins/chart.js') }}" type="text/javascript"></script>
+
+>>>>>>> dev_lw_new
 <!-- datepicker
         <script src="{{ static('js/plugins/datepicker/bootstrap-datepicker.js')}}" type="text/javascript"></script>-->
 <!-- Bootstrap WYSIHTML5

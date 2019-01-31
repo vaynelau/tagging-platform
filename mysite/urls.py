@@ -27,6 +27,7 @@ urlpatterns = [
     path('regist/', views.register),
     path('logout/', views.logout),
     path('release_task/', views.release_task),
+<<<<<<< HEAD
 
     # path('task/', views.task),
     # path('task/add/', views.add_task),
@@ -36,6 +37,19 @@ urlpatterns = [
     # path('addtask_step4/', views.addtask_select_member),
     # path('addtask_step5/', views.addtask_setdetail),
     # path('addtask_step6/', views.addtask_finished),
+=======
+    path('all_task/', views.all_task),
+    path('enter_task/', views.enter_task),
+<<<<<<< HEAD
+    path('recharge/', views.recharge),
+path('check_task/', views.check_task),
+=======
+    path('check_task/', views.check_task),
+    path('one_task/', views.one_task),
+    path('recharge/', views.recharge),
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
+
+>>>>>>> dev_lw_new
     # path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
     # path('task/get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),
 
