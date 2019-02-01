@@ -118,6 +118,15 @@
                                         </a>
                                     </li>
                                     <li>
+                                        <a href="#employees" data-toggle="tab">
+                                            <div class="icon-circle">
+                                                <i class="ti-user"></i>
+                                            </div>
+                                            Employees
+                                        </a>
+                                    </li>
+
+                                    <li>
                                         <a href="#details" data-toggle="tab">
                                             <div class="icon-circle">
                                                 <i class="ti-bag"></i>
@@ -139,16 +148,17 @@
                                                     <input type="radio" name="template" required value=1>
                                                     <div class="card card-checkboxes card-hover-effect">
                                                         <i class="ti-paint-roller"></i>
-                                                        <p>问答式</p>
+                                                        <p>图片问答式</p>
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="col-sm-4">
                                                 <div class="choice" data-toggle="wizard-radio">
                                                     <input type="radio" name="template" required value=2>
                                                     <div class="card card-checkboxes card-hover-effect">
                                                         <i class="ti-pencil-alt"></i>
-                                                        <p>标记式</p>
+                                                        <p>图片标记式</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -157,7 +167,7 @@
                                                     <input type="radio" name="template" required value=3>
                                                     <div class="card card-checkboxes card-hover-effect">
                                                         <i class="ti-star"></i>
-                                                        <p>书写式</p>
+                                                        <p>音频问答式</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -214,6 +224,7 @@
                                 <div class="tab-pane" id="qa" style="margin-bottom: 30px;">
                                     <div class="row">
                                         <h5 class="info-text"> What questions would you like to know?</h5>
+
                                         <div class="row" id="addform">
                                             <div id="form-div" class="col-md-12">
                                                 <div id="question1">
@@ -269,6 +280,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="employees" style="margin-bottom: 30px;">
+                                    <div class="row">
+                                        <h5 class="info-text"> Choose the number of employees.</h5>
+                                        <div class="col-sm-12">
+                                        </div>
+                                        <div class="col-sm-7 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <input type="text" maxlength="1024" class="form-control" name="employees_num"
+                                                       style="margin-top: 30px;" placeholder="the number of employees">
                                             </div>
                                         </div>
                                     </div>

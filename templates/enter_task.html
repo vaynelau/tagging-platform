@@ -33,6 +33,7 @@
                 <script src="{{ static('js/enter_html5.js') }}"></script></script>
                 <![endif]-->
 
+
 </head>
 
 <body>
@@ -114,15 +115,9 @@
                                     {% for answer in qa.answers %}
                                         <!-- <a.contents是问题的候选答案 /> -->
                                         <label><input type="checkbox" name="q{{ i }}"
-<<<<<<< HEAD
-                                                      value="a{{ loop.index }}"/> {{ answer }} </label>
-=======
-<<<<<<< HEAD
-                                                      value="a{{ loop.index }}"/> {{ answer }} </label>
-=======
+
                                                       value="{{ loop.index }}"/> {{ answer }} </label>
->>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
->>>>>>> dev_lw_new
+
                                     {% endfor %}
                                 </div>
                             </article>

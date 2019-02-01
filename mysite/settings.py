@@ -83,37 +83,21 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/2.0.5/ref/settings/#databases
 
 DATABASES = {
-<<<<<<< HEAD
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-      
-=======
-<<<<<<< HEAD
+
     #'default': {
      #   'ENGINE': 'django.db.backends.mysql',
-=======
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
->>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
-        #
->>>>>>> dev_lw_new
+
         # 'NAME': 'tag',
         # "USER": 'root',
         # "PASSWORD": 'hjy19980717',
 
-<<<<<<< HEAD
-        'NAME': 'TaggingSystem',  # 数据库名字
-        'USER': 'django',  # 账号
-        'PASSWORD': '123456',  # 密码
 
-=======
-<<<<<<< HEAD
-     #   'NAME': 'TaggingSystem',  # 数据库名字
-     #   'USER': 'django',  # 账号
-      #  'PASSWORD': '123456',  # 密码
+      #  'NAME': 'TaggingSystem',  # 数据库名字
+       # 'USER': 'django',  # 账号
+       # 'PASSWORD': '123456',  # 密码
 
-       # 'HOST': '127.0.0.1',  # 本机地址
-       # 'PORT': '3306',  # 端口
+        #'HOST': '127.0.0.1',  # 本机地址
+        #'PORT': '3306',  # 端口
     #}
      'default': {
              'ENGINE': 'django.db.backends.mysql',
@@ -123,24 +107,7 @@ DATABASES = {
              'HOST': '127.0.0.1',  # 本机地址
              'PORT': '3306',  # 端口
          }
-=======
-        'NAME': 'TaggingSystem',  # 数据库名字
-        'USER': 'django',  # 账号
-        'PASSWORD': '123456',  # 密码
 
->>>>>>> dev_lw_new
-        'HOST': '127.0.0.1',  # 本机地址
-        'PORT': '3306',  # 端口
-    }
-    # 'default': {
-    #         'ENGINE': 'django.db.backends.mysql',
-    #         'NAME': 'MySQL',
-    #         "USER": 'dbUser',
-    #         "PASSWORD": 'zkn980516',
-    #         'HOST': '127.0.0.1',  # 本机地址
-    #         'PORT': '3306',  # 端口
-    #     }
->>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
 }
 
 # Password validation
