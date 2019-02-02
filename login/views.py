@@ -565,5 +565,11 @@ def get_user_tasks(request):
 
 def player_task(request):
     return render(request, 'player_task.html', locals())
-def player(request):
-    return render(request, 'player.html', locals())
+
+
+def picture(request):
+    return render(request, 'picture.html', locals())
+
+
+def draw(request):
+    return render(request, 'draw.html', locals())

@@ -34,7 +34,8 @@ urlpatterns = [
     path('one_task/', views.one_task),
     path('recharge/', views.recharge),
 path('player_task/', views.player_task),
-path('player/', views.player),
+path('picture/', views.picture),
+path('draw/',views.draw),
     # path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
     # path('task/get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),
 
