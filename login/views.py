@@ -565,11 +565,26 @@ def get_user_tasks(request):
 
 def player_task(request):
     return render(request, 'player_task.html', locals())
-
-
+def video_task(request):
+    return render(request, 'video_task.html', locals())
 def picture(request):
     return render(request, 'picture.html', locals())
+def circle(request):
+    return render(request, 'circle.html', locals())
+def choose(request):
+    return render(request, 'choose.html', locals())
 
+def video2pictures_slide(request):
+    return render(request, 'video2pictures_slide.html', locals())
 
-def draw(request):
-    return render(request, 'draw.html', locals())
+def picture_result(request):
+    return render(request, 'picture_result.html', locals())
+
+def picture_detail(request):
+    return render(request, 'picture_detail.html', locals())
+def qa_result(request):
+    return render(request, 'qa_result.html', locals())
+def choice_questions_result(request):
+    return render(request, 'choice_questions_result.html', locals())
+def confirm_to_upload_pictures(request):
+    return render(request, 'confirm_to_upload_pictures.html', locals())

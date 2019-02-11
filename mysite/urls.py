@@ -34,8 +34,18 @@ urlpatterns = [
     path('one_task/', views.one_task),
     path('recharge/', views.recharge),
 path('player_task/', views.player_task),
+path('video_task/', views.video_task),
 path('picture/', views.picture),
-path('draw/',views.draw),
+path('circle/',views.circle),
+path('choose/',views.choose),
+path('video2pictures_slide/',views.video2pictures_slide),
+path('picture_result/',views.picture_result),
+path('picture_detail/',views.picture_detail),
+path('qa_result/',views.qa_result),
+path('choice_questions_result/',views.choice_questions_result),
+path('confirm_to_upload_pictures/',views.confirm_to_upload_pictures)
+
+
     # path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
     # path('task/get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),
 
