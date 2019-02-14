@@ -17,7 +17,6 @@ def img_directory_path(instance, filename):
 
 
 def get_untagged_sub_task(task, user):
-
     sub_task_set = task.subtask_set.exclude(users__id=user.id)
     print('sub_task_set', sub_task_set)
     return sub_task_set.first()  # if not exist, return None.
@@ -27,7 +26,6 @@ def get_rejected_sub_task(task, user):
     sub_task_set = task.subtask_set.filter(users__id=user.id)
     print('sub_task_set', sub_task_set)
     return sub_task_set.first()  # if not exist, return None.
-
 
 
 class User(models.Model):
@@ -42,7 +40,6 @@ class User(models.Model):
     # favorite_tasks = models.ManyToManyField('Task')
     total_credits = models.IntegerField(default=1000)
 
-
     def __str__(self):
         return self.name
 
@@ -52,21 +49,17 @@ class User(models.Model):
 
 class Task(models.Model):
     """任务表"""
-
+    type = models.IntegerField(default=1)
     template = models.IntegerField(default=1)
     content = models.TextField(max_length=1024)
     name = models.CharField(max_length=128)
-
     admin = models.ForeignKey('User', on_delete=models.CASCADE, null=True, related_name='released_tasks')
-
     details = models.TextField(max_length=1024)
     c_time = models.DateTimeField(auto_now_add=True)
     max_tagged_num = models.IntegerField(default=1)
     is_closed = models.BooleanField(default=False)
-
     credit = models.IntegerField(default=1)
     users = models.ManyToManyField('User', related_name='favorite_tasks', through='TaskUser')
-
 
     def __str__(self):
         return self.name
@@ -89,21 +82,17 @@ class TaskUser(models.Model):
 class SubTask(models.Model):
     """子任务表"""
 
-    image = models.ImageField(max_length=256, upload_to=img_directory_path)
+    file = models.FileField(max_length=256, upload_to=img_directory_path)
     task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
     result = models.TextField(max_length=1024)  # 保存最终标记结果
-
     # num_tagged = models.IntegerField(default=0)
     users = models.ManyToManyField('User', related_name='sub_tasks_tagged', through='Label')
-
 
 
 class Label(models.Model):
     """标签表"""
 
-
     sub_task = models.ForeignKey('SubTask', on_delete=models.CASCADE, null=True)
-
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     result = models.TextField(max_length=1024)  # 保存标记结果
     m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间

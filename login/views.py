@@ -112,10 +112,17 @@ def logout(request):
     return redirect("/index/")
 
 
-def release_task(request):
+def choose(request):
     if not request.session.get('is_admin', None):
         # messages.warning(request, "您没有权限查看该页面！")
         return redirect("/index/")
+    return render(request, 'choose.html', locals())
+
+
+def release_task(request):
+    if not request.session.get('is_admin', None) or not request.session.get('task_type', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/all_task/")
 
     if request.method == "POST":
         print(request.POST)
@@ -123,35 +130,35 @@ def release_task(request):
         task_form = forms.TaskForm(request.POST, request.FILES)
         if not task_form.is_valid():
             messages.error(request, "表单信息有误，请重新填写！")
-            return render(request, 'release_task.html', locals())
+            return release_task_x(request)
 
-        img_files = request.FILES.getlist('image')  # exception
-        print(img_files)
-        print(type(img_files))
+        files = request.FILES.getlist('files')  # exception
+        print(files)
+        print(type(files))
 
         template = task_form.cleaned_data['template']
         name = task_form.cleaned_data['name']
         details = task_form.cleaned_data['details']
-        # max_tagged_num = task_form.cleaned_data['max_tagged_num']
-        # credit = task_form.cleaned_data['credit']
-        # print(max_tagged_num, credit)
+        employees_num = task_form.cleaned_data['employees_num']
+        print('employees_num', employees_num, type(employees_num))
         # max_tagged_num = int(max_tagged_num)
+        # max_tagged_num = 3
+        # credit = task_form.cleaned_data['credit']
         # credit = int(credit)
-        max_tagged_num = 3
         credit = 2
         current_user = models.User.objects.get(name=request.session['username'])
-        if current_user.total_credits < credit * max_tagged_num * len(img_files):
+        if current_user.total_credits < credit * employees_num * len(files):
             messages.error(request, "您的信用积分不足，无法发布任务！")
-            return render(request, 'release_task.html', locals())
-        current_user.total_credits -= credit * max_tagged_num * len(img_files)
-        current_user.save()
+            return release_task_x(request)
 
         new_task = models.Task.objects.create()
+        new_task.type = request.session['task_type']
+        print('task_type', new_task.type, type(new_task.type))
         new_task.name = name
         new_task.admin = current_user
         new_task.template = int(template)
         new_task.details = details
-        new_task.max_tagged_num = max_tagged_num
+        new_task.max_tagged_num = employees_num
         new_task.credit = credit
 
         # save questions and answers
@@ -161,14 +168,14 @@ def release_task(request):
             question = request.POST.get('q' + str(i))
             if len(question) == 0 or len(question) > 128:
                 messages.error(request, "表单信息有误，请重新填写！")
-                return render(request, 'release_task.html', locals())
+                return release_task_x(request)
             content += '|' + question
             j = 1
             while 'a' + str(j) + '_q' + str(i) in request.POST:
                 answer = request.POST.get('a' + str(j) + '_q' + str(i))
                 if len(answer) == 0 or len(answer) > 128:
                     messages.error(request, "表单信息有误，请重新填写！")
-                    return render(request, 'release_task.html', locals())
+                    return release_task_x(request)
                 content += '&' + answer
                 j += 1
             i += 1
@@ -176,9 +183,9 @@ def release_task(request):
         new_task.save()
 
         # save images
-        for f in img_files:
+        for f in files:
             sub_task = models.SubTask.objects.create()
-            sub_task.image = f
+            sub_task.file = f
             sub_task.task = new_task
             sub_task.save()
 
@@ -186,12 +193,141 @@ def release_task(request):
             # label.sub_task = sub_task
             # label.save()
 
-
+        current_user.total_credits -= credit * employees_num * len(files)
+        current_user.save()
         # messages.success(request, "任务发布成功！")
+        del request.session['task_type']
+        if new_task.template == 1:
+            request.session['task_id'] = new_task.id
+            return redirect('/confirm_to_upload_pictures/')
+        elif new_task.template == 2 and new_task.type == 4:
+            request.session['task_id'] = new_task.id
+            return redirect('/video2pictures_slide/')
         return redirect('/all_task/')
 
-    task_form = forms.TaskForm()
-    return render(request, 'release_task.html', locals())
+    return release_task_x(request)
+
+
+def video2pictures_slide(request):
+    if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/all_task/")
+    task_id = int(request.session['task_id'])
+    task = models.Task.objects.filter(pk=task_id).first()
+    if not task:
+        print('该任务不存在！')
+        return redirect("/all_task/")
+
+    if request.method == "POST":
+        print(request.POST)
+        if 'abandon' in request.POST and digit.match(request.POST.get('abandon')):
+            sub_task_id = int(request.POST.get('abandon'))
+            task.subtask_set.filter(pk=sub_task_id).delete()
+        elif 'confirm' in request.POST:
+            del request.session['task_id']
+            return redirect("/all_task/")
+
+    sub_tasks = task.subtask_set.all()
+    return render(request, 'video2pictures_slide.html', locals())
+
+
+def confirm_to_upload_pictures(request):
+    if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/all_task/")
+    task_id = int(request.session['task_id'])
+    task = models.Task.objects.filter(pk=task_id).first()
+    if not task:
+        print('该任务不存在！')
+        return redirect("/all_task/")
+
+    if request.method == "POST":
+        print(request.POST)
+        if 'abandon' in request.POST and digit.match(request.POST.get('abandon')):
+            sub_task_id = int(request.POST.get('abandon'))
+            task.subtask_set.filter(pk=sub_task_id).delete()
+        elif 'confirm' in request.POST:
+            del request.session['task_id']
+            return redirect("/all_task/")
+
+    sub_tasks = task.subtask_set.all()
+    return render(request, 'confirm_to_upload_pictures.html', locals())
+
+
+def all_task(request):
+    task_list = models.Task.objects.all()
+    num_task = task_list.count()
+
+    num_user = models.User.objects.count()
+    task_templates = ['', '图片', '视频', '音频']
+    task_types = ['', '单选式', '多选式', '问答式', '标注式']
+    temp_excluded_list = []
+
+    if request.method == "POST":
+        print(request.POST)
+        if 'task_sort' in request.POST or 'task_filter' in request.POST:
+            if request.POST.get('order') == 'time_desc':
+                task_list = task_list.order_by('-c_time')
+            temp_excluded_list = request.POST.getlist('temp_excluded')
+            if 'temp1' in temp_excluded_list:
+                task_list = task_list.exclude(template=1, type=3)
+            if 'temp2' in temp_excluded_list:
+                task_list = task_list.exclude(template=1, type=4)
+            if 'temp3' in temp_excluded_list:
+                task_list = task_list.exclude(template=3, type=3)
+            if request.POST.get('tagged_num') == 'single':
+                task_list = task_list.filter(max_tagged_num=1)
+            elif request.POST.get('tagged_num') == 'multi':
+                task_list = task_list.exclude(max_tagged_num=1)
+        elif 'collect' in request.POST:
+            collect_task(request)
+        elif 'remove' in request.POST:
+            remove_task(request)
+        elif 'enter' in request.POST:
+
+            if digit.match(request.POST.get('enter')):
+                request.session['task_id'] = int(request.POST.get('enter'))
+                return redirect('/enter_task/')
+        # return redirect('/enter_task/')
+        elif 'cancel_tasks' in request.POST:
+            cancel_task(request)
+            task_list = models.Task.objects.all()
+            num_task = task_list.count()
+        elif 'review' in request.POST:
+            if digit.match(request.POST.get('review')):
+                request.session['task_id'] = int(request.POST.get('review'))
+                return redirect('/one_task/')
+        # elif 'abandon' in request.POST:
+        #     if digit.match(request.POST.get('abandon')) and request.session.get('is_login', None):
+        #         task_id = int(request.POST.get('abandon'))
+        #         current_user = models.User.objects.get(name=request.session['username'])
+        #         current_user.taskuser_set.filter(task__id=task_id).delete()
+        # elif 'redo' in request.POST:
+        #     if digit.match(request.POST.get('redo')):
+        #         request.session['task_id'] = int(request.POST.get('redo'))
+        #         return redirect('/enter_task/')
+
+        # num_task_unfinished = models.Task.objects.filter(is_closed=False).count()
+    if request.session.get('is_login', None):
+        current_user = models.User.objects.get(name=request.session['username'])
+        favorite_task_list = current_user.favorite_tasks.all()
+        num_favorite_task = favorite_task_list.count()
+
+        released_task_list = current_user.released_tasks.all()
+        num_released_task = released_task_list.count()
+
+        rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True).distinct()
+        num_rejected_task = rejected_task_list.count()
+
+        unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True).distinct()
+        num_unreviewed_task = unreviewed_task_list.count()
+
+        current_user.login_time = timezone.now()
+        current_user.save()
+        num_updated_task = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
+
+    return render(request, 'all_task.html', locals())
+
 
 
 def collect_task(request):
@@ -207,7 +343,9 @@ def collect_task(request):
         print('该任务已达到最大收藏人数，无法收藏！')
         return
     current_user = models.User.objects.get(name=request.session['username'])
-    models.TaskUser.objects.create(task=task, user=current_user)
+
+    if not models.TaskUser.objects.filter(task=task, user=current_user).exists():
+        models.TaskUser.objects.create(task=task, user=current_user)
 
 
 def remove_task(request):
@@ -248,78 +386,6 @@ def cancel_task(request):
         # task.save()
 
 
-def all_task(request):
-    task_list = models.Task.objects.all()
-    num_task = task_list.count()
-
-    num_user = models.User.objects.count()
-    template_list = ['', '问答式', '标记式', '书写式']
-    temp_excluded_list = []
-
-    if request.method == "POST":
-        print(request.POST)
-        if 'task_sort' in request.POST or 'task_filter' in request.POST:
-            if request.POST.get('order') == 'time_desc':
-                task_list = task_list.order_by('-c_time')
-            temp_excluded_list = request.POST.getlist('temp_excluded')
-            if 'temp1' in temp_excluded_list:
-                task_list = task_list.exclude(template=1)
-            if 'temp2' in temp_excluded_list:
-                task_list = task_list.exclude(template=2)
-            if 'temp3' in temp_excluded_list:
-                task_list = task_list.exclude(template=3)
-            if request.POST.get('tagged_num') == 'single':
-                task_list = task_list.filter(max_tagged_num=1)
-            elif request.POST.get('tagged_num') == 'multi':
-                task_list = task_list.exclude(max_tagged_num=1)
-        elif 'collect' in request.POST:
-            collect_task(request)
-        elif 'remove' in request.POST:
-            remove_task(request)
-        elif 'enter' in request.POST:
-
-            if digit.match(request.POST.get('enter')):
-                request.session['task_id'] = int(request.POST.get('enter'))
-                return redirect('/enter_task/')
-           # return redirect('/enter_task/')
-        elif 'cancel_tasks' in request.POST:
-            cancel_task(request)
-            task_list = models.Task.objects.all()
-            num_task = task_list.count()
-        elif 'review' in request.POST:
-            if digit.match(request.POST.get('review')):
-                request.session['task_id'] = int(request.POST.get('review'))
-                return redirect('/one_task/')
-        # elif 'abandon' in request.POST:
-        #     if digit.match(request.POST.get('abandon')) and request.session.get('is_login', None):
-        #         task_id = int(request.POST.get('abandon'))
-        #         current_user = models.User.objects.get(name=request.session['username'])
-        #         current_user.taskuser_set.filter(task__id=task_id).delete()
-        # elif 'redo' in request.POST:
-        #     if digit.match(request.POST.get('redo')):
-        #         request.session['task_id'] = int(request.POST.get('redo'))
-        #         return redirect('/enter_task/')
-
-        # num_task_unfinished = models.Task.objects.filter(is_closed=False).count()
-    if request.session.get('is_login', None):
-        current_user = models.User.objects.get(name=request.session['username'])
-        favorite_task_list = current_user.favorite_tasks.all()
-        num_favorite_task = favorite_task_list.count()
-
-        released_task_list = current_user.released_tasks.all()
-        num_released_task = released_task_list.count()
-
-        rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True).distinct()
-        num_rejected_task = rejected_task_list.count()
-
-        unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True).distinct()
-        num_unreviewed_task = unreviewed_task_list.count()
-
-        current_user.login_time = timezone.now()
-        current_user.save()
-        num_updated_task = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
-
-    return render(request, 'all_task.html', locals())
 
 
 def enter_task(request):
@@ -412,7 +478,7 @@ def accept_label(request):
 
 
 def check_task(request):
-    if not request.session.get('is_login', None) or not request.session.get('task_id', None) or not request.session.get(
+    if not request.session.get('is_admin', None) or not request.session.get('task_id', None) or not request.session.get(
             'sub_task_id', None):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
@@ -444,13 +510,13 @@ def check_task(request):
 
 
 def one_task(request):
-    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
+    if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
     task = models.Task.objects.get(id=request.session['task_id'])
 
-    if request.method == "POST" and 'enter' in request.POST:
-        if digit.match(request.POST.get('enter')):
+    if request.method == "POST":
+        if 'enter' in request.POST and digit.match(request.POST.get('enter')):
             request.session['sub_task_id'] = int(request.POST.get('enter'))  # need some check
             return redirect('/check_task/')
 
@@ -470,7 +536,6 @@ def recharge(request):
         print(request.POST)
 
     return render(request, 'recharge.html', locals())
-
 
 
 def get_all_tasks(request):
@@ -563,28 +628,78 @@ def get_user_tasks(request):
 
     return HttpResponse(json.dumps(response_data))
 
+
 def player_task(request):
     return render(request, 'player_task.html', locals())
+
+
 def video_task(request):
-    return render(request, 'video_task.html', locals())
+    return render(request, 'video_circle.html', locals())
+
+
 def picture(request):
     return render(request, 'picture.html', locals())
+
+
 def circle(request):
     return render(request, 'circle.html', locals())
-def choose(request):
-    return render(request, 'choose.html', locals())
 
-def video2pictures_slide(request):
-    return render(request, 'video2pictures_slide.html', locals())
 
 def picture_result(request):
     return render(request, 'picture_result.html', locals())
 
+
 def picture_detail(request):
     return render(request, 'picture_detail.html', locals())
+
+
 def qa_result(request):
     return render(request, 'qa_result.html', locals())
+
+
 def choice_questions_result(request):
     return render(request, 'choice_questions_result.html', locals())
-def confirm_to_upload_pictures(request):
-    return render(request, 'confirm_to_upload_pictures.html', locals())
+
+
+def release_task_x(request):
+    if request.session['task_type'] == 1:
+        return redirect('/release_task_1/')
+    elif request.session['task_type'] == 2:
+        return redirect('/release_task_2/')
+    elif request.session['task_type'] == 3:
+        return redirect('/release_task_3/')
+    elif request.session['task_type'] == 4:
+        return redirect('/release_task_4/')
+    return redirect('/all_task/')
+
+
+def release_task_1(request):
+    if not request.session.get('is_admin', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    request.session['task_type'] = 1
+    return render(request, 'release_task.html', locals())
+
+
+def release_task_2(request):
+    if not request.session.get('is_admin', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    request.session['task_type'] = 2
+    return render(request, 'release_task.html', locals())
+
+
+def release_task_3(request):
+    if not request.session.get('is_admin', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    request.session['task_type'] = 3
+    return render(request, 'release_task_1.html', locals())
+
+
+def release_task_4(request):
+    if not request.session.get('is_admin', None):
+        # messages.warning(request, "您没有权限查看该页面！")
+        return redirect("/index/")
+    request.session['task_type'] = 4
+    return render(request, 'release_task_2.html', locals())
