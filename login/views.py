@@ -7,9 +7,10 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib import messages
 
-from login import forms
-from login import models
-import re
+from login import forms, models, tools
+import re, os
+
+from mysite.settings import MEDIA_ROOT
 
 digit = re.compile("^\d{1,10}$")
 
@@ -220,14 +221,44 @@ def video2pictures_slide(request):
 
     if request.method == "POST":
         print(request.POST)
-        if 'abandon' in request.POST and digit.match(request.POST.get('abandon')):
-            sub_task_id = int(request.POST.get('abandon'))
-            task.subtask_set.filter(pk=sub_task_id).delete()
+        if 'frame' in request.POST and 'frame_interval' in request.POST:
+            if digit.match(request.POST.get('frame_interval')):
+                frame_interval = int(request.POST.get('frame_interval'))
+                tools.video2pictures(task, frame_interval)
+            elif request.POST.get('frame_interval') == '':
+                frame_interval = 10
+                tools.video2pictures(task, frame_interval)
+            else:
+                print("请输入合法的帧数截取间隔！")
         elif 'confirm' in request.POST:
+            img_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task_id), 'frames'])
+            if os.path.exists(img_path):
+                del request.session['task_id']
+                return redirect("/all_task/")
+            else:
+                print('请先输入视频帧数间隔！')
+        elif 'return' in request.POST:
+            current_user = models.User.objects.get(name=request.session['username'])
+            current_user.released_tasks.filter(pk=task_id).delete()
+            img_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task_id), 'frames'])
+            if os.path.exists(img_path):
+                img_list = os.listdir(img_path)
+                for img in img_list:
+                    os.remove(os.sep.join([img_path, img]))
+                os.rmdir(img_path)
             del request.session['task_id']
             return redirect("/all_task/")
+        elif 'abandon' in request.POST:
+            img = request.POST.get('abandon')
+            img_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task_id), 'frames'])
+            try:
+                os.remove(os.sep.join([img_path, img]))
+            except FileNotFoundError:
+                pass
 
-    sub_tasks = task.subtask_set.all()
+    img_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task_id), 'frames'])
+    if os.path.exists(img_path):
+        img_list = os.listdir(img_path)
     return render(request, 'video2pictures_slide.html', locals())
 
 
@@ -329,7 +360,6 @@ def all_task(request):
     return render(request, 'all_task.html', locals())
 
 
-
 def collect_task(request):
     if not request.session.get('is_login', None) or not digit.match(request.POST.get('collect')):
         print('用户未登录或该task_id不合法！')
@@ -384,8 +414,6 @@ def cancel_task(request):
         # task.delete()
         # task.is_closed = True
         # task.save()
-
-
 
 
 def enter_task(request):

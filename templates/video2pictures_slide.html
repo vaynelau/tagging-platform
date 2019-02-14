@@ -58,12 +58,16 @@
 
                 <form action="/video2pictures_slide/" method="post">
                     {{ csrf_input }}
-                    <input type="text" maxlength="1024" class="form-control" name="the_frame_interval"
-                           style="margin-top: 30px;" placeholder="the frame interval" required>
+                    <input type="text" maxlength="10" class="form-control" name="frame_interval"
+                           style="margin-top: 30px;" placeholder="the frame interval, default is 10">
+                    {% if not img_list %}
+                        <br></br>
+                        <button type="submit" name="frame" class="btn btn-success">进行视频截取</button>
+                    {% else %}
+                        <br></br>
+                        <button type="submit" name="confirm" class="btn btn-success">确认截取帧数间隔</button>
+                    {% endif %}
                     <br></br>
-                    <button type="submit" name="frame" class="btn btn-success">确认截取帧数间隔</button>
-                    <br></br>
-
                     <button type="submit" name="return" class="btn btn-default">放弃</button>
                 </form>
             </li>
@@ -82,12 +86,14 @@
                         <div class="item">
                             <div class="slide">
                                 <figure>
-                                    <img src="{{ static(img.src) }}" alt="slide1">
+                                    <img src="/media/task_{{ task_id }}/frames/{{ img }}" alt="slide1">
                                 </figure>
                                 <div class="content">
                                     <h4>Frame {{ loop.index0 }}</h4>
                                     <ul>
-                                        <button type="submit" name="abandon" class="btn btn-danger">从图集中删除</button>
+                                        <button type="submit" name="abandon" value="{{ img }}" class="btn btn-danger">
+                                            从图集中删除
+                                        </button>
                                     </ul>
                                 </div>
 
