@@ -1,14 +1,12 @@
 # login/views.py
-import json
 
-from django.core.paginator import Paginator
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib import messages
 
 from login import forms, models, tools
-import re, os
+import re
+import os
 
 from mysite.settings import MEDIA_ROOT
 
@@ -422,55 +420,207 @@ def enter_task(request):
     current_user = models.User.objects.get(name=request.session['username'])
     task = models.Task.objects.get(id=request.session['task_id'])
 
-    if request.method == "POST":
-        print(request.POST)
-        if not task.users.filter(name=request.session['username']).first():
-            print('请先收藏该任务再开始标注！')
-            return render(request, 'enter_task.html', locals())
+    if not task.users.filter(name=request.session['username']).first():
+        print('请先收藏该任务再开始标注！')
+        return redirect('/all_task/')
 
-        i = 1
-        result = ''
-        while 'q' + str(i) in request.POST:
-            result += '|' + 'q' + str(i)
-            answers = request.POST.getlist('q' + str(i))
-            for answer in answers:
-                result += '&' + answer
-            i += 1
+    task_templates = ['', '图片', '视频', '音频']
+    task_types = ['', '单选式', '多选式', '问答式', '标注式']
+
+    if task.template == 1:
+        return redirect('/circle/')
+    if task.template == 2:
+        return redirect('/video_task/')
+    if task.template == 3:
+        return redirect('/player_task/')
+
+
+def circle(request):
+    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
+        return redirect('/all_task/')
+    current_user = models.User.objects.get(name=request.session['username'])
+    task = models.Task.objects.get(id=request.session['task_id'])
+    if task.template != 1 or task.type != 4:
+        print('该任务不是图片标注类任务！')
+        return redirect('/all_task/')
+    if not task.users.filter(name=request.session['username']).first():
+        print('请先收藏该任务再开始标注！')
+        return redirect('/all_task/')
+
+    if request.method == "POST" and 'position' in request.POST:
+        print(request.POST)
+        # result = ''
+        # i = 1
+        # while 'q' + str(i) in request.POST:
+        #     result += '|' + 'q' + str(i)
+        #     answers = request.POST.getlist('q' + str(i))
+        #     print(answers)
+        #     for answer in answers:
+        #         result += '&' + answer
+        #     i += 1
+        result = request.POST.get('position').replace('\r\n', '&')
         sub_task_id = request.session.get('sub_task_id', None)
         if sub_task_id:
             sub_task = models.SubTask.objects.get(pk=sub_task_id)
             print(sub_task)
             task_user = current_user.taskuser_set.filter(task=task).first()
-            # task_user.is_unreviewed = True
-            # task_user.save()
             label = models.Label.objects.create()
             label.user = current_user
             label.sub_task = sub_task
             label.result = result
             label.task_user = task_user
             label.save()
-            # sub_task.num_tagged += 1
-            # sub_task.users.add(current_user)
-            # sub_task.save()
-            # current_user.total_credits += task.credit
-            # current_user.save()
-            request.session['sub_task_id'] = None
+            del request.session['sub_task_id']
 
     qa_list = []
     contents = task.content.split('|')
     for item in contents[1:]:
         qa = item.split('&')
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
+
     sub_task = models.get_untagged_sub_task(task, current_user)
     if sub_task:
         request.session['sub_task_id'] = sub_task.id
-        img_file = sub_task.image
-        print(img_file)
+        file = sub_task.file
+        print(file)
+        # file_name = str(file).split('/')[-1]
+        # author = task.admin
     else:
-        print('所有图片已标注')
-        # messages.success(request, "任务标注完成！")
+        print('该任务已标注完成！')
+        # messages.success(request, "该任务已标注完成！")
         return redirect('/all_task/')
-    return render(request, 'enter_task.html', locals())
+    return render(request, 'circle.html', locals())
+
+
+def video_task(request):
+    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
+        return redirect('/all_task/')
+    current_user = models.User.objects.get(name=request.session['username'])
+    task = models.Task.objects.get(id=request.session['task_id'])
+    if task.template != 2:
+        print('该任务不是视频类任务！')
+        return redirect('/all_task/')
+    if not task.users.filter(name=request.session['username']).first():
+        print('请先收藏该任务再开始标注！')
+        return redirect('/all_task/')
+
+    if request.method == "POST":
+        print(request.POST)
+        result = ''
+        if task.type != 4:
+            i = 1
+            while 'q' + str(i) in request.POST:
+                result += '|' + 'q' + str(i)
+                answers = request.POST.getlist('q' + str(i))
+                print(answers)
+                for answer in answers:
+                    result += '&' + answer
+                i += 1
+        else:
+            result = request.POST.get('position').replace('\r\n', '&')
+
+        sub_task_id = request.session.get('sub_task_id', None)
+        if sub_task_id:
+            sub_task = models.SubTask.objects.get(pk=sub_task_id)
+            print(sub_task)
+            task_user = current_user.taskuser_set.filter(task=task).first()
+            label = models.Label.objects.create()
+            label.user = current_user
+            label.sub_task = sub_task
+            label.result = result
+            label.task_user = task_user
+            label.save()
+            del request.session['sub_task_id']
+
+    qa_list = []
+    contents = task.content.split('|')
+    for item in contents[1:]:
+        qa = item.split('&')
+        qa_list.append({'question': qa[0], 'answers': qa[1:]})
+
+    sub_task = models.get_untagged_sub_task(task, current_user)
+    if sub_task:
+        request.session['sub_task_id'] = sub_task.id
+        file = sub_task.file
+        print(file)
+        # file_name = str(file).split('/')[-1]
+        # author = task.admin
+    else:
+        print('该任务已标注完成！')
+        # messages.success(request, "该任务已标注完成！")
+        return redirect('/all_task/')
+
+    if task.type == 1:
+        return render(request, 'video_task.html', locals())
+    elif task.type == 2:
+        return render(request, 'video_task_multi_choice.html', locals())
+    elif task.type == 3:
+        return render(request, 'video_task_qa.html', locals())
+    else:
+        return render(request, 'video_circle.html', locals())
+
+
+def player_task(request):
+    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
+        return redirect('/all_task/')
+    current_user = models.User.objects.get(name=request.session['username'])
+    task = models.Task.objects.get(id=request.session['task_id'])
+    if task.template != 3 or task.type >= 4:
+        print('该任务不是音频类任务！')
+        return redirect('/all_task/')
+    if not task.users.filter(name=request.session['username']).first():
+        print('请先收藏该任务再开始标注！')
+        return redirect('/all_task/')
+
+    if request.method == "POST":
+        print(request.POST)
+        i = 1
+        result = ''
+        while 'q' + str(i) in request.POST:
+            result += '|' + 'q' + str(i)
+            answers = request.POST.getlist('q' + str(i))
+            print(answers)
+            for answer in answers:
+                result += '&' + answer
+            i += 1
+
+        sub_task_id = request.session.get('sub_task_id', None)
+        if sub_task_id:
+            sub_task = models.SubTask.objects.get(pk=sub_task_id)
+            print(sub_task)
+            task_user = current_user.taskuser_set.filter(task=task).first()
+            label = models.Label.objects.create()
+            label.user = current_user
+            label.sub_task = sub_task
+            label.result = result
+            label.task_user = task_user
+            label.save()
+            del request.session['sub_task_id']
+
+    qa_list = []
+    contents = task.content.split('|')
+    for item in contents[1:]:
+        qa = item.split('&')
+        qa_list.append({'question': qa[0], 'answers': qa[1:]})
+
+    sub_task = models.get_untagged_sub_task(task, current_user)
+    if sub_task:
+        request.session['sub_task_id'] = sub_task.id
+        file = sub_task.file
+        file_name = str(file).split('/')[-1]
+        author = task.admin
+        print(file_name)
+    else:
+        print('该任务已标注完成！')
+        # messages.success(request, "该任务已标注完成！")
+        return redirect('/all_task/')
+
+    if task.type == 1:
+        return render(request, 'player_task.html', locals())
+    elif task.type == 2:
+        return render(request, 'player_task_multi_choice.html', locals())
+    else:
+        return render(request, 'player_task_qa.html', locals())
 
 
 def reject_label(request):
@@ -566,111 +716,8 @@ def recharge(request):
     return render(request, 'recharge.html', locals())
 
 
-def get_all_tasks(request):
-    if not request.session.get('is_admin', None):
-        messages.warning(request, "您没有权限查看该页面！")
-        return redirect("/index/")
-
-    limit = request.GET.get('limit')
-    offset = request.GET.get('offset')
-    search = request.GET.get('search')
-    sort_column = request.GET.get('sort')
-    order = request.GET.get('order')
-
-    if search:
-        all_records = models.Task.objects.filter(name__contains=search)
-    else:
-        all_records = models.Task.objects.all()
-
-    if sort_column:
-        sort_column = sort_column.replace('task_', '')
-        if sort_column in ['name', 'admin', 'c_time']:
-            if order == 'desc':
-                sort_column = '-%s' % sort_column
-            all_records = all_records.order_by(sort_column)
-
-    if not offset:
-        offset = 0
-    if not limit:
-        limit = 10
-
-    paginator = Paginator(all_records, limit)
-    page = int(int(offset) / int(limit) + 1)
-    response_data = {'total': all_records.count(), 'rows': []}
-
-    for per_task in paginator.page(page):
-        users_list = []
-        for user in per_task.users.all():
-            users_list.append(user.name)
-        response_data['rows'].append({
-            'task_name': per_task.name if per_task.name else '',
-            'task_admin': per_task.admin.name if per_task.admin else '',
-            'task_users': users_list if per_task.users else '',
-            'task_c_time': timezone.localtime(per_task.c_time).ctime() if per_task.c_time else '',
-            'task_details': per_task.details if per_task.details else '',
-        })
-
-    return HttpResponse(json.dumps(response_data))
-
-
-def get_user_tasks(request):
-    if not request.session.get('is_login', None) or request.session.get('is_admin', None):
-        messages.warning(request, "您没有权限查看该页面！")
-        return redirect("/index/")
-
-    limit = request.GET.get('limit')
-    offset = request.GET.get('offset')
-    search = request.GET.get('search')
-    sort_column = request.GET.get('sort')
-    order = request.GET.get('order')
-
-    current_user = models.User.objects.get(name=request.session.get('username', None))
-
-    if search:
-        all_records = current_user.tasks_owned.filter(name__contains=search)
-    else:
-        all_records = current_user.tasks_owned.all()
-
-    if sort_column:
-        sort_column = sort_column.replace('task_', '')
-        if sort_column in ['name', 'admin', 'c_time']:
-            if order == 'desc':
-                sort_column = '-%s' % sort_column
-            all_records = all_records.order_by(sort_column)
-
-    if not offset:
-        offset = 0
-    if not limit:
-        limit = 10
-
-    paginator = Paginator(all_records, limit)
-    page = int(int(offset) / int(limit) + 1)
-    response_data = {'total': all_records.count(), 'rows': []}
-    for per_task in paginator.page(page):
-        response_data['rows'].append({
-            'task_name': per_task.name if per_task.name else '',
-            'task_admin': per_task.admin.name if per_task.admin.name else '',
-            'task_c_time': timezone.localtime(per_task.c_time).ctime() if per_task.c_time else '',
-            'task_details': per_task.details if per_task.details else '',
-        })
-
-    return HttpResponse(json.dumps(response_data))
-
-
-def player_task(request):
-    return render(request, 'player_task.html', locals())
-
-
-def video_task(request):
-    return render(request, 'video_circle.html', locals())
-
-
 def picture(request):
     return render(request, 'picture.html', locals())
-
-
-def circle(request):
-    return render(request, 'circle.html', locals())
 
 
 def picture_result(request):

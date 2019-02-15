@@ -8,7 +8,7 @@
     <title>单张图片标注工具，用于单张图片标注</title>
 
     <!-- Bootstrap -->
-    <link href="{{ static('build/js/bootstrap-3.3.7/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ static('build/js/bootstrap-3.3.7/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ static('build/css/custom.css') }}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -26,44 +26,71 @@
     <div></div>
     <div class="row">
         <div class="col-md-1"></div>
-        <div class="col-md-10" id="radio-type">标注类型：
-        </div>
+        <div class="col-md-10" id="radio-type">标注任务：</div>
+
         <div class="col-md-1"></div>
     </div>
+    {% for qa in qa_list %}
+        <div class="row">
+            <div class="col-md-1"></div>
+            <li id="qu_0_{{ loop.index0 }}">
+                <div class="col-md-10">
+                    <i>{{ loop.index }}. </i><font>{{ qa.question }}</font>
+                </div>
+            </li>
+            <div class="col-md-1"></div>
+        </div>
+    {% endfor %}
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
             <span>坐标区域：<strong id="cur_loc"></strong></span>
         </div>
     </div>
-    <div  class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-3">
-            <span>当前样本标注状态：</span>
-            <textarea class="form-control" id="annotation_cur_status" rows="6"></textarea>
-        </div>
-        <div class="col-md-3">
-            <span>所有样本标注状态：</span>
-            <textarea class="form-control" id="annotation_total_status" rows="6"></textarea>
-        </div>
-        <div class="col-md-1">
-            <br/>
-            <button class="btn btn-success" id="btn_save" type="submit">提交结果</button>
-                      <br>  <br/>
-            <button class="btn btn-default" id="btn_save" type="submit">返回</button>
-        </div>
+    <div class="row">
+        <form action="/circle/" method="post">
+            {{ csrf_input }}
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <span>当前样本标注状态：</span>
+                <textarea class="form-control" name="position" id="annotation_cur_status" rows="6" required></textarea>
+            </div>
+            {#        <div class="col-md-3">#}
+            {#            <span>所有样本标注状态：</span>#}
+            {#            <textarea class="form-control" id="annotation_total_status" rows="6"></textarea>#}
+            {#        </div>#}
+            <div class="col-md-1">
+                <br/>
+                <button type="submit" class="btn btn-success" id="btn_save">提交结果</button>
+                <br> <br/>
+                <button type="button" onclick="window.location.href='/all_task/'" class="btn btn-default"
+                        id="btn_return">返回
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{{ static('build/js/bootstrap-3.3.7/js/bootstrap.min.js')}}"></script>
-<script src="{{ static('build/js/layer-v3.1.1/layer/layer.js')}}"></script>
-<script src="{{ static('build/js/custom.js')}}"></script>
-<script src="{{ static('build/js/draw_roi.js')}}"></script>
+<script src="{{ static('build/js/bootstrap-3.3.7/js/bootstrap.min.js') }}"></script>
+<script src="{{ static('build/js/layer-v3.1.1/layer/layer.js') }}"></script>
+<script src="{{ static('build/js/custom.js') }}"></script>
+<script src="{{ static('build/js/draw_roi.js') }}"></script>
 <script type="text/javascript">
-  var sampleCount = "{{ sample_count }}";
+    {#var sampleCount = "{{ sample_count }}";#}
+
+    function loadSamplePic(index) {
+        picNumberStr = PrefixInteger(index, 6);
+        {#url = "/api/annotation/sample?index="+picNumberStr+'&time='+new Date();#}
+        url = '/media/{{ file }}';
+        $('#img').css({"background": "url('" + url + "') no-repeat center"});
+        $('#cur_id').html(picNumberStr);
+        $('.box').remove();
+        $('#cur_loc').html('');
+    }
+
 </script>
 </body>
 </html>

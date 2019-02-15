@@ -1,4 +1,6 @@
-{# 音频播放类问答题页面 #}
+{# 音频播放类多项选择题页面 #}
+
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -75,17 +77,15 @@
 <body>
 <div id="skPlayer"></div>
 <div class="container">
-    {#    <button onclick="player.play()">player.play()</button>#}
-    {#    <button onclick="player.pause()">player.pause()</button>#}
-    {#    <button onclick="player.toggle()">player.toggle()</button>#}
-    {#    <button onclick="player.prev()">player.prev()</button>#}
-    {#    <br><br>#}
-    {#    <button onclick="player.next()">player.next()</button>#}
+    {#        <button onclick="player.play()">player.play()</button>#}
+    {#        <button onclick="player.pause()">player.pause()</button>#}
+    {#        <button onclick="player.toggle()">player.toggle()</button>#}
+    {#        <button onclick="player.prev()">player.prev()</button><br><br>#}
+    {#        <button onclick="player.next()">player.next()</button>#}
     {# <button onclick="player.switchMusic(7)">player.switchMusic(7)</button><br><br> #}
-    {#    <button onclick="player.toggleList()">player.toggleList()</button>#}
-    {#    <button onclick="player.toggleMute()">player.toggleMute()</button>#}
-    {#    <button onclick="player.switchMode()">player.switchMode()</button>#}
-    {#    <br><br>#}
+    {#        <button onclick="player.toggleList()">player.toggleList()</button>#}
+    {#        <button onclick="player.toggleMute()">player.toggleMute()</button>#}
+    {#        <button onclick="player.switchMode()">player.switchMode()</button><br><br>#}
 </div>
 
 <div class="main">
@@ -102,9 +102,8 @@
                     </div>
 
                     <div class="test_content">
-
                         <div class="test_content_title">
-                            <h2>问答题</h2>
+                            <h2>多选题</h2>
                             <p>
                                 <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
@@ -112,7 +111,6 @@
                     </div>
                     <div class="test_content_nr">
                         <ul>
-
                             {% for qa in qa_list %}
                                 <li id="qu_0_{{ loop.index0 }}">
                                     <div class="test_content_nr_tt">
@@ -122,11 +120,19 @@
 
                                     <div class="test_content_nr_main">
                                         <ul>
-                                            <li>
-                                                <input type="text" class="radioOrCheck" name="q{{ loop.index }}"
-                                                       maxlength="100"
-                                                       id="answer_{{ loop.index }}_question_{{ loop.index }}" required/>
-                                            </li>
+                                            {% set i = loop.index %}
+                                            {% for answer in qa.answers %}
+                                                <li class="option">
+
+                                                    <input type="checkbox" class="radioOrCheck" name="q{{ i }}"
+                                                           value="{{ loop.index }}"
+                                                           id="answer_{{ loop.index }}_question_{{ i }}"/>
+                                                    <label for="answer_{{ loop.index }}_question_{{ i }}">
+                                                        {{ loop.index }}.
+                                                        <p class="ue" style="display: inline;">{{ answer }} </p>
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </li>
@@ -135,8 +141,8 @@
                     </div>
                 </form>
             </div>
-
         </div>
+
         <div class="nr_right">
             <div class="nr_rt_main">
                 <div class="rt_nr1">
@@ -144,11 +150,13 @@
                         <h1>
                             <i class="icon iconfont">&#xe692;</i>答题区域
                         </h1>
-                    </div>
-                    <div class="rt_content">
 
+                    </div>
+
+
+                    <div class="rt_content">
                         <div class="rt_content_tt">
-                            <h2>问答题</h2>
+                            <h2>多选题</h2>
                             <p>
                                 <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
@@ -161,7 +169,9 @@
                             </ul>
                         </div>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>

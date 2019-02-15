@@ -44,6 +44,7 @@ urlpatterns = [
     path('confirm_to_upload_pictures/', views.confirm_to_upload_pictures),
 
     path('player_task/', views.player_task),
+
     path('video_task/', views.video_task),
     path('picture/', views.picture),
     path('circle/', views.circle),

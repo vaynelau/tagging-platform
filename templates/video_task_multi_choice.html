@@ -1,11 +1,11 @@
-{# 音频播放类问答题页面 #}
+{# 视频播放类多项选择题页面 #}
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <title>听音频答题</title>
+    <title>看视频答题</title>
     <link href="{{ static('css/main.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/iconfont.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/test.css') }}" rel="stylesheet" type="text/css"/>
@@ -73,27 +73,17 @@
 </head>
 
 <body>
-<div id="skPlayer"></div>
-<div class="container">
-    {#    <button onclick="player.play()">player.play()</button>#}
-    {#    <button onclick="player.pause()">player.pause()</button>#}
-    {#    <button onclick="player.toggle()">player.toggle()</button>#}
-    {#    <button onclick="player.prev()">player.prev()</button>#}
-    {#    <br><br>#}
-    {#    <button onclick="player.next()">player.next()</button>#}
-    {# <button onclick="player.switchMusic(7)">player.switchMusic(7)</button><br><br> #}
-    {#    <button onclick="player.toggleList()">player.toggleList()</button>#}
-    {#    <button onclick="player.toggleMute()">player.toggleMute()</button>#}
-    {#    <button onclick="player.switchMode()">player.switchMode()</button>#}
-    {#    <br><br>#}
-</div>
+<video width="320" height="240" controls autoplay>
+    <source src="/media/{{ file }}" type="video/mp4">
+    {#    <source src="{{ static('images/movie.ogg') }}" type="video/ogg">#}
+</video>
 
 <div class="main">
     <!--nr start-->
     <div class="test_main">
         <div class="nr_left">
             <div class="test">
-                <form action="/player_task/" method="post">
+                <form action="/video_task/" method="post">
                     {{ csrf_input }}
                     <div class="test_title">
                         <font><input type="submit" name="submit" value="提交"></font>
@@ -104,7 +94,7 @@
                     <div class="test_content">
 
                         <div class="test_content_title">
-                            <h2>问答题</h2>
+                            <h2>多选题</h2>
                             <p>
                                 <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
@@ -112,7 +102,6 @@
                     </div>
                     <div class="test_content_nr">
                         <ul>
-
                             {% for qa in qa_list %}
                                 <li id="qu_0_{{ loop.index0 }}">
                                     <div class="test_content_nr_tt">
@@ -122,11 +111,18 @@
 
                                     <div class="test_content_nr_main">
                                         <ul>
-                                            <li>
-                                                <input type="text" class="radioOrCheck" name="q{{ loop.index }}"
-                                                       maxlength="100"
-                                                       id="answer_{{ loop.index }}_question_{{ loop.index }}" required/>
-                                            </li>
+                                            {% set i = loop.index %}
+                                            {% for answer in qa.answers %}
+                                                <li class="option">
+                                                    <input type="checkbox" class="radioOrCheck" name="q{{ i }}"
+                                                           value="{{ loop.index }}"
+                                                           id="answer_{{ loop.index }}_question_{{ i }}"/>
+                                                    <label for="answer_{{ loop.index }}_question_{{ i }}">
+                                                        {{ loop.index }}.
+                                                        <p class="ue" style="display: inline;">{{ answer }} </p>
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </li>
@@ -145,10 +141,12 @@
                             <i class="icon iconfont">&#xe692;</i>答题区域
                         </h1>
                     </div>
+
+
                     <div class="rt_content">
 
                         <div class="rt_content_tt">
-                            <h2>问答题</h2>
+                            <h2>多选题</h2>
                             <p>
                                 <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
@@ -162,6 +160,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -203,46 +202,5 @@
         });
     });
 </script>
-<div style="text-align:center;">
-</div>
-<script src="{{ static('dist/skPlayer.min.js') }}"></script>
-<script>
-    var player = new skPlayer({
-        autoplay: true,
-        //可选项,自动播放,默认为false,true/false
-        listshow: true,
-        //可选项,列表显示,默认为true,true/false
-        mode: 'listloop',
-        //可选项,循环模式,默认为'listloop'
-        //'listloop',列表循环
-        //'singleloop',单曲循环
-        music: {
-            //必需项,音乐配置
-            {#type: 'cloud',#}
-            {#//必需项,网易云方式指定填'cloud'#}
-            {#source: 317921676#}
-            {#//必需项,网易云音乐歌单id#}
-            {#//登录网易云网页版,在网页地址中拿到#}
-            {#// ... playlist?id=317921676#}
-
-            type: 'file',
-            //必需项,自配置文件方式指定填'file'
-            source: [
-                //必需项,音乐文件数组
-                {
-                    name: '{{ file_name }}',
-                    //必需项,歌名
-                    author: '{{ author }}',
-                    //必需项,歌手
-                    src: '/media/{{ file }}',
-                    //必需项,音乐文件
-                    {#cover: '/media/{{ file }}'#}
-                    //必需项,封面图片
-                },
-            ]
-        }
-    });
-</script>
 </body>
-
 </html>

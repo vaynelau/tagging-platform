@@ -5,7 +5,7 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <title>听音频答题</title>
+    <title>看视频答题</title>
     <link href="{{ static('css/main.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/iconfont.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/test.css') }}" rel="stylesheet" type="text/css"/>
@@ -75,7 +75,7 @@
 <body>
 <video width="320" height="240" controls autoplay>
     <source src="{{ static('images/movie.mp4') }}" type="video/mp4">
-    <source src="{{ static('images/movie.ogg') }}" type="video/ogg">
+    {#    <source src="{{ static('images/movie.ogg') }}" type="video/ogg">#}
 </video>
 
 <div class="main">
@@ -83,87 +83,44 @@
     <div class="test_main">
         <div class="nr_left">
             <div class="test">
-                <form action="player_task" method="post">
+                <form action="/player_task/" method="post">
+                    {{ csrf_input }}
                     <div class="test_title">
-
-                        <font><input type="button" name="submit" value="提交"></font>
-                        <font><input type="button" name="submit" value="放弃，返回"></font>
+                        <font><input type="submit" name="submit" value="提交"></font>
+                        <font><input type="button" onclick="window.location.href='/all_task/'" name="abandon"
+                                     value="放弃，返回"></font>
                     </div>
 
                     <div class="test_content">
 
                         <div class="test_content_title">
-                            <h2>单选题</h2>
+                            <h2>问答题</h2>
                             <p>
-                                <span>共</span><i class="content_lit">3</i><span>题</span>
+                                <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
                         </div>
                     </div>
                     <div class="test_content_nr">
                         <ul>
 
-                            <li id="qu_0_0">
-                                <div class="test_content_nr_tt">
-                                    <i>1</i><span>(1分)</span><font>在生产管理信息系统中，下列操作步骤能正确将工单推进流程的是（ ）</font><b
-                                        class="icon iconfont">&#xe881;</b>
-                                </div>
+                            {% for qa in qa_list %}
+                                <li id="qu_0_{{ loop.index0 }}">
+                                    <div class="test_content_nr_tt">
+                                        <i>{{ loop.index }}</i><font>{{ qa.question }}</font><b
+                                            class="icon iconfont">&#xe881;</b>
+                                    </div>
 
-                                <div class="test_content_nr_main">
-                                    <ul>
-                                        <li>
-
-                                            <input type="text" name="answer1"
-                                                   id="0_answer_1_option_4"
-                                            />
-
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_0_1">
-                                <div class="test_content_nr_tt">
-                                    <i>2</i><span>(1分)</span><font>在营销系统中查询客户有无欠费、余额及抄表数据接待客户时应做到哪些最基本的礼仪？</font><b
-                                        class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li>
-
-                                            <input type="text" name="answer1"
-                                                   id="0_answer_1_option_4"
-                                            />
-
-                                        </li>
-
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_0_2">
-                                <div class="test_content_nr_tt">
-                                    <i>3</i><span>(1分)</span><font>请在下列选项中选择正确进入电力营销系统网址</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li>
-
-                                            <input type="text" name="answer1"
-                                                   id="0_answer_1_option_4"
-                                            />
-
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
+                                    <div class="test_content_nr_main">
+                                        <ul>
+                                            <li>
+                                                <input type="text" class="radioOrCheck" name="q{{ loop.index }}"
+                                                       maxlength="100"
+                                                       id="answer_{{ loop.index }}_question_{{ loop.index }}" required/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </form>
@@ -177,34 +134,24 @@
                         <h1>
                             <i class="icon iconfont">&#xe692;</i>答题区域
                         </h1>
-
                     </div>
-
-
                     <div class="rt_content">
 
                         <div class="rt_content_tt">
                             <h2>问答题</h2>
                             <p>
-                                <span>共</span><i class="content_lit">3</i><span>题</span>
+                                <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
                         </div>
                         <div class="rt_content_nr answerSheet">
                             <ul>
-
-                                <li><a href="#qu_0_0">1</a></li>
-
-                                <li><a href="#qu_0_1">2</a></li>
-
-                                <li><a href="#qu_0_2">3</a></li>
-
+                                {% for qa in qa_list %}
+                                    <li><a href="#qu_0_{{ loop.index0 }}">{{ loop.index }}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
     </div>
