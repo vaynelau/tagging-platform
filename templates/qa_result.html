@@ -66,9 +66,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             </div>
             <h3 class="heading">QUESTION {{ loop.index }}</h3>
             {% set i = loop.index %}
-            {% for label in label_list %}
-                <form action="/check_task/" method="post">
-                    {{ csrf_input }}
+            <form action="/check_task/" method="post">
+                {{ csrf_input }}
+                {% for label in label_list %}
                     <div class="col-md-6">
                         <div class="grid1">
                             <h3>Question: {{ question }}</h3>
@@ -95,13 +95,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             <button type="submit" name="detail" class="btn btn-warning">查看细节</button>
                         {% endif %}
                     </div>
-                </form>
-            {% endfor %}
+                {% endfor %}
 
-            <div style="margin-left: 30px;margin-top:50px;" class='clearfix'>
-                <button type="submit" name="download" onclick="window.open('')" class="btn btn-warning">下载数据集</button>
-                <button type="submit" name="pass_all" class="btn btn-success">全部通过</button>
-            </div>
+                <div style="margin-left: 30px;margin-top:50px;" class='clearfix'>
+                    <button type="button" name="download" onclick="window.location.href='/download_data_set/'"
+                            class="btn btn-warning">下载数据集
+                    </button>
+                    <button type="submit" name="pass_all" class="btn btn-success">全部通过</button>
+                </div>
+            </form>
         </div>
     </div>
     </div>

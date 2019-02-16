@@ -114,10 +114,10 @@
     <section id="section-about" class="section-padding">
         <div class="container">
             <div class="row">
-                {% for label in label_list %}
-                    {#                    <form action="/choice_questions_result/" method="post">#}
-                    <form action="/check_task/" method="post">
-                        {{ csrf_input }}
+                <form action="/check_task/" method="post">
+                    {{ csrf_input }}
+                    {% for label in label_list %}
+
                         <div class="col-md-4 col-sm-4">
                             <div class="about-box">
                                 <div class="about-inner">
@@ -157,13 +157,15 @@
                                 {% endif %}
                             </div>
                         </div>
-                    </form>
-                {% endfor %}
-                <div style="margin-left: 30px;margin-top:50px;">
-                    <button type="submit" name="download" onclick="window.location.href='/download_data_set/'" class="btn btn-danger">下载数据集
-                    </button>
-                    <button type="submit" name="pass_all" class="btn btn-success">全部通过</button>
-                </div>
+
+                    {% endfor %}
+                    <div style="margin-left: 30px;margin-top:50px;">
+                        <button type="button" name="download" onclick="window.location.href='/download_data_set/'"
+                                class="btn btn-danger">下载数据集
+                        </button>
+                        <button type="submit" name="pass_all" class="btn btn-success">全部通过</button>
+                    </div>
+                </form>
             </div><!-- row end -->
         </div><!-- container end -->
     </section>

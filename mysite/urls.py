@@ -53,6 +53,7 @@ urlpatterns = [
     path('picture_detail/', views.picture_detail),
     path('qa_result/', views.qa_result),
     path('choice_questions_result/', views.choice_questions_result),
+    path('download_data_set/', views.download_data_set),
 
 
     # path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),

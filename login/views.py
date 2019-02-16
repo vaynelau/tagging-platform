@@ -1,5 +1,8 @@
 # login/views.py
+import codecs
+import csv
 
+from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib import messages
@@ -427,12 +430,13 @@ def enter_task(request):
     task_templates = ['', '图片', '视频', '音频']
     task_types = ['', '单选式', '多选式', '问答式', '标注式']
 
-    if task.template == 1:
+    if task.template == 1 and task.type == 4:
         return redirect('/circle/')
     if task.template == 2:
         return redirect('/video_task/')
     if task.template == 3:
         return redirect('/player_task/')
+    return redirect('/all_task/')
 
 
 def circle(request):
@@ -688,6 +692,14 @@ def check_task(request):
         elif 'detail' in request.POST and task.type == 4:
             label = models.Label.objects.filter(id=int(request.POST.get('detail'))).first()
             return render(request, 'picture_detail.html', locals())
+        elif 'pass_all' in request.POST:
+            label_list = sub_task.label_set.all()
+            for label in label_list:
+                label.is_rejected = False
+                label.is_unreviewed = False
+                label.save()
+                label.user.total_credits += label.sub_task.task.credit
+                label.user.save()
 
     label_list = sub_task.label_set.all()
     print(label_list)
@@ -802,3 +814,41 @@ def release_task_4(request):
         return redirect("/index/")
     request.session['task_type'] = 4
     return render(request, 'release_task_2.html', locals())
+
+
+def download_data_set(request):
+    if not request.session.get('is_admin', None) or not request.session.get('task_id', None) or not request.session.get(
+            'sub_task_id', None):
+        return redirect('/all_task/')
+    # current_user = models.User.objects.get(name=request.session['username'])
+    task = models.Task.objects.get(id=request.session['task_id'])
+    sub_task = models.SubTask.objects.get(id=request.session['sub_task_id'])
+
+    response = HttpResponse(content_type='text/csv')
+    response.write(codecs.BOM_UTF8)
+    response['Content-Disposition'] = 'attachment; filename="task_{}_sub_task_{}.csv"'.format(task.id, sub_task.id)
+
+    writer = csv.writer(response)
+    label_list = sub_task.label_set.filter()
+    print(label_list)
+    contents = task.content.split('|')
+    question_list = ['User']
+    for i, content in enumerate(contents[1:]):
+        question_list.append('Q{}:{}'.format(i + 1, content.split('&')[0]))
+    writer.writerow(question_list)
+    print(question_list)
+    for label in label_list:
+        answer_list = [label.user.name]
+        for i, content in enumerate(label.result.split('|')[1:]):
+            answer = ''
+            if task.type == 1 or task.type == 2:
+                answers = content.split('&')[1:]
+                for ans in answers:
+                    answer += '{}.{};'.format(chr(64 + int(ans)), contents[i + 1].split('&')[int(ans)])
+            elif task.type == 3:
+                answer = content.split('&')[-1]
+            answer_list.append(answer)
+        writer.writerow(answer_list)
+        print(answer_list)
+
+    return response
