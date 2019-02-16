@@ -15,21 +15,21 @@
 <section id="home" class="templatemo-section">
     <div class="container">
         <div class="row">
-            {% for r in result_list %}
+{#            {% for r in result_list %}#}
                 <form action="/picture_detail/" method="post">
                     {{ csrf_input }}
-                    <div class="col-lg-6 col-md-6 templatemo-position-relative">
+                    <div class="col-lg-6 col-md-6">
                         <div class="templatemo-flex-center templatemo-black-bg text-center">
                             <div class="templatemo-home-image-container">
-                                <img src="{{ static(r.src) }}" class="templatemo-home-image">
+                                <img src="/media/{{ sub_task.file.name.split('.')[0] }}/{{ '{:0>8d}.jpg'.format(label.id) }}" class="templatemo-home-image">
                                 <div class="templatemo-image-overlay">
-                                    <button type="submit" name="reward" class="btn btn-warning"><span
-                                            class="fa fa-thumbs-o-up"></span>打赏
-                                    </button>
+{#                                    <button type="submit" name="reward" class="btn btn-warning"><span#}
+{#                                            class="fa fa-thumbs-o-up"></span>打赏#}
+{#                                    </button>#}
                                     <br>
                                     <br>
                                     <p class="text-uppercase templatemo-gold">The Author:</p>
-                                    <p class="text-uppercase">{{ author }}</p>
+                                    <p class="text-uppercase">{{ label.user }}</p>
 
                                 </div>
                             </div>
@@ -38,25 +38,36 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="templatemo-content-box templatemo-second-box">
                             <h2 class="templatemo-brown">Details</h2>
-                            {% for i in r.info %}
+                            {% for result in label.result.split('&')[:-1] %}
                                 <h3 class="templatemo-gold"><span class="text-black">标注类型：</span></h3>
-                                <p class="margin-top-30">{{ i.type }}</p>
+                                <p class="margin-top-30">{{ type }}</p>
                                 <h3 class="templatemo-gold"><span class="text-black">标注区域：</span></h3>
-                                <p class="margin-top-30">{{ i.content }}</p>
+                                <p class="margin-top-30">{{ result }}</p>
                             {% endfor %}
                             <button type="submit" name="download" onclick="window.open('')" class="btn btn-warning">
                                 下载数据集信息
                             </button>
                             <br></br>
-                            <button type="submit" name="pass" class="btn btn-success">通过</button>
-                            <br></br>
-                            <button type="submit" name="back" class="btn btn-danger">退回</button>
+                            {% if label.is_unreviewed %}
+                                    <button type="submit" class="btn btn-success" name="pass"
+                                            value="{{ label.id }}">通过
+                                    </button>
+                                    <br></br>
+                                    <button type="submit" class="btn btn-success" name="back"
+                                            value="{{ label.id }}">退回
+                                    </button>
+                                {% elif label.is_rejected %}
+                                    <button type="button" class="btn btn-success">已退回
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-success">已通过
+                                    </button>
+                                {% endif %}
                         </div>
                     </div>
                 </form>
                 </div>
-
-            {% endfor %}
+{#            {% endfor %}#}
     </div>
     </div>
 </section>

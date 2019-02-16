@@ -44,6 +44,7 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
+            <span>当前文件：<strong id="cur_id"></strong></span>
             <span>坐标区域：<strong id="cur_loc"></strong></span>
         </div>
     </div>
@@ -55,16 +56,15 @@
                 <span>当前样本标注状态：</span>
                 <textarea class="form-control" name="position" id="annotation_cur_status" rows="6" required></textarea>
             </div>
-            {#        <div class="col-md-3">#}
-            {#            <span>所有样本标注状态：</span>#}
-            {#            <textarea class="form-control" id="annotation_total_status" rows="6"></textarea>#}
-            {#        </div>#}
+            {#                    <div class="col-md-3">#}
+            {#                        <span>所有样本标注状态：</span>#}
+            {#                        <textarea class="form-control" id="annotation_total_status" rows="6"></textarea>#}
+            {#                    </div>#}
             <div class="col-md-1">
                 <br/>
                 <button type="submit" class="btn btn-success" id="btn_save">提交结果</button>
                 <br> <br/>
-                <button type="button" onclick="window.location.href='/all_task/'" class="btn btn-default"
-                        id="btn_return">返回
+                <button type="button" onclick="window.location.href='/all_task/'" class="btn btn-default">返回
                 </button>
             </div>
         </form>
@@ -79,14 +79,14 @@
 <script src="{{ static('build/js/custom.js') }}"></script>
 <script src="{{ static('build/js/draw_roi.js') }}"></script>
 <script type="text/javascript">
-    {#var sampleCount = "{{ sample_count }}";#}
+    {#var sampleCount = "1";#}
 
     function loadSamplePic(index) {
-        picNumberStr = PrefixInteger(index, 6);
+        {#picNumberStr = PrefixInteger(index, 6);#}
         {#url = "/api/annotation/sample?index="+picNumberStr+'&time='+new Date();#}
         url = '/media/{{ file }}';
-        $('#img').css({"background": "url('" + url + "') no-repeat center"});
-        $('#cur_id').html(picNumberStr);
+        $('#img').css({"background": "url('" + url + "') no-repeat"});
+        $('#cur_id').html('{{ file_name }}');
         $('.box').remove();
         $('#cur_loc').html('');
     }

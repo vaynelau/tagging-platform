@@ -470,6 +470,7 @@ def circle(request):
             label.result = result
             label.task_user = task_user
             label.save()
+            tools.draw(sub_task, label, result)
             del request.session['sub_task_id']
 
     qa_list = []
@@ -479,16 +480,17 @@ def circle(request):
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
 
     sub_task = models.get_untagged_sub_task(task, current_user)
-    if sub_task:
-        request.session['sub_task_id'] = sub_task.id
-        file = sub_task.file
-        print(file)
-        # file_name = str(file).split('/')[-1]
-        # author = task.admin
-    else:
+    if not sub_task:
         print('该任务已标注完成！')
         # messages.success(request, "该任务已标注完成！")
         return redirect('/all_task/')
+
+    request.session['sub_task_id'] = sub_task.id
+    file = sub_task.file
+    print(file)
+    file_name = str(file).split('/')[-1]
+    # author = task.admin
+
     return render(request, 'circle.html', locals())
 
 
@@ -516,6 +518,9 @@ def video_task(request):
                 for answer in answers:
                     result += '&' + answer
                 i += 1
+            if result == '' and task.type == 2:
+                print('请至少选择一项结果！')
+                return render(request, 'video_task_multi_choice.html', locals())
         else:
             result = request.POST.get('position').replace('\r\n', '&')
 
@@ -539,16 +544,24 @@ def video_task(request):
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
 
     sub_task = models.get_untagged_sub_task(task, current_user)
-    if sub_task:
-        request.session['sub_task_id'] = sub_task.id
-        file = sub_task.file
-        print(file)
-        # file_name = str(file).split('/')[-1]
-        # author = task.admin
-    else:
+    if not sub_task:
         print('该任务已标注完成！')
         # messages.success(request, "该任务已标注完成！")
         return redirect('/all_task/')
+
+    request.session['sub_task_id'] = sub_task.id
+    file = sub_task.file
+    file_name = file.name.split('/')[-1].split('.')[0]
+    print(file_name)
+    simple_count = 0
+    img_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task.id), 'frames'])
+    if os.path.exists(img_path):
+        img_list = os.listdir(img_path)
+        for img in img_list:
+            if img[:-11] != file_name:
+                img_list.remove(img)
+        print(img_list)
+        simple_count = len(img_list)
 
     if task.type == 1:
         return render(request, 'video_task.html', locals())
@@ -583,6 +596,9 @@ def player_task(request):
             for answer in answers:
                 result += '&' + answer
             i += 1
+        if result == '' and task.type == 2:
+            print('请至少选择一项结果！')
+            return render(request, 'player_task_multi_choice.html', locals())
 
         sub_task_id = request.session.get('sub_task_id', None)
         if sub_task_id:
@@ -604,16 +620,16 @@ def player_task(request):
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
 
     sub_task = models.get_untagged_sub_task(task, current_user)
-    if sub_task:
-        request.session['sub_task_id'] = sub_task.id
-        file = sub_task.file
-        file_name = str(file).split('/')[-1]
-        author = task.admin
-        print(file_name)
-    else:
+    if not sub_task:
         print('该任务已标注完成！')
         # messages.success(request, "该任务已标注完成！")
         return redirect('/all_task/')
+
+    request.session['sub_task_id'] = sub_task.id
+    file = sub_task.file
+    file_name = str(file).split('/')[-1]
+    author = task.admin
+    print(file_name)
 
     if task.type == 1:
         return render(request, 'player_task.html', locals())
@@ -639,16 +655,16 @@ def reject_label(request):
 
 
 def accept_label(request):
-    if not digit.match(request.POST.get('commit')):
+    if not digit.match(request.POST.get('pass')):
         print('该label_id不合法！')
         return
     sub_task = models.SubTask.objects.get(id=request.session['sub_task_id'])
-    label_id = int(request.POST.get('commit'))
+    label_id = int(request.POST.get('pass'))
     label = sub_task.label_set.filter(pk=label_id).first()
     if not label:
         print('该标签不存在！')
         return
-    label.is_rejected = False
+    # label.is_rejected = False
     label.is_unreviewed = False
     label.save()
     label.user.total_credits += label.sub_task.task.credit
@@ -665,26 +681,34 @@ def check_task(request):
 
     if request.method == "POST":
         print(request.POST)
-        if 'commit' in request.POST:
+        if 'pass' in request.POST:
             accept_label(request)
         elif 'back' in request.POST:
             reject_label(request)
+        elif 'detail' in request.POST and task.type == 4:
+            label = models.Label.objects.filter(id=int(request.POST.get('detail'))).first()
+            return render(request, 'picture_detail.html', locals())
 
     label_list = sub_task.label_set.all()
+    print(label_list)
     qa_list = []
     contents = task.content.split('|')
-    for i, item in enumerate(contents[1:]):
-        qa = item.split('&')
-        answers = []
-        for ans in qa[1:]:
-            answers.append([ans, 0])
-        for label in label_list:
-            ans_list = label.result.split('|')[i + 1].split('&')[1:]
-            for ans in ans_list:
-                answers[int(ans) - 1][1] += 1
-        qa_list.append({'question': qa[0], 'answers': answers})
-
-    return render(request, 'check_task.html', locals())
+    if task.type == 1 or task.type == 2:
+        for i, item in enumerate(contents[1:]):
+            qa = item.split('&')
+            answers = []
+            for ans in qa[1:]:
+                answers.append([ans, 0])
+            for label in label_list:
+                ans_list = label.result.split('|')[i + 1].split('&')[1:]
+                for ans in ans_list:
+                    answers[int(ans) - 1][1] += 1
+            qa_list.append({'question': qa[0], 'answers': answers})
+        return render(request, 'choice_questions_result.html', locals())
+    elif task.type == 3:
+        return render(request, 'qa_result.html', locals())
+    else:
+        return render(request, 'picture_result.html', locals())
 
 
 def one_task(request):

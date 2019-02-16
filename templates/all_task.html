@@ -735,10 +735,7 @@
                 </div>
             {% endif %}
             <!-- row end -->
-
-
             {% if request.session.is_login %}
-
                 <div class="row" id="Rejected_Tasks">
                     <div class="col-md-7">
                         <section id="rejected_tasks" class="panel tasks-widget">
@@ -751,7 +748,6 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-
                                         <th>Project</th>
                                         <th>Type</th>
                                         <th>Manager</th>
@@ -777,7 +773,6 @@
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
                                                         <td>{{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
-
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -789,9 +784,7 @@
                                                             <td><span class="label label-danger">finished</span></td>
                                                         {% endif %}
                                                         <td><span
-
                                                                 class="label label-primary">{{ task.max_tagged_num - task.users.count() }} participates needed</span>
-
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
