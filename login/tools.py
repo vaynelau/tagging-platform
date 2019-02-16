@@ -72,16 +72,17 @@ def draw(sub_task, label, pos):
 
 
 def draw_2(sub_task, label, pos):
-    img_path = os.sep.join([MEDIA_ROOT, sub_task.file.name])
-    label_dir = img_path.split('.')[0]
-    print(label_dir)
-    if not os.path.exists(label_dir):
-        os.mkdir(label_dir)
-    new_img_path = os.sep.join([label_dir, '{:0>8d}.jpg'.format(label.id)])
-    img = cv2.imread(img_path)
-    print(img.shape)
-    pos_list = pos.split('|')
-    for pos in pos_list[:-1]:
-        p = pos.split('&')[1].split(',')
-        cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
-    cv2.imwrite(new_img_path, img)
+    # img_path = os.sep.join([MEDIA_ROOT, sub_task.file.name])
+    # label_dir = img_path.split('.')[0]
+    # print(label_dir)
+    # if not os.path.exists(label_dir):
+    #     os.mkdir(label_dir)
+    # new_img_path = os.sep.join([label_dir, '{:0>8d}.jpg'.format(label.id)])
+    # img = cv2.imread(img_path)
+    # print(img.shape)
+    # pos_list = pos.split('|')
+    # for pos in pos_list[:-1]:
+    #     p = pos.split('&')[1].split(',')
+    #     cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
+    # cv2.imwrite(new_img_path, img)
+    pass
