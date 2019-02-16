@@ -44,6 +44,7 @@
 <body class="skin-black">
 <!-- header logo: style can be found in header.less -->
 <header class="header">
+
     <a href="/all_task/" class="logo">
         Director
     </a>
@@ -289,8 +290,15 @@
                         </ul>
                     {% endif %}
         </div>
+
+        {% for message in get_messages(request) %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+            </div>
+        {% endfor %}
     </nav>
 </header>
+
 <div class="wrapper row-offcanvas row-offcanvas-left">
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="left-side sidebar-offcanvas">
@@ -592,7 +600,8 @@
                                                     <div class="task-title">
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
-                                                        <td>{{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
+                                                        <td>
+                                                            {{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
 
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
@@ -688,7 +697,8 @@
                                                     <div class="task-title">
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
-                                                        <td>{{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
+                                                        <td>
+                                                            {{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
 
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
@@ -772,7 +782,8 @@
                                                     <div class="task-title">
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
-                                                        <td>{{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
+                                                        <td>
+                                                            {{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}
                                                         <!-- <td>Steve</td> -->
@@ -856,7 +867,8 @@
                                                     <div class="task-title">
                                                         <td>{{ task.id }}</td>
                                                         <td>{{ task.name }}</td>
-                                                        <td>{{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
+                                                        <td>
+                                                            {{ task_templates[task.template] }}{{ task_types[task.type] }}</td>
 
                                                         <td>{{ task.admin }}</td>
                                                         {#                                                        <td>{{ task.details }}</td>#}

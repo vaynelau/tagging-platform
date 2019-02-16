@@ -102,8 +102,8 @@ $(function (e) {
         $('#cur_loc').html(regionLoc);
         var picId = $('#cur_id').html();
         var regionClass = $('input[name="radio_region"]:checked').val();
-        // tagStr = picId+','+regionLoc+","+regionClass;
-        tagStr = picId+','+regionLoc;
+        tagStr = picId+'&'+regionLoc+"&"+regionClass;
+        // tagStr = picId+','+regionLoc;
         box_id = $(obj).attr('box_id');
         boxListOfSample[box_id] = tagStr;
         updateCurTagStatus();

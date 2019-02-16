@@ -16,7 +16,7 @@
     <div class="container">
         <div class="row">
 {#            {% for r in result_list %}#}
-                <form action="/picture_detail/" method="post">
+                <form action="/check_task/" method="post">
                     {{ csrf_input }}
                     <div class="col-lg-6 col-md-6">
                         <div class="templatemo-flex-center templatemo-black-bg text-center">
@@ -38,13 +38,13 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="templatemo-content-box templatemo-second-box">
                             <h2 class="templatemo-brown">Details</h2>
-                            {% for result in label.result.split('&')[:-1] %}
+                            {% for result in label.result.split('|')[:-1] %}
                                 <h3 class="templatemo-gold"><span class="text-black">标注类型：</span></h3>
-                                <p class="margin-top-30">{{ type }}</p>
+                                <p class="margin-top-30">{{ contents[int(result.split('&')[-1])] }}</p>
                                 <h3 class="templatemo-gold"><span class="text-black">标注区域：</span></h3>
-                                <p class="margin-top-30">{{ result }}</p>
+                                <p class="margin-top-30">{{ result.split('&')[1] }}</p>
                             {% endfor %}
-                            <button type="submit" name="download" onclick="window.open('')" class="btn btn-warning">
+                            <button type="button" name="download" onclick="window.location.href='/download_data_set/'" class="btn btn-warning">
                                 下载数据集信息
                             </button>
                             <br></br>

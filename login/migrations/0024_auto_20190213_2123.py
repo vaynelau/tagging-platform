@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subtask',
             name='file',
-            field=models.FileField(default=django.utils.timezone.now, max_length=256, upload_to=login.models.img_directory_path),
+            field=models.FileField(default=django.utils.timezone.now, max_length=256, upload_to=login.models.file_directory_path),
             preserve_default=False,
         ),
     ]

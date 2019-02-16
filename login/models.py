@@ -11,9 +11,14 @@ def gen_md5(s, salt='9527'):  # 加盐
     return md5.hexdigest()
 
 
-def img_directory_path(instance, filename):
+def file_directory_path(instance, filename):
     # 文件上传到MEDIA_ROOT/task_<id>/<filename>目录中
-    return 'task_{0}/{1}'.format(instance.task.id, filename)
+    return 'task_{0}/{1}.{2}'.format(instance.task.id, instance.id, filename.split('.')[-1])
+
+
+def screenshot_directory_path(instance, filename):
+    # 文件上传到MEDIA_ROOT/task_<id>/<filename>目录中
+    return 'task_{0}/{1}/{2}'.format(instance.task.id, instance.id, filename)
 
 
 def get_untagged_sub_task(task, user):
@@ -82,7 +87,7 @@ class TaskUser(models.Model):
 class SubTask(models.Model):
     """子任务表"""
 
-    file = models.FileField(max_length=256, upload_to=img_directory_path)
+    file = models.FileField(max_length=256, upload_to=file_directory_path)
     task = models.ForeignKey('Task', null=True, on_delete=models.CASCADE)
     result = models.TextField(max_length=1024)  # 保存最终标记结果
     # num_tagged = models.IntegerField(default=0)
@@ -103,3 +108,9 @@ class Label(models.Model):
 
     class Meta:
         ordering = ["m_time"]
+
+
+class Screenshot(models.Model):
+    sub_task = models.ForeignKey('SubTask', on_delete=models.CASCADE, null=True)
+    # label = models.ForeignKey('Label', on_delete=models.CASCADE, null=True)
+    image = models.FileField(max_length=256, upload_to=screenshot_directory_path)

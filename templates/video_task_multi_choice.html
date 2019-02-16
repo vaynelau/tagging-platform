@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <title>看视频答题</title>
+    <link href="{{ static('lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ static('css/main.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/iconfont.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/test.css') }}" rel="stylesheet" type="text/css"/>
@@ -82,6 +83,11 @@
     <!--nr start-->
     <div class="test_main">
         <div class="nr_left">
+            {% for message in get_messages(request) %}
+                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+                </div>
+            {% endfor %}
             <div class="test">
                 <form action="/video_task/" method="post">
                     {{ csrf_input }}

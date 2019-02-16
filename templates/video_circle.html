@@ -34,7 +34,22 @@
     <div></div>
     <div class="row">
         <div class="col-md-1"></div>
-        <div class="col-md-10" id="radio-type">标注任务：
+        <div class="col-md-10" id="radio-type">标注类型：
+            {% for qa in qa_list %}
+                {% if loop.index == 1 %}
+                    <label class="radio-inline">
+                        <input type="radio" name="radio_region" checked="checked" id="region_{{ loop.index }}"
+                               value="{{ loop.index }}">
+                        {{ qa.question }}
+                    </label>
+                {% else %}
+                    <label class="radio-inline">
+                        <input type="radio" name="radio_region" id="region_{{ loop.index }}"
+                               value="{{ loop.index }}">
+                        {{ qa.question }}
+                    </label>
+                {% endif %}
+            {% endfor %}
         </div>
         <div class="col-md-1"></div>
     </div>
@@ -57,7 +72,8 @@
             </div>
             <div class="col-md-3">
                 <span>所有样本标注状态：</span>
-                <textarea class="form-control" name="position" id="annotation_total_status" rows="6" required></textarea>
+                <textarea class="form-control" name="position" id="annotation_total_status" rows="6"
+                          required></textarea>
             </div>
             <div class="col-md-1">
                 <br/>
@@ -82,7 +98,7 @@
     function loadSamplePic(index) {
         picNumberStr = PrefixInteger(index, 6) + '.jpg';
         {#url = "/api/annotation/sample?index="+picNumberStr+'&time='+new Date();#}
-        url = '/media/task_{{ task.id }}/frames/{{ file_name }}_' + picNumberStr;
+        url = '/media/task_{{ task.id }}/{{ sub_task.id }}/' + picNumberStr;
         $('#img').css({"background": "url('" + url + "') no-repeat"});
         $('#cur_id').html(picNumberStr);
         $('.box').remove();

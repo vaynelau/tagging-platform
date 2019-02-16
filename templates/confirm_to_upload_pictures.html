@@ -104,7 +104,7 @@
                     <div class="col-md-4 branding coffee grid-item col-sm-4">
                         <div class="item-box">
                             <a href="#">
-                                <img src="/media/{{ sub_task.file }}" class="item-container">
+                                <img src="{{ sub_task.file.url }}" class="item-container">
                                 <div class="item-mask">
                                     <div class="item-caption">
                                         <button type="submit" name="abandon" value="{{ sub_task.id }}" class="btn btn-danger">从图集中删除</button>

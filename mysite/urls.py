@@ -49,10 +49,6 @@ urlpatterns = [
     path('picture/', views.picture),
     path('circle/', views.circle),
     path('choose/', views.choose),
-    path('picture_result/', views.picture_result),
-    path('picture_detail/', views.picture_detail),
-    path('qa_result/', views.qa_result),
-    path('choice_questions_result/', views.choice_questions_result),
     path('download_data_set/', views.download_data_set),
 
 

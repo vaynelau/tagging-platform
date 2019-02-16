@@ -117,7 +117,7 @@ function save_info() {
     updateTotalTagStatus();
     boxId = 1;
     boxListOfSample = {};
-    updateCurTagStatus()
+    updateCurTagStatus();
 }
 
 

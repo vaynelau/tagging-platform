@@ -17,7 +17,11 @@
 </head>
 
 <body data-spy="scroll" data-target=".navbar-collapse">
-
+{% for message in get_messages(request) %}
+    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+    </div>
+{% endfor %}
 <!-- start navigation -->
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -45,7 +49,7 @@
 <!-- end navigation -->
 
 <!-- start work -->
-{#{% for p in  pic_list %}#}
+{% for label in label_list %}
 <section id="work" class="text-center">
     <div class="container">
         <div class="row">
@@ -59,7 +63,7 @@
                     tincidunt tristique mauris.</p>
             </div>
             <div class="col-md-2"></div>
-            {% for label in label_list %}
+{#            {% for label in label_list %}#}
                 <form action="/check_task/" method="post">
                     {{ csrf_input }}
                     <div class="col-sm-6 col-md-4 wow fadeInLeft" data-wow-delay="2000">
@@ -72,7 +76,9 @@
                                     <button type="submit" class="btn btn-success" name="pass"
                                             value="{{ label.id }}">通过
                                     </button>
-                                    <button type="submit" name="detail" value="{{ label.id }}" class="btn btn-warning">查看细节</button>
+                                    <button type="submit" name="detail" value="{{ label.id }}" class="btn btn-warning">
+                                        查看细节
+                                    </button>
                                     <br></br>
                                     <button type="submit" class="btn btn-success" name="back"
                                             value="{{ label.id }}">退回
@@ -80,17 +86,21 @@
                                 {% elif label.is_rejected %}
                                     <button type="button" class="btn btn-success">已退回
                                     </button>
-                                    <button type="submit" name="detail" value="{{ label.id }}" class="btn btn-warning">查看细节</button>
+                                    <button type="submit" name="detail" value="{{ label.id }}" class="btn btn-warning">
+                                        查看细节
+                                    </button>
                                 {% else %}
                                     <button type="button" class="btn btn-success">已通过
                                     </button>
-                                    <button type="submit" name="detail" value="{{ label.id }}" class="btn btn-warning">查看细节</button>
+                                    <button type="submit" name="detail" value="{{ label.id }}" class="btn btn-warning">
+                                        查看细节
+                                    </button>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                 </form>
-            {% endfor %}
+{#            {% endfor %}#}
             {#                <div class="col-sm-6 col-md-4 wow fadeInRight" data-wow-delay="2000">#}
             {#                    <div class="work_thumb">#}
             {#                        <img src="{{ static('images/work-img-1.jpg') }}" class="img-responsive" alt="work">#}
@@ -102,7 +112,7 @@
         </div>
     </div>
 </section>
-{#{% endfor %}#}
+{% endfor %}
 <!-- end work -->
 
 <!-- start javascript -->

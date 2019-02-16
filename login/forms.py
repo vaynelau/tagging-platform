@@ -37,7 +37,7 @@ class TaskForm(forms.Form):
     name = forms.CharField(label="任务名", max_length=128, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'style': 'margin-top: 30px;', 'placeholder': 'your task name'}))
 
-    files = forms.FileField(label='请选择文件', required=False,
+    files = forms.FileField(label='请选择文件', required=True,
                             widget=forms.ClearableFileInput({'multiple': True, 'style': 'font-size: 22px;'}))
 
     q1 = forms.CharField(label='问题1', max_length=128, required=True, widget=forms.TextInput())

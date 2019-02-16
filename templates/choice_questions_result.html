@@ -30,6 +30,11 @@
 <![endif]-->
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-right">
+{% for message in get_messages(request) %}
+        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+        </div>
+    {% endfor %}
 <!-- Navigation -->
 <nav class="navbar navbar-custom navbar-main navbar-fixed-top">
     <div class="container">
