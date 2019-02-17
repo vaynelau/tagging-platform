@@ -1,11 +1,11 @@
-{# 视频播放类单项选择题页面 #}
+{# 图片类单项选择题页面 #}
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <title>看视频答题</title>
+    <title>看图片答题</title>
     <link href="{{ static('css/main.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/iconfont.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/test.css') }}" rel="stylesheet" type="text/css"/>
@@ -73,17 +73,15 @@
 </head>
 
 <body>
-<video width="320" height="240" controls autoplay>
-    <source src="{{ sub_task.file.url }}" type="video/mp4">
-    {#    <source src="{{ static('images/movie.ogg') }}" type="video/ogg">#}
-</video>
+
+<img src="{{ sub_task.file.url }}"  width="320" height="240">
 
 <div class="main">
     <!--nr start-->
     <div class="test_main">
         <div class="nr_left">
             <div class="test">
-                <form action="/video_task/" method="post">
+                <form action="/picture_task/" method="post">
                     {{ csrf_input }}
                     <div class="test_title">
                         <font><input type="submit" name="submit" value="提交"></font>

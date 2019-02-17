@@ -31,10 +31,10 @@
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-right">
 {% for message in get_messages(request) %}
-        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
-        </div>
-    {% endfor %}
+    <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+    </div>
+{% endfor %}
 <!-- Navigation -->
 <nav class="navbar navbar-custom navbar-main navbar-fixed-top">
     <div class="container">
@@ -92,10 +92,10 @@
                 <div class="col-md-offset-2 col-md-8 col-sm-12">
                     <div class="section-head text-center">
                         {% if task.template == 1 %}
-                            <img src="/media/{{ sub_task.file }}" width="200" height="200">
+                            <img src="{{ sub_task.file.url }}" width="200" height="200">
                         {% elif task.template == 2 %}
                             <video width="320" height="240" controls autoplay>
-                                <source src="/media/{{ sub_task.file }}" type="video/mp4">
+                                <source src="{{ sub_task.file.url }}" type="video/mp4">
                             </video>
                         {% endif %}
                         {% set i = loop.index %}

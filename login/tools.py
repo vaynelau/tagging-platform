@@ -63,7 +63,7 @@ def draw(sub_task, label, pos):
         os.mkdir(label_dir)
     new_img_path = os.sep.join([label_dir, '{:0>8d}.jpg'.format(label.id)])
     img = cv2.imread(img_path)
-    print(img.shape)
+    print(img_path)
     pos_list = pos.split('|')
     for pos in pos_list[:-1]:
         p = pos.split('&')[1].split(',')

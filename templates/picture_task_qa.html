@@ -1,11 +1,11 @@
-{# 视频播放类单项选择题页面 #}
+{# 图片类问答题页面 #}
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <title>看视频答题</title>
+    <title>看图片答题</title>
     <link href="{{ static('css/main.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/iconfont.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ static('css/test.css') }}" rel="stylesheet" type="text/css"/>
@@ -73,17 +73,15 @@
 </head>
 
 <body>
-<video width="320" height="240" controls autoplay>
-    <source src="{{ sub_task.file.url }}" type="video/mp4">
-    {#    <source src="{{ static('images/movie.ogg') }}" type="video/ogg">#}
-</video>
+
+<img src="{{ sub_task.file.url }}"  width="320" height="240" >
 
 <div class="main">
     <!--nr start-->
     <div class="test_main">
         <div class="nr_left">
             <div class="test">
-                <form action="/video_task/" method="post">
+                <form action="/picture_task/" method="post">
                     {{ csrf_input }}
                     <div class="test_title">
                         <font><input type="submit" name="submit" value="提交"></font>
@@ -94,7 +92,7 @@
                     <div class="test_content">
 
                         <div class="test_content_title">
-                            <h2>单选题</h2>
+                            <h2>问答题</h2>
                             <p>
                                 <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
@@ -102,6 +100,7 @@
                     </div>
                     <div class="test_content_nr">
                         <ul>
+
                             {% for qa in qa_list %}
                                 <li id="qu_0_{{ loop.index0 }}">
                                     <div class="test_content_nr_tt">
@@ -111,19 +110,11 @@
 
                                     <div class="test_content_nr_main">
                                         <ul>
-                                            {% set i = loop.index %}
-                                            {% for answer in qa.answers %}
-                                                <li class="option">
-
-                                                    <input type="radio" class="radioOrCheck" name="q{{ i }}"
-                                                           value="{{ loop.index }}"
-                                                           id="answer_{{ loop.index }}_question_{{ i }}" required/>
-                                                    <label for="answer_{{ loop.index }}_question_{{ i }}">
-                                                        {{ chr(64 + loop.index) }}.
-                                                        <p class="ue" style="display: inline;">{{ answer }} </p>
-                                                    </label>
-                                                </li>
-                                            {% endfor %}
+                                            <li>
+                                                <input type="text" class="radioOrCheck" name="q{{ loop.index }}"
+                                                       maxlength="100"
+                                                       id="answer_{{ loop.index }}_question_{{ loop.index }}" required/>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
@@ -142,12 +133,10 @@
                             <i class="icon iconfont">&#xe692;</i>答题区域
                         </h1>
                     </div>
-
-
                     <div class="rt_content">
 
                         <div class="rt_content_tt">
-                            <h2>单选题</h2>
+                            <h2>问答题</h2>
                             <p>
                                 <span>共</span><i class="content_lit">{{ len(qa_list) }}</i><span>题</span>
                             </p>
@@ -161,7 +150,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -203,5 +191,7 @@
         });
     });
 </script>
+
 </body>
+
 </html>

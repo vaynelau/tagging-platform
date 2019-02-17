@@ -441,8 +441,8 @@ def enter_task(request):
     # task_templates = ['', '图片', '视频', '音频']
     # task_types = ['', '单选式', '多选式', '问答式', '标注式']
 
-    if task.template == 1 and task.type == 4:
-        return redirect('/circle/')
+    if task.template == 1:
+        return redirect('/picture_task/')
     if task.template == 2:
         return redirect('/video_task/')
     if task.template == 3:
@@ -450,32 +450,37 @@ def enter_task(request):
     return redirect('/all_task/')
 
 
-def circle(request):
+def picture_task(request):
     if not request.session.get('is_login', None) or not request.session.get('task_id', None):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
     task = models.Task.objects.get(id=request.session['task_id'])
-    if task.template != 1 or task.type != 4:
-        messages.error(request, '该任务不是图片标注类任务！')
+    if task.template != 1:
+        messages.error(request, '该任务不是图片类任务！')
         return redirect('/all_task/')
     if not task.users.filter(name=request.session['username']).first():
         messages.error(request, '请先收藏该任务再开始标注！')
         return redirect('/all_task/')
 
-    if request.method == "POST" and 'position' in request.POST:
+    if request.method == "POST":
         print(request.POST)
-        # result = ''
-        # i = 1
-        # while 'q' + str(i) in request.POST:
-        #     result += '|' + 'q' + str(i)
-        #     answers = request.POST.getlist('q' + str(i))
-        #     print(answers)
-        #     for answer in answers:
-        #         result += '&' + answer
-        #     i += 1
-        result = request.POST.get('position').replace('\r\n', '|')
+        result = ''
+        if task.type != 4:
+            i = 1
+            while 'q' + str(i) in request.POST:
+                result += '|' + 'q' + str(i)
+                answers = request.POST.getlist('q' + str(i))
+                print(answers)
+                for answer in answers:
+                    result += '&' + answer
+                i += 1
+        else:
+            result = request.POST.get('position').replace('\r\n', '|')
+
         sub_task_id = request.session.get('sub_task_id', None)
-        if sub_task_id:
+        if result == '' and task.type == 2:
+            messages.error(request, '请至少选择一项结果！')
+        elif sub_task_id:
             sub_task = models.SubTask.objects.get(pk=sub_task_id)
             print(sub_task)
             task_user = current_user.taskuser_set.filter(task=task).first()
@@ -485,7 +490,8 @@ def circle(request):
             label.result = result
             label.task_user = task_user
             label.save()
-            tools.draw(sub_task, label, result)
+            if task.type == 4:
+                tools.draw(sub_task, label, result)
             del request.session['sub_task_id']
 
     sub_task = models.get_untagged_sub_task(task, current_user)
@@ -493,13 +499,21 @@ def circle(request):
         messages.success(request, "该任务已完成！")
         return redirect('/all_task/')
 
+    request.session['sub_task_id'] = sub_task.id
     qa_list = []
     contents = task.content.split('|')
     for item in contents[1:]:
         qa = item.split('&')
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
 
-    return render(request, 'circle.html', locals())
+    if task.type == 1:
+        return render(request, 'picture_task.html', locals())
+    elif task.type == 2:
+        return render(request, 'picture_task_multi_choice.html', locals())
+    elif task.type == 3:
+        return render(request, 'picture_task_qa.html', locals())
+    else:
+        return render(request, 'picture_circle.html', locals())
 
 
 def video_task(request):
