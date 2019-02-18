@@ -112,5 +112,6 @@ class Label(models.Model):
 
 class Screenshot(models.Model):
     sub_task = models.ForeignKey('SubTask', on_delete=models.CASCADE, null=True)
-    # label = models.ForeignKey('Label', on_delete=models.CASCADE, null=True)
-    image = models.FileField(max_length=256, upload_to=screenshot_directory_path)
+    label = models.ForeignKey('Label', on_delete=models.CASCADE, null=True)
+    result = models.TextField(max_length=1024)  # 保存标记结果
+    image = models.FileField(max_length=256)

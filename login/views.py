@@ -22,7 +22,7 @@ def index(request):
 
 def login(request):
     if request.session.get('is_login', None):
-        # messages.warning(request, "请勿重复登录！")
+        messages.error(request, "请勿重复登录！")
         return redirect("/index/")
 
     if request.method == "POST":
@@ -59,7 +59,7 @@ def login(request):
 
 def register(request):
     if request.session.get('is_login', None):
-        # messages.warning(request, "请先退出后再注册！")
+        messages.error(request, "请先退出后再注册！")
         return redirect("/index/")
 
     if request.method == "POST":
@@ -106,7 +106,7 @@ def register(request):
 
 def logout(request):
     if not request.session.get('is_login', None):
-        # messages.warning(request, "您尚未登录！")
+        messages.error(request, "您尚未登录！")
         return redirect("/index/")
 
     request.session.flush()
@@ -116,46 +116,46 @@ def logout(request):
 
 def choose(request):
     if not request.session.get('is_admin', None):
-        messages.warning(request, "页面已过期！")
-        return redirect("/index/")
+        messages.error(request, "页面已过期！")
+        return redirect("/all_task/")
     return render(request, 'choose.html', locals())
 
 
 def release_task_1(request):
     if not request.session.get('is_admin', None):
-        # messages.warning(request, "页面已过期！")
-        return redirect("/index/")
+        messages.error(request, "页面已过期！")
+        return redirect("/all_task/")
     request.session['task_type'] = 1
     return render(request, 'release_task.html', locals())
 
 
 def release_task_2(request):
     if not request.session.get('is_admin', None):
-        # messages.warning(request, "页面已过期！")
-        return redirect("/index/")
+        messages.error(request, "页面已过期！")
+        return redirect("/all_task/")
     request.session['task_type'] = 2
     return render(request, 'release_task.html', locals())
 
 
 def release_task_3(request):
     if not request.session.get('is_admin', None):
-        # messages.warning(request, "页面已过期！")
-        return redirect("/index/")
+        messages.error(request, "页面已过期！")
+        return redirect("/all_task/")
     request.session['task_type'] = 3
     return render(request, 'release_task_1.html', locals())
 
 
 def release_task_4(request):
     if not request.session.get('is_admin', None):
-        # messages.warning(request, "页面已过期！")
-        return redirect("/index/")
+        messages.error(request, "页面已过期！")
+        return redirect("/all_task/")
     request.session['task_type'] = 4
     return render(request, 'release_task_2.html', locals())
 
 
 def release_task(request):
     if not request.session.get('is_admin', None) or not request.session.get('task_type', None):
-        messages.warning(request, "页面已过期！")
+        messages.error(request, "页面已过期！")
         return redirect("/all_task/")
 
     if request.method == "POST":
@@ -223,13 +223,15 @@ def release_task(request):
         current_user.total_credits -= credit * employees_num * len(files)
         current_user.save()
 
-        del request.session['task_type']
+
         if new_task.template == 1:
             request.session['task_id'] = new_task.id
+            del request.session['task_type']
             return redirect('/confirm_to_upload_pictures/')
         elif new_task.template == 2 and new_task.type == 4:
             request.session['task_id'] = new_task.id
             return redirect('/video2pictures_slide/')
+        del request.session['task_type']
         messages.success(request, "任务发布成功！")
         return redirect('/all_task/')
 
@@ -237,8 +239,8 @@ def release_task(request):
 
 
 def video2pictures_slide(request):
-    if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
-        messages.warning(request, "页面已过期！")
+    if not request.session.get('is_admin', None) or not request.session.get('task_type', None) or not request.session.get('task_id', None):
+        messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     task_id = request.session['task_id']
     task = models.Task.objects.filter(pk=task_id).first()
@@ -249,19 +251,27 @@ def video2pictures_slide(request):
     if request.method == "POST":
         print(request.POST)
         if 'frame' in request.POST and 'frame_interval' in request.POST:
-            if digit.match(request.POST.get('frame_interval')):
+            if not digit.match(request.POST.get('frame_interval')):
+                messages.error(request, "请输入合法的帧数间隔！")
+            else:
                 frame_interval = int(request.POST.get('frame_interval'))
                 tools.video2pictures(task, frame_interval)
-            else:
-                messages.error(request, "请输入合法的帧数间隔！")
+                request.session['frame'] = frame_interval
         elif 'confirm' in request.POST:
-            del request.session['task_id']
-            messages.success(request, "任务发布成功！")
-            return redirect("/all_task/")
+            if not request.session.get('frame', None):
+                messages.error(request, "请先输入合法的帧数间隔！")
+            else:
+                del request.session['task_id']
+                del request.session['frame']
+                del request.session['task_type']
+                messages.success(request, "任务发布成功！")
+                return redirect("/all_task/")
         elif 'return' in request.POST:
             current_user = models.User.objects.get(name=request.session['username'])
             current_user.released_tasks.filter(pk=task_id).delete()
             del request.session['task_id']
+            del request.session['frame']
+            del request.session['task_type']
             return redirect("/all_task/")
         elif 'abandon' in request.POST and digit.match(request.POST.get('abandon')):
             screenshot = models.Screenshot.objects.filter(id=int(request.POST.get('abandon'))).first()
@@ -273,7 +283,7 @@ def video2pictures_slide(request):
 
 def confirm_to_upload_pictures(request):
     if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
-        messages.warning(request, "页面已过期！")
+        messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     task_id = request.session['task_id']
     task = models.Task.objects.filter(pk=task_id).first()
@@ -491,15 +501,16 @@ def picture_task(request):
             label.task_user = task_user
             label.save()
             if task.type == 4:
-                tools.draw(sub_task, label, result)
+                tools.picture_circle(label)
             del request.session['sub_task_id']
 
     sub_task = models.get_untagged_sub_task(task, current_user)
     if not sub_task:
         messages.success(request, "该任务已完成！")
+        del request.session['task_id']
         return redirect('/all_task/')
-
     request.session['sub_task_id'] = sub_task.id
+
     qa_list = []
     contents = task.content.split('|')
     for item in contents[1:]:
@@ -540,8 +551,6 @@ def video_task(request):
                 for answer in answers:
                     result += '&' + answer
                 i += 1
-
-                # return render(request, 'video_task_multi_choice.html', locals())
         else:
             result = request.POST.get('position').replace('\r\n', '|')
 
@@ -559,29 +568,21 @@ def video_task(request):
             label.task_user = task_user
             label.save()
             if task.type == 4:
-                tools.draw_2(sub_task, label, result)
+                tools.video_circle(label)
             del request.session['sub_task_id']
 
     sub_task = models.get_untagged_sub_task(task, current_user)
     if not sub_task:
         messages.success(request, "该任务已完成！")
+        del request.session['task_id']
         return redirect('/all_task/')
+    request.session['sub_task_id'] = sub_task.id
 
     qa_list = []
     contents = task.content.split('|')
     for item in contents[1:]:
         qa = item.split('&')
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
-
-    request.session['sub_task_id'] = sub_task.id
-    file = sub_task.file
-    file_name = file.name.split('/')[-1].split('.')[0]
-    print(file_name)
-    simple_count = 0
-    img_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task.id), '{}'.format(sub_task.id)])
-    if os.path.exists(img_path):
-        img_list = os.listdir(img_path)
-        simple_count = len(img_list)
 
     if task.type == 1:
         return render(request, 'video_task.html', locals())
@@ -620,7 +621,6 @@ def player_task(request):
         sub_task_id = request.session.get('sub_task_id', None)
         if result == '' and task.type == 2:
             messages.error(request, '请至少选择一项结果！')
-            # return render(request, 'player_task_multi_choice.html', locals())
         elif sub_task_id:
             sub_task = models.SubTask.objects.get(pk=sub_task_id)
             print(sub_task)
@@ -633,22 +633,18 @@ def player_task(request):
             label.save()
             del request.session['sub_task_id']
 
+    sub_task = models.get_untagged_sub_task(task, current_user)
+    if not sub_task:
+        messages.success(request, "该任务已标注完成！")
+        del request.session['task_id']
+        return redirect('/all_task/')
+    request.session['sub_task_id'] = sub_task.id
+
     qa_list = []
     contents = task.content.split('|')
     for item in contents[1:]:
         qa = item.split('&')
         qa_list.append({'question': qa[0], 'answers': qa[1:]})
-
-    sub_task = models.get_untagged_sub_task(task, current_user)
-    if not sub_task:
-        messages.success(request, "该任务已标注完成！")
-        return redirect('/all_task/')
-
-    request.session['sub_task_id'] = sub_task.id
-    file = sub_task.file
-    file_name = str(file).split('/')[-1]
-    author = task.admin
-    print(file_name)
 
     if task.type == 1:
         return render(request, 'player_task.html', locals())

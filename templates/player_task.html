@@ -238,11 +238,11 @@
             source: [
                 //必需项,音乐文件数组
                 {
-                    name: '{{ file_name }}',
+                    name: '{{ sub_task.file.name }}',
                     //必需项,歌名
-                    author: '{{ author }}',
+                    author: '{{ task.admin }}',
                     //必需项,歌手
-                    src: '/media/{{ file }}',
+                    src: '{{ sub_task.file.url }}',
                     //必需项,音乐文件
                     {#cover: '/media/{{ file }}'#}
                     //必需项,封面图片

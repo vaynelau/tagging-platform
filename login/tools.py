@@ -9,9 +9,6 @@ from login import models
 
 
 def video2pictures(task, frame_interval=10):
-    # 包含视频片段的路径
-    input_path = os.sep.join([MEDIA_ROOT, 'task_{}'.format(task.id)])
-
     # 初始化一个VideoCapture对象
     cap = cv2.VideoCapture()
 
@@ -20,9 +17,8 @@ def video2pictures(task, frame_interval=10):
         sub_task.screenshot_set.all().delete()
         file_path = os.sep.join([MEDIA_ROOT, sub_task.file.name])
         print(file_path)
-        frame_path = os.sep.join([input_path, str(sub_task.id)])
+        frame_path = file_path.split('.')[0] + '_frame'
         print(frame_path)
-
         if not os.path.exists(frame_path):
             os.mkdir(frame_path)
 
@@ -32,7 +28,7 @@ def video2pictures(task, frame_interval=10):
         # 获取视频帧数
         n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        # 同样为了避免视频头几帧质量低下，黑屏或者无关等
+        # 为了避免视频头几帧质量低下，黑屏或者无关等
         for i in range(42):
             cap.read()
 
@@ -51,38 +47,71 @@ def video2pictures(task, frame_interval=10):
                 screenshot.sub_task = sub_task
                 screenshot.image = image_path
                 screenshot.save()
+
     # 执行结束释放资源
     cap.release()
 
 
-def draw(sub_task, label, pos):
-    img_path = os.sep.join([MEDIA_ROOT, sub_task.file.name])
-    label_dir = img_path.split('.')[0]
-    print(label_dir)
-    if not os.path.exists(label_dir):
-        os.mkdir(label_dir)
-    new_img_path = os.sep.join([label_dir, '{:0>8d}.jpg'.format(label.id)])
-    img = cv2.imread(img_path)
+def picture_circle(label):
+    img_path = os.sep.join([MEDIA_ROOT, label.sub_task.file.name])
     print(img_path)
-    pos_list = pos.split('|')
-    for pos in pos_list[:-1]:
+    label_dir_path = img_path.split('.')[0] + '_label'
+    print(label_dir_path)
+    if not os.path.exists(label_dir_path):
+        os.mkdir(label_dir_path)
+
+    img = cv2.imread(img_path)
+    result_list = label.result.split('|')
+    for pos in result_list[:-1]:
         p = pos.split('&')[1].split(',')
         cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
+
+    new_img_path = os.sep.join([label_dir_path, '{}.jpg'.format(label.id)])
     cv2.imwrite(new_img_path, img)
+    screenshot = models.Screenshot.objects.create()
+    screenshot.label = label
+    screenshot.image = new_img_path
+    screenshot.result = '|' + label.result
+    screenshot.save()
 
 
-def draw_2(sub_task, label, pos):
-    # img_path = os.sep.join([MEDIA_ROOT, sub_task.file.name])
-    # label_dir = img_path.split('.')[0]
-    # print(label_dir)
-    # if not os.path.exists(label_dir):
-    #     os.mkdir(label_dir)
-    # new_img_path = os.sep.join([label_dir, '{:0>8d}.jpg'.format(label.id)])
-    # img = cv2.imread(img_path)
-    # print(img.shape)
-    # pos_list = pos.split('|')
-    # for pos in pos_list[:-1]:
-    #     p = pos.split('&')[1].split(',')
-    #     cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
-    # cv2.imwrite(new_img_path, img)
-    pass
+def video_circle(label):
+    video_path = os.sep.join([MEDIA_ROOT, label.sub_task.file.name])
+    img_dir_path = video_path.split('.')[0] + '_frame'
+    print(img_dir_path)
+    label_dir_path = video_path.split('.')[0] + '_label'
+    print(label_dir_path)
+    if not os.path.exists(label_dir_path):
+        os.mkdir(label_dir_path)
+    label_dir_path = os.sep.join([label_dir_path, '{}'.format(label.id)])
+    print(label_dir_path)
+    if not os.path.exists(label_dir_path):
+        os.mkdir(label_dir_path)
+
+    result_list = label.result.split('|')[:-1]
+    print(result_list)
+    result_list.sort()
+    print(result_list)
+    img_path = os.sep.join([img_dir_path, result_list[0].split('&')[0]])
+    img = cv2.imread(img_path)
+    content = ''
+
+    for i in range(len(result_list)):
+        pos = result_list[i].split('&')
+        if i > 0 and pos[0] != result_list[i - 1].split('&')[0]:
+            img_path = os.sep.join([img_dir_path, pos[0]])
+            img = cv2.imread(img_path)
+            content = ''
+
+        content += '|' + result_list[i]
+        p = pos[1].split(',')
+        cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
+
+        if i == len(result_list) - 1 or pos[0] != result_list[i + 1].split('&')[0]:
+            new_img_path = os.sep.join([label_dir_path, pos[0]])
+            cv2.imwrite(new_img_path, img)
+            screenshot = models.Screenshot.objects.create()
+            screenshot.label = label
+            screenshot.image = new_img_path
+            screenshot.result = content
+            screenshot.save()
