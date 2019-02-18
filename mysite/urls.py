@@ -46,6 +46,7 @@ urlpatterns = [
 
     path('one_task/', views.one_task),
     path('check_task/', views.check_task),
+    path('picture_detail/', views.picture_detail),
 
     path('recharge/', views.recharge),
     path('download_data_set/', views.download_data_set),

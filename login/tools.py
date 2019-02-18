@@ -53,6 +53,7 @@ def video2pictures(task, frame_interval=10):
 
 
 def picture_circle(label):
+    label.screenshot_set.all().delete()
     img_path = os.sep.join([MEDIA_ROOT, label.sub_task.file.name])
     print(img_path)
     label_dir_path = img_path.split('.')[0] + '_label'
@@ -61,8 +62,8 @@ def picture_circle(label):
         os.mkdir(label_dir_path)
 
     img = cv2.imread(img_path)
-    result_list = label.result.split('|')
-    for pos in result_list[:-1]:
+    result_list = label.result.split('|')[:-1]
+    for pos in result_list:
         p = pos.split('&')[1].split(',')
         cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
 
@@ -71,11 +72,12 @@ def picture_circle(label):
     screenshot = models.Screenshot.objects.create()
     screenshot.label = label
     screenshot.image = new_img_path
-    screenshot.result = '|' + label.result
+    screenshot.result = label.result
     screenshot.save()
 
 
 def video_circle(label):
+    label.screenshot_set.all().delete()
     video_path = os.sep.join([MEDIA_ROOT, label.sub_task.file.name])
     img_dir_path = video_path.split('.')[0] + '_frame'
     print(img_dir_path)
@@ -89,13 +91,10 @@ def video_circle(label):
         os.mkdir(label_dir_path)
 
     result_list = label.result.split('|')[:-1]
-    print(result_list)
     result_list.sort()
-    print(result_list)
     img_path = os.sep.join([img_dir_path, result_list[0].split('&')[0]])
     img = cv2.imread(img_path)
     content = ''
-
     for i in range(len(result_list)):
         pos = result_list[i].split('&')
         if i > 0 and pos[0] != result_list[i - 1].split('&')[0]:
@@ -103,7 +102,7 @@ def video_circle(label):
             img = cv2.imread(img_path)
             content = ''
 
-        content += '|' + result_list[i]
+        content += result_list[i] + '|'
         p = pos[1].split(',')
         cv2.rectangle(img, (int(p[0]), int(p[1])), (int(p[2]), int(p[3])), (0, 255, 0), 1)
 

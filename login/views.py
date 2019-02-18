@@ -154,9 +154,11 @@ def release_task_4(request):
 
 
 def release_task(request):
-    if not request.session.get('is_admin', None) or not request.session.get('task_type', None):
+    if not request.session.get('is_admin', None):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
+    if not request.session.get('task_type', None):
+        return redirect("/choose/")
 
     if request.method == "POST":
         print(request.POST)
@@ -223,7 +225,6 @@ def release_task(request):
         current_user.total_credits -= credit * employees_num * len(files)
         current_user.save()
 
-
         if new_task.template == 1:
             request.session['task_id'] = new_task.id
             del request.session['task_type']
@@ -239,7 +240,9 @@ def release_task(request):
 
 
 def video2pictures_slide(request):
-    if not request.session.get('is_admin', None) or not request.session.get('task_type', None) or not request.session.get('task_id', None):
+    if not request.session.get('is_admin', None) or \
+            not request.session.get('task_type', None) or \
+            not request.session.get('task_id', None):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     task_id = request.session['task_id']
@@ -346,17 +349,33 @@ def all_task(request):
             if digit.match(request.POST.get('review')):
                 request.session['task_id'] = int(request.POST.get('review'))
                 return redirect('/one_task/')
-        # elif 'abandon' in request.POST:
-        #     if digit.match(request.POST.get('abandon')) and request.session.get('is_login', None):
-        #         task_id = int(request.POST.get('abandon'))
-        #         current_user = models.User.objects.get(name=request.session['username'])
-        #         current_user.taskuser_set.filter(task__id=task_id).delete()
-        # elif 'redo' in request.POST:
-        #     if digit.match(request.POST.get('redo')):
-        #         request.session['task_id'] = int(request.POST.get('redo'))
-        #         return redirect('/enter_task/')
 
-        # num_task_unfinished = models.Task.objects.filter(is_closed=False).count()
+        elif 'abandon_unreviewed_task' in request.POST:
+            if digit.match(request.POST.get('abandon_unreviewed_task')) and request.session.get('is_login', None):
+                task_id = int(request.POST.get('abandon_unreviewed_task'))
+                models.Label.objects.filter(user__name=request.session['username'], sub_task__task_id=task_id,
+                                            is_unreviewed=True).delete()
+        elif 'abandon_rejected_task' in request.POST:
+            if digit.match(request.POST.get('abandon_rejected_task')) and request.session.get('is_login', None):
+                task_id = int(request.POST.get('abandon_rejected_task'))
+                models.Label.objects.filter(user__name=request.session['username'], sub_task__task_id=task_id,
+                                            is_rejected=True).delete()
+
+        elif 'redo_unreviewed_task' in request.POST:
+            if digit.match(request.POST.get('redo_unreviewed_task')) and request.session.get('is_login', None):
+                request.session['task_id'] = int(request.POST.get('redo_unreviewed_task'))
+                models.Label.objects.filter(user__name=request.session['username'],
+                                            sub_task__task_id=request.session['task_id'],
+                                            is_unreviewed=True).delete()
+                return redirect('/enter_task/')
+        elif 'redo_rejected_task' in request.POST:
+            if digit.match(request.POST.get('redo_rejected_task')) and request.session.get('is_login', None):
+                request.session['task_id'] = int(request.POST.get('redo_rejected_task'))
+                models.Label.objects.filter(user__name=request.session['username'],
+                                            sub_task__task_id=request.session['task_id'],
+                                            is_rejected=True).delete()
+                return redirect('/enter_task/')
+
     if request.session.get('is_login', None):
         current_user = models.User.objects.get(name=request.session['username'])
         favorite_task_list = current_user.favorite_tasks.all()
@@ -365,10 +384,12 @@ def all_task(request):
         released_task_list = current_user.released_tasks.all()
         num_released_task = released_task_list.count()
 
-        rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True).distinct()
+        rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True,
+                                                                subtask__label__user=current_user).distinct()
         num_rejected_task = rejected_task_list.count()
 
-        unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True).distinct()
+        unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True,
+                                                                subtask__label__user=current_user).distinct()
         num_unreviewed_task = unreviewed_task_list.count()
 
         current_user.login_time = timezone.now()
@@ -679,7 +700,7 @@ def accept_label(request):
     if not label:
         messages.error(request, '该标签不存在！')
         return
-    # label.is_rejected = False
+    label.is_rejected = False
     label.is_unreviewed = False
     label.save()
     label.user.total_credits += label.sub_task.task.credit
@@ -701,9 +722,8 @@ def check_task(request):
         elif 'back' in request.POST:
             reject_label(request)
         elif 'detail' in request.POST and task.type == 4:
-            label = models.Label.objects.filter(id=int(request.POST.get('detail'))).first()
-            contents = task.content.split('|')
-            return render(request, 'picture_detail.html', locals())
+            request.session['label_id'] = int(request.POST.get('detail'))
+            return redirect('/picture_detail/')
         elif 'pass_all' in request.POST:
             label_list = sub_task.label_set.all()
             for label in label_list:
@@ -734,6 +754,28 @@ def check_task(request):
         return render(request, 'qa_result.html', locals())
     else:
         return render(request, 'picture_result.html', locals())
+
+
+def picture_detail(request):
+    if not request.session.get('is_admin', None) or \
+            not request.session.get('task_id', None) or \
+            not request.session.get('sub_task_id', None) or \
+            not request.session.get('label_id', None):
+        return redirect('/all_task/')
+
+    if request.method == "POST":
+        print(request.POST)
+        if 'pass' in request.POST:
+            accept_label(request)
+        elif 'back' in request.POST:
+            reject_label(request)
+
+    current_user = models.User.objects.get(name=request.session['username'])
+    task = models.Task.objects.get(id=request.session['task_id'])
+    sub_task = models.SubTask.objects.get(id=request.session['sub_task_id'])
+    label = models.Label.objects.filter(id=request.session['label_id']).first()
+    contents = task.content.split('|')
+    return render(request, 'picture_detail.html', locals())
 
 
 def one_task(request):
@@ -797,6 +839,17 @@ def download_data_set(request):
     label_list = sub_task.label_set.filter()
     print(label_list)
     contents = task.content.split('|')
+
+    if task.type == 4:
+        writer.writerow(['User', 'Picture', 'Position', 'Type'])
+        label = models.Label.objects.filter(id=request.session['label_id']).first()
+        for result in label.result.split('|')[:-1]:
+            results = result.split(' & ')
+            answer_list = [label.user.name, results[0], results[1], contents[int(results[-1])]]
+            writer.writerow(answer_list)
+            print(answer_list)
+        return response
+
     question_list = ['User']
     for i, content in enumerate(contents[1:]):
         question_list.append('Q{}:{}'.format(i + 1, content.split('&')[0]))
@@ -805,23 +858,16 @@ def download_data_set(request):
     for label in label_list:
         answer_list = [label.user.name]
 
-        if task.type == 4:
-            for i in range(len(question_list) - 1):
-                answer_list.append('')
-            for i, content in enumerate(label.result.split('|')[:-1]):
-                answer_list[int(content.split('&')[-1])] += content.split('&')[0] + ':' + content.split('&')[1] + ';'
-        else:
-            for i, content in enumerate(label.result.split('|')[1:]):
-                answer = ''
-                if task.type == 1 or task.type == 2:
-                    answers = content.split('&')[1:]
-                    for ans in answers:
-                        answer += '{}.{};'.format(chr(64 + int(ans)), contents[i + 1].split('&')[int(ans)])
-                elif task.type == 3:
-                    answer = content.split('&')[-1]
-                answer_list.append(answer)
+        for i, content in enumerate(label.result.split('|')[1:]):
+            answer = ''
+            if task.type == 1 or task.type == 2:
+                answers = content.split('&')[1:]
+                for ans in answers:
+                    answer += '{}.{};'.format(chr(64 + int(ans)), contents[i + 1].split('&')[int(ans)])
+            elif task.type == 3:
+                answer = content.split('&')[-1]
+            answer_list.append(answer)
 
         writer.writerow(answer_list)
         print(answer_list)
-
     return response

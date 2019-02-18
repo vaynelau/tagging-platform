@@ -22,15 +22,21 @@ def screenshot_directory_path(instance, filename):
 
 
 def get_untagged_sub_task(task, user):
-    sub_task_set = task.subtask_set.exclude(users__id=user.id)
-    print('sub_task_set', sub_task_set)
-    return sub_task_set.first()  # if not exist, return None.
+    untagged_sub_task_set = task.subtask_set.exclude(users__id=user.id)
+    print('untagged_sub_task_set', untagged_sub_task_set)
+    return untagged_sub_task_set.first()  # if not exist, return None.
 
 
 def get_rejected_sub_task(task, user):
-    sub_task_set = task.subtask_set.filter(users__id=user.id)
-    print('sub_task_set', sub_task_set)
-    return sub_task_set.first()  # if not exist, return None.
+    rejected_sub_task_set = task.subtask_set.filter(users__id=user.id, label__is_rejected=True).distinct()
+    print('rejected_sub_task_set', rejected_sub_task_set)
+    return rejected_sub_task_set.first()  # if not exist, return None.
+
+
+def get_unreviewed_sub_task(task, user):
+    unreviewed_sub_task_set = task.subtask_set.filter(users__id=user.id, label__is_unreviewed=True).distinct()
+    print('unreviewed_sub_task_set', unreviewed_sub_task_set)
+    return unreviewed_sub_task_set.first()  # if not exist, return None.
 
 
 class User(models.Model):

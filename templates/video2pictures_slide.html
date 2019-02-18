@@ -30,7 +30,7 @@
                 <div id="navbarSupportedContent" class="collapse navbar-collapse sidenav">
                     <a href="javascript:void(0)" class="closebtn d-lg-none" id="cls-btn">&times;</a>
                     <ul class="navbar-nav ml-lg-auto">
-{#                        <li><a href="/enter_task/" active>Enter Task</a></li>#}
+                        {#                        <li><a href="/enter_task/" active>Enter Task</a></li>#}
                         <li><a href="/index/">Home Page</a></li>
                         <li><a href="/all_task/">All Tasks</a></li>
                         <li><a href="/choose/">Release Task</a></li>
@@ -81,13 +81,12 @@
         </ul>
     </div>
 </section>
-
-<section class="carousel">
-    <div class="row">
-        <div class="col-12">
-
-            <div class="loop owl-carousel owl-theme">
-                {% for sub_task in task.subtask_set.all() %}
+{% for sub_task in task.subtask_set.all() %}
+    <section class="carousel">
+        <div class="row">
+            <div class="col-12">
+                <div class="loop owl-carousel owl-theme">
+                    {% set i = loop.index %}
                     {% for screenshot in sub_task.screenshot_set.all() %}
                         <form action="/video2pictures_slide/" method="post">
                             {{ csrf_input }}
@@ -97,7 +96,7 @@
                                         <img src="{{ screenshot.image.url }}" alt="slide1">
                                     </figure>
                                     <div class="content">
-                                        <h4>Frame {{ loop.index }}</h4>
+                                        <h4>Frame {{ i }}.{{ loop.index }}</h4>
                                         <ul>
                                             <button type="submit" name="abandon" value="{{ screenshot.id }}"
                                                     class="btn btn-danger">
@@ -109,12 +108,11 @@
                             </div>
                         </form>
                     {% endfor %}
-                {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>
+{% endfor %}
 
 <div class="scrolltop" style="display: block;">
     <div class="scroll icon">

@@ -57,18 +57,21 @@
                     <h3>RESULTS</h3>
                 </div>
                 <div class="col-md-2"></div>
+
                 <div class="col-md-8">
                     <p>Author: {{ label.user }}</p>
                 </div>
                 <div class="col-md-2"></div>
 
-                {% if task.template == 1 %}
+                {% for screenshot in label.screenshot_set.all() %}
                     <form action="/check_task/" method="post">
                         {{ csrf_input }}
                         <div class="col-sm-6 col-md-4 wow fadeInLeft" data-wow-delay="2000">
                             <div class="work_thumb">
-                                <img src="/media/{{ sub_task.file.name.split('.')[0] }}/{{ '{:0>8d}.jpg'.format(label.id) }}"
+
+                                <img src="{{ screenshot.image.url }}"
                                      class="img-responsive">
+
                                 <div class="work_overlay">
                                     <br></br>
                                     {% if label.is_unreviewed %}
@@ -102,58 +105,7 @@
                             </div>
                         </div>
                     </form>
-                {% elif task.template == 2 %}
-                    {#                    {% for label in label_list %}#}
-                    {#                        <form action="/check_task/" method="post">#}
-                    {#                            {{ csrf_input }}#}
-                    {#                            <div class="col-sm-6 col-md-4 wow fadeInLeft" data-wow-delay="2000">#}
-                    {#                                <div class="work_thumb">#}
-                    {#                                    <img src="/media/{{ sub_task.file.name.split('.')[0] }}/{{ '{:0>8d}.jpg'.format(label.id) }}"#}
-                    {#                                         class="img-responsive">#}
-                    {#                                    <div class="work_overlay">#}
-                    {#                                        <br></br>#}
-                    {#                                        {% if label.is_unreviewed %}#}
-                    {#                                            <button type="submit" class="btn btn-success" name="pass"#}
-                    {#                                                    value="{{ label.id }}">通过#}
-                    {#                                            </button>#}
-                    {#                                            <button type="submit" name="detail" value="{{ label.id }}"#}
-                    {#                                                    class="btn btn-warning">#}
-                    {#                                                查看细节#}
-                    {#                                            </button>#}
-                    {#                                            <br></br>#}
-                    {#                                            <button type="submit" class="btn btn-success" name="back"#}
-                    {#                                                    value="{{ label.id }}">退回#}
-                    {#                                            </button>#}
-                    {#                                        {% elif label.is_rejected %}#}
-                    {#                                            <button type="button" class="btn btn-success">已退回#}
-                    {#                                            </button>#}
-                    {#                                            <button type="submit" name="detail" value="{{ label.id }}"#}
-                    {#                                                    class="btn btn-warning">#}
-                    {#                                                查看细节#}
-                    {#                                            </button>#}
-                    {#                                        {% else %}#}
-                    {#                                            <button type="button" class="btn btn-success">已通过#}
-                    {#                                            </button>#}
-                    {#                                            <button type="submit" name="detail" value="{{ label.id }}"#}
-                    {#                                                    class="btn btn-warning">#}
-                    {#                                                查看细节#}
-                    {#                                            </button>#}
-                    {#                                        {% endif %}#}
-                    {#                                    </div>#}
-                    {#                                </div>#}
-                    {#                            </div>#}
-                    {#                        </form>#}
-                    {#                    {% endfor %}#}
-
-                {% endif %}
-                {#                <div class="col-sm-6 col-md-4 wow fadeInRight" data-wow-delay="2000">#}
-                {#                    <div class="work_thumb">#}
-                {#                        <img src="{{ static('images/work-img-1.jpg') }}" class="img-responsive" alt="work">#}
-                {#                        <div class="work_overlay">#}
-                {#                            <a href="#"><i class="fa fa-thumbs-o-up"></i></a>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                </div>#}
+                {% endfor %}
             </div>
         </div>
     </section>
