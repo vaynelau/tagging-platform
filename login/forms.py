@@ -37,13 +37,13 @@ class TaskForm(forms.Form):
     name = forms.CharField(label="任务名", max_length=128, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'style': 'margin-top: 30px;', 'placeholder': 'your task name'}))
 
-    image = forms.ImageField(label='请选择图像文件', required=False,
-                             widget=forms.ClearableFileInput({'multiple': True, 'style': 'font-size: 22px;'}))
+    files = forms.FileField(label='请选择文件', required=True,
+                            widget=forms.ClearableFileInput({'multiple': True, 'style': 'font-size: 22px;'}))
 
     q1 = forms.CharField(label='问题1', max_length=128, required=True, widget=forms.TextInput())
-    a1_q1 = forms.CharField(label='选项1', max_length=128, required=True, widget=forms.TextInput())
-    a2_q1 = forms.CharField(label='选项2', max_length=128, required=True, widget=forms.TextInput())
-
+    a1_q1 = forms.CharField(label='选项1', max_length=128, required=False, widget=forms.TextInput())
+    a2_q1 = forms.CharField(label='选项2', max_length=128, required=False, widget=forms.TextInput())
+    employees_num = forms.IntegerField(label='人数', max_value=99, min_value=1, required=True, widget=forms.TextInput())
     details = forms.CharField(label="任务详情", max_length=1024, required=False, widget=forms.Textarea(
         attrs={'class': 'form-control', 'style': 'margin-top: 30px;', 'placeholder': 'remarks'}))
 
