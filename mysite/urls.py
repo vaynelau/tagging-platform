@@ -21,35 +21,22 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     path('', views.index),
     path('index/', views.index),
     path('login/', views.login),
     path('regist/', views.register),
     path('logout/', views.logout),
-
-    path('choose/', views.choose),
     path('release_task/', views.release_task),
-    path('release_task_1/', views.release_task_1),
-    path('release_task_2/', views.release_task_2),
-    path('release_task_3/', views.release_task_3),
-    path('release_task_4/', views.release_task_4),
-    path('video2pictures_slide/', views.video2pictures_slide),
-    path('confirm_to_upload_pictures/', views.confirm_to_upload_pictures),
-
     path('all_task/', views.all_task),
-
     path('enter_task/', views.enter_task),
-    path('picture_task/', views.picture_task),
-    path('video_task/', views.video_task),
-    path('player_task/', views.player_task),
-
-    path('one_task/', views.one_task),
-    path('check_task/', views.check_task),
-    path('picture_detail/', views.picture_detail),
-
+<<<<<<< HEAD
     path('recharge/', views.recharge),
-    path('download_data_set/', views.download_data_set),
+path('check_task/', views.check_task),
+=======
+    path('check_task/', views.check_task),
+    path('one_task/', views.one_task),
+    path('recharge/', views.recharge),
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
 
     # path('task/get_all_tasks/', views.get_all_tasks, name='get_all_tasks'),
     # path('task/get_user_tasks/', views.get_user_tasks, name='get_user_tasks'),

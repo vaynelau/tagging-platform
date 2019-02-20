@@ -1,7 +1,3 @@
-
-{# 旧版回答选择问题页面，暂时废除 #}
-
-
 <!doctype html>
 <!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7" lang="en-US"> <![endif]-->
 <!--[if IE 7]>    <html class="lt-ie9 lt-ie8" lang="en-US"> <![endif]-->
@@ -36,7 +32,6 @@
     <!--[if lt IE 9]>
                 <script src="{{ static('js/enter_html5.js') }}"></script></script>
                 <![endif]-->
-
 
 </head>
 
@@ -119,9 +114,11 @@
                                     {% for answer in qa.answers %}
                                         <!-- <a.contents是问题的候选答案 /> -->
                                         <label><input type="checkbox" name="q{{ i }}"
-
+<<<<<<< HEAD
+                                                      value="a{{ loop.index }}"/> {{ answer }} </label>
+=======
                                                       value="{{ loop.index }}"/> {{ answer }} </label>
-
+>>>>>>> f8806b6131d127303bd540ec1cbe91cf2595d5bb
                                     {% endfor %}
                                 </div>
                             </article>
