@@ -126,6 +126,7 @@ def release_task_1(request):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     request.session['task_type'] = 1
+    user = models.User.objects.get(name=request.session['username'])
     return render(request, 'release_task.html', locals())
 
 
@@ -134,6 +135,7 @@ def release_task_2(request):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     request.session['task_type'] = 2
+    user = models.User.objects.get(name=request.session['username'])
     return render(request, 'release_task.html', locals())
 
 
@@ -142,6 +144,7 @@ def release_task_3(request):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     request.session['task_type'] = 3
+    user = models.User.objects.get(name=request.session['username'])
     return render(request, 'release_task_1.html', locals())
 
 
@@ -150,6 +153,7 @@ def release_task_4(request):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
     request.session['task_type'] = 4
+    user = models.User.objects.get(name=request.session['username'])
     return render(request, 'release_task_2.html', locals())
 
 
@@ -177,13 +181,11 @@ def release_task(request):
         details = task_form.cleaned_data['details']
         employees_num = task_form.cleaned_data['employees_num']
         print('employees_num', employees_num, type(employees_num))
-        # credit = task_form.cleaned_data['credit']
-        # credit = int(credit)
-        credit = 2
+        credit = task_form.cleaned_data['credit']
         current_user = models.User.objects.get(name=request.session['username'])
         if current_user.total_credits < credit * employees_num * len(files):
-            messages.error(request, "您的信用积分不足，无法发布任务！")
-            return release_task_x(request)
+            messages.error(request, "您的信用积分不足，请先进行充值！")
+            return recharge(request)
 
         new_task = models.Task.objects.create()
         new_task.type = request.session['task_type']
@@ -225,30 +227,40 @@ def release_task(request):
         current_user.total_credits -= credit * employees_num * len(files)
         current_user.save()
 
+        del request.session['task_type']
+        request.session['new_task_id'] = new_task.id
         if new_task.template == 1:
-            request.session['task_id'] = new_task.id
-            del request.session['task_type']
             return redirect('/confirm_to_upload_pictures/')
         elif new_task.template == 2 and new_task.type == 4:
-            request.session['task_id'] = new_task.id
             return redirect('/video2pictures_slide/')
-        del request.session['task_type']
-        messages.success(request, "任务发布成功！")
-        return redirect('/all_task/')
+        else:
+            del request.session['new_task_id']
+            messages.success(request, "任务发布成功！")
+            return redirect('/all_task/')
 
     return release_task_x(request)
 
 
+def release_task_x(request):
+    if request.session['task_type'] == 1:
+        return redirect('/release_task_1/')
+    elif request.session['task_type'] == 2:
+        return redirect('/release_task_2/')
+    elif request.session['task_type'] == 3:
+        return redirect('/release_task_3/')
+    elif request.session['task_type'] == 4:
+        return redirect('/release_task_4/')
+    return redirect('/all_task/')
+
+
 def video2pictures_slide(request):
-    if not request.session.get('is_admin', None) or \
-            not request.session.get('task_type', None) or \
-            not request.session.get('task_id', None):
+    if not request.session.get('is_admin', None) or not request.session.get('new_task_id', None):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
-    task_id = request.session['task_id']
+    task_id = request.session['new_task_id']
     task = models.Task.objects.filter(pk=task_id).first()
-    if not task:
-        messages.error(request, '该任务不存在！')
+    if not task or task.type != 4 or task.template != 2:
+        messages.error(request, '页面已过期！')
         return redirect("/all_task/")
 
     if request.method == "POST":
@@ -264,17 +276,15 @@ def video2pictures_slide(request):
             if not request.session.get('frame', None):
                 messages.error(request, "请先输入合法的帧数间隔！")
             else:
-                del request.session['task_id']
+                del request.session['new_task_id']
                 del request.session['frame']
-                del request.session['task_type']
                 messages.success(request, "任务发布成功！")
                 return redirect("/all_task/")
         elif 'return' in request.POST:
             current_user = models.User.objects.get(name=request.session['username'])
             current_user.released_tasks.filter(pk=task_id).delete()
-            del request.session['task_id']
+            del request.session['new_task_id']
             del request.session['frame']
-            del request.session['task_type']
             return redirect("/all_task/")
         elif 'abandon' in request.POST and digit.match(request.POST.get('abandon')):
             screenshot = models.Screenshot.objects.filter(id=int(request.POST.get('abandon'))).first()
@@ -285,13 +295,13 @@ def video2pictures_slide(request):
 
 
 def confirm_to_upload_pictures(request):
-    if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
+    if not request.session.get('is_admin', None) or not request.session.get('new_task_id', None):
         messages.error(request, "页面已过期！")
         return redirect("/all_task/")
-    task_id = request.session['task_id']
+    task_id = request.session['new_task_id']
     task = models.Task.objects.filter(pk=task_id).first()
-    if not task:
-        messages.error(request, '该任务不存在！')
+    if not task or task.template != 1:
+        messages.error(request, '页面已过期！')
         return redirect("/all_task/")
 
     if request.method == "POST":
@@ -299,8 +309,11 @@ def confirm_to_upload_pictures(request):
         if 'abandon' in request.POST and digit.match(request.POST.get('abandon')):
             sub_task_id = int(request.POST.get('abandon'))
             task.subtask_set.filter(pk=sub_task_id).delete()
+            current_user = models.User.objects.get(name=request.session['username'])
+            current_user.total_credits += task.credit * task.max_tagged_num
+            current_user.save()
         elif 'confirm' in request.POST:
-            del request.session['task_id']
+            del request.session['new_task_id']
             messages.success(request, "任务发布成功！")
             return redirect("/all_task/")
 
@@ -389,7 +402,7 @@ def all_task(request):
         num_rejected_task = rejected_task_list.count()
 
         unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True,
-                                                                subtask__label__user=current_user).distinct()
+                                                                  subtask__label__user=current_user).distinct()
         num_unreviewed_task = unreviewed_task_list.count()
 
         current_user.login_time = timezone.now()
@@ -793,8 +806,8 @@ def one_task(request):
     num_favorite_task = current_user.favorite_tasks.count()
     num_released_task = current_user.released_tasks.count()
     num_updated_task = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
-    #return render(request, 'one_task.html', locals())
-    return redirect('/one_task/')
+    return render(request, 'one_task.html', locals())
+    # return redirect('/one_task/')
 
 
 def recharge(request):
@@ -802,26 +815,30 @@ def recharge(request):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
 
-    if request.method == "POST":
+    if request.method == "POST" and 'docVlGender' in request.POST:
         print(request.POST)
-
+        if request.POST.get('docVlGender') == '10':
+            current_user.total_credits += 10
+            current_user.save()
+        elif request.POST.get('docVlGender') == '20':
+            current_user.total_credits += 20
+            current_user.save()
+        elif request.POST.get('docVlGender') == '50':
+            current_user.total_credits += 50
+            current_user.save()
+        elif request.POST.get('docVlGender') == 'other' and 'other_amount' in request.POST and digit.match(
+                request.POST.get('other_amount')):
+            current_user.total_credits += int(request.POST.get('other_amount'))
+            current_user.save()
+        else:
+            messages.error(request, "充值失败！")
+            return render(request, 'recharge.html', locals())
+        messages.success(request, "充值成功！")
+        if request.session.get('task_type'):
+            return release_task_x(request)
+        else:
+            return redirect('/all_task/')
     return render(request, 'recharge.html', locals())
-
-
-def picture(request):
-    return render(request, 'picture.html', locals())
-
-
-def release_task_x(request):
-    if request.session['task_type'] == 1:
-        return redirect('/release_task_1/')
-    elif request.session['task_type'] == 2:
-        return redirect('/release_task_2/')
-    elif request.session['task_type'] == 3:
-        return redirect('/release_task_3/')
-    elif request.session['task_type'] == 4:
-        return redirect('/release_task_4/')
-    return redirect('/all_task/')
 
 
 def download_data_set(request):

@@ -274,9 +274,7 @@
                         {% if request.session.is_login %}
                             <span>{{ request.session.username }} <i class="caret"></i></span>
                         {% else %}
-
                             <span>请先登录<i class="caret"></i></span>
-
                         {% endif %}
                     </a>
                     {% if request.session.is_login %}
@@ -619,7 +617,7 @@
                                             {% endif %}
 
                                             <td><span
-                                                    class="label label-primary">共{{ task.max_tagged_num - task.users.count() }} 个工位，剩余{{ leftnum }}个</span>
+                                                    class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                             </td>
 
                                             <td>
@@ -704,7 +702,7 @@
                                                             <td><span class="label label-danger">已结束</span></td>
                                                         {% endif %}
                                                         <td><span
-                                                                class="label label-primary">共{{ task.max_tagged_num - task.users.count() }} 个工位，剩余{{ leftnum }}个</span>
+                                                                class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -808,7 +806,7 @@
                                                         {% endif %}
                                                         <td><span
 
-                                                                class="label label-primary">共{{ task.max_tagged_num - task.users.count() }} 个工位，剩余{{ leftnum }}个</span>
+                                                                class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
 
                                                         </td>
                                                         <td>
@@ -912,7 +910,7 @@
                                                         {% endif %}
                                                         <td><span
 
-                                                                class="label label-primary">共{{ task.max_tagged_num - task.users.count() }} 个工位，剩余{{ leftnum }}个</span>
+                                                                class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -1002,7 +1000,7 @@
                                                             <td><span class="label label-danger">已结束</span></td>
                                                         {% endif %}
                                                         <td><span
-                                                                class="label label-primary">共{{ task.max_tagged_num - task.users.count() }} 个工位，剩余{{ leftnum }}个</span>
+                                                                class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
@@ -1096,7 +1094,7 @@
                                                         {% endif %}
                                                         <td><span
 
-                                                                class="label label-primary">共{{ task.max_tagged_num - task.users.count() }} 个工位，剩余{{ leftnum }}个</span>
+                                                                class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
 
                                                         </td>
                                                         <td>

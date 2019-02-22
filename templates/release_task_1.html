@@ -68,7 +68,7 @@
 
                             {{ csrf_input }}
                             <div class="wizard-header text-center">
-                               <h3 class="wizard-title">创建问答型任务细节</h3>
+                                <h3 class="wizard-title">创建问答型任务细节</h3>
                                 <p class="category">更详细的任务信息将帮助标注人员更好的完成您的任务。</p>
                             </div>
 
@@ -90,14 +90,6 @@
                                                 <i class="ti-anchor"></i>
                                             </div>
                                             Select Template
-                                        </a>
-                                    </li>
-                                     <li>
-                                        <a href="#rp" data-toggle="tab">
-                                            <div class="icon-circle">
-                                                <i class="ti-anchor"></i>
-                                            </div>
-                                            Reward Points
                                         </a>
                                     </li>
 
@@ -133,7 +125,14 @@
                                             Employees
                                         </a>
                                     </li>
-
+                                    <li>
+                                        <a href="#rp" data-toggle="tab">
+                                            <div class="icon-circle">
+                                                <i class="ti-anchor"></i>
+                                            </div>
+                                            Reward Points
+                                        </a>
+                                    </li>
                                     <li>
                                         <a href="#details" data-toggle="tab">
                                             <div class="icon-circle">
@@ -182,22 +181,6 @@
                                         </div>
                                     </div>
                                     <h6>您只能选择一个模板。</h6>
-                                </div>
-
-                                <div class="tab-pane" id="rp" style="margin-bottom: 30px;">
-                                    <div class="row">
-                                        <h5 class="info-text">悬赏积分</h5>
-                                        <h5 class="info-text">您当前持有的积分：{{ user_point }}</h5>
-                                        <div class="col-sm-12">
-                                        </div>
-                                        <div class="col-sm-7 col-sm-offset-1">
-                                            <div class="form-group">
-                                                <input type="text" name="reward_points" class="form-control"
-                                                       style="margin-top: 30px;" placeholder="如：1，通过标注成果后我们将从您的账户扣除"
-                                                       maxlength="128" required id="reward_points"/>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
 
                                 <div class="tab-pane" id="title" style="margin-bottom: 30px;">
@@ -276,12 +259,30 @@
                                             <div class="form-group">
                                                 <input type="text" maxlength="2" class="form-control"
                                                        name="employees_num" required
-                                                       style="margin-top: 30px;" placeholder="选择雇佣人数，在1~99之间" id="id_employees_num">
+                                                       style="margin-top: 30px;" placeholder="选择雇佣人数，在1~99之间"
+                                                       id="id_employees_num">
 
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="tab-pane" id="rp" style="margin-bottom: 30px;">
+                                    <div class="row">
+                                        <h5 class="info-text">单条标注数据悬赏积分</h5>
+                                        <h5 class="info-text">您当前持有的积分：{{ user.total_credits }}</h5>
+                                        <div class="col-sm-12">
+                                        </div>
+                                        <div class="col-sm-7 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <input type="text" maxlength="10" name="credit" class="form-control"
+                                                       style="margin-top: 30px;" placeholder="如：1，任务发布成功后我们将从您的账户扣除"
+                                                       maxlength="128" required id="reward_points"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="tab-pane" id="details" style="margin-bottom: 30px;">
                                     <div class="row">
                                         <h5 class="info-text">您的任务备注</h5>
@@ -290,7 +291,8 @@
 
                                         <div class="col-sm-7 col-sm-offset-1">
                                             <div class="form-group">
-                                                <input type="text" maxlength="1024" class="form-control" name="details_1"
+                                                <input type="text" maxlength="1024" class="form-control"
+                                                       name="details_1"
                                                        style="margin-top: 30px;" placeholder="设置标注师门槛，1~5">
                                             </div>
                                             <div class="form-group">
