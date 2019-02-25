@@ -50,6 +50,7 @@ class User(models.Model):
 
     # favorite_tasks = models.ManyToManyField('Task')
     total_credits = models.IntegerField(default=1000)
+    num_label_accepted = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -71,6 +72,7 @@ class Task(models.Model):
     is_closed = models.BooleanField(default=False)
     credit = models.IntegerField(default=1)
     users = models.ManyToManyField('User', related_name='favorite_tasks', through='TaskUser')
+    user_level = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name

@@ -60,7 +60,7 @@
         <div class="navbar-right">
             <ul class="nav navbar-nav">
                 <!-- Messages: style can be found in dropdown.less-->
-                                {% if request.session.is_login %}
+                {% if request.session.is_login %}
                     <li class="dropdown messages-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-envelope"></i>
@@ -144,20 +144,21 @@
                     <li class="dropdown tasks-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-tasks"></i>
-                            <span class="label label-danger">{{ rank}}</span>
+                            <span class="label label-danger">{{ rank }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <a href="#favorite_tasks">
                                 <li class="header">You Rank: {{ rank }}</li>
                             </a>
                             <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
+                                {% if current_user.num_label_accepted < 200 %}
+                                    <!-- inner menu: contains the actual data -->
+                                    <ul class="menu">
                                     <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 青铜
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-success" style="width: 20%"
@@ -168,11 +169,12 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
-                                     <li><!-- Task item -->
+                                {% elif current_user.num_label_accepted < 500 %}
+                                    <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 白银
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-success" style="width: 20%"
@@ -183,11 +185,12 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
-                                     <li><!-- Task item -->
+                                {% elif current_user.num_label_accepted < 1000 %}
+                                    <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 黄金
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-success" style="width: 20%"
@@ -198,11 +201,12 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
+                                {% elif current_user.num_label_accepted < 2000 %}
                                     <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 铂金
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-danger" style="width: 40%"
@@ -213,11 +217,12 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
+                                {% elif current_user.num_label_accepted < 5000 %}
                                     <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 钻石
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-info" style="width: 60%"
@@ -228,11 +233,12 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
+                                {% elif current_user.num_label_accepted < 10000 %}
                                     <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 大师
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-warning" style="width: 80%"
@@ -243,11 +249,12 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
-                                                                        <li><!-- Task item -->
+                                {% else %}
+                                    <li><!-- Task item -->
                                         <a href="#">
                                             <h3>
                                                 王者
-                                                <small class="pull-right">{{ rank }}/{{ all_user_num }}</small>
+                                                <small class="pull-right">{{ rank }}/{{ num_user }}</small>
                                             </h3>
                                             <div class="progress progress-striped xs">
                                                 <div class="progress-bar progress-bar-warning" style="width: 80%"
@@ -258,6 +265,7 @@
                                             </div>
                                         </a>
                                     </li><!-- end task item -->
+                                {% endif %}
                                 </ul>
                             </li>
                             <li class="footer">
@@ -287,35 +295,35 @@
                                     <span class="badge badge-success pull-right">{{ num_updated_task }}</span>
                                     任务展板更新</a>
                                 {% if request.session.is_admin %}
-                                <a href="#Favorite_Tasks">
-                                    <i class="fa fa-star  fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
-                                    已收藏任务</a>
-                                <a href="#Unreviewed_Tasks">
-                                    <i class="fa fa-envelope-o fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ num_unreviewed_task }}</span>
-                                    待审核任务</a>
-                                <a href="#Rejected_Tasks">
-                                    <i class="fa fa-ambulance fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ num_rejected_task }}</span>
-                                    被退回任务</a>
+                                    <a href="#Favorite_Tasks">
+                                        <i class="fa fa-star  fa-fw pull-right"></i>
+                                        <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
+                                        已收藏任务</a>
+                                    <a href="#Unreviewed_Tasks">
+                                        <i class="fa fa-envelope-o fa-fw pull-right"></i>
+                                        <span class="badge badge-danger pull-right">{{ num_unreviewed_task }}</span>
+                                        待审核任务</a>
+                                    <a href="#Rejected_Tasks">
+                                        <i class="fa fa-ambulance fa-fw pull-right"></i>
+                                        <span class="badge badge-danger pull-right">{{ num_rejected_task }}</span>
+                                        被退回任务</a>
 
                                     <a href="#Released_Tasks">
                                         <i class="fa fa-arrows fa-fw pull-right"></i>
                                         <span class="badge badge-danger pull-right">{{ num_released_task }}</span>
-                                       已发布任务</a>
+                                        已发布任务</a>
                                     <a href="/recharge/"><i class="fa fa-star fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">{{ current_user.total_credits }}</span>
-                                    总积分</a>
-                                      <a ><i class="fa fa-star fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">12</span>
-                                    新增积分</a>
-                                    <a ><i class="fa fa-cloud fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">50</span>
-                                    被通过任务数</a>
+                                        <span class="badge badge-info pull-right">{{ current_user.total_credits }}</span>
+                                        总积分</a>
+                                    <a><i class="fa fa-star fa-fw pull-right"></i>
+                                        <span class="badge badge-info pull-right">{{ credits_new }}</span>
+                                        新增积分</a>
                                     <a><i class="fa fa-cloud fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">5</span>
-                                    新增被通过</a>
+                                        <span class="badge badge-info pull-right">{{ current_user.num_label_accepted}}</span>
+                                        被通过子任务数</a>
+                                    <a><i class="fa fa-cloud fa-fw pull-right"></i>
+                                        <span class="badge badge-info pull-right">{{ num_label_accepted_new }}</span>
+                                        新增被通过</a>
                                 {% endif %}
 
                             </li>
@@ -402,7 +410,7 @@
                         </a>
                     </li>
                 {% endif %}
-            {% if request.session.is_admin %}
+                {% if request.session.is_admin %}
                     <li>
                         <a href="/recharge/">
                             <i class="fa fa-anchor"></i> <span>充值中心</span>
@@ -476,7 +484,8 @@
                                 <div>
                                     <!-- <input type="checkbox" class="list-child" value=""  /> -->
                                     <input type="radio" name="order" value="time_asc"
-                                            {% if not request.POST.order == 'time_desc' %} checked {% endif %}
+                                            {% if not request.POST.order or request.POST.order == 'time_asc' %}
+                                           checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 时间升序 </label>
                                     <!-- <input type="checkbox" class="square-grey"/> -->
@@ -488,17 +497,17 @@
                                 </div>
                                 <button type="submit" name="task_sort" class="btn btn-warning btn-sm pull-left">执行排序
                                 </button>
-                            <br>  <br>
-                            <label style="font-size: 20px;color:#b1dfbb">排序选项2</label>
-                             <div>
+                                <br> <br>
+                                <label style="font-size: 20px;color:#b1dfbb">排序选项2</label>
+                                <div>
                                     <!-- <input type="checkbox" class="list-child" value=""  /> -->
-                                    <input type="radio" name="order" value="time_asc"
-                                            {% if not request.POST.order == 'time_desc' %} checked {% endif %}
+                                    <input type="radio" name="order" value="num_asc"
+                                            {% if request.POST.order == 'num_asc' %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 参与人数升序 </label>
                                     <!-- <input type="checkbox" class="square-grey"/> -->
-                                    <input type="radio" name="order" value="time_desc"
-                                            {% if request.POST.order == 'time_desc' %} checked {% endif %}
+                                    <input type="radio" name="order" value="num_desc"
+                                            {% if request.POST.order == 'num_desc' %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 参与人数降序 </label>
                                     <!-- <input type="checkbox" class="square-grey"/> -->
@@ -514,36 +523,40 @@
                                 <label style="font-size: 20px;color:#b0c781">任务类别筛选</label>
                                 <div class="task-checkbox">
                                     <!-- <input type="checkbox" class="list-child" value=""  /> -->
-                                    <input type="checkbox" name="temp_excluded" value="temp2"
-                                           class="flat-grey list-child"/>
-                                    <label> 不显示图片选择式 </label>
                                     <input type="checkbox" name="temp_excluded" value="temp1"
                                             {% if 'temp1' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
-                                    <label> 不显示图片问答式 </label>
-                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <label> 不显示图片选择式 </label>
                                     <input type="checkbox" name="temp_excluded" value="temp2"
                                             {% if 'temp2' in temp_excluded_list %} checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 不显示图片问答式 </label>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                    <input type="checkbox" name="temp_excluded" value="temp3"
+                                            {% if 'temp3' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 不显示图片标记式 </label>
                                     <br></br>
                                     <!-- <input type="checkbox" class="square-grey"/> -->
-                                    <input type="checkbox" name="temp_excluded" value="temp3"
-                                            {% if 'temp3' in temp_excluded_list %} checked {% endif %}
+                                    <input type="checkbox" name="temp_excluded" value="temp4"
+                                            {% if 'temp4' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 不显示音频选择式 </label>
-                                    <input type="checkbox" name="temp_excluded" value="temp3"
-                                            {% if 'temp3' in temp_excluded_list %} checked {% endif %}
+                                    <input type="checkbox" name="temp_excluded" value="temp5"
+                                            {% if 'temp5' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 不显示音频问答式 </label>
-                                <br></br>
-                                    <input type="checkbox" name="temp_excluded" value="temp3"
+                                    <br></br>
+                                    <input type="checkbox" name="temp_excluded" value="temp6"
+                                            {% if 'temp6' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 不显示视频选择式 </label>
-                                    <input type="checkbox" name="temp_excluded" value="temp3"
+                                    <input type="checkbox" name="temp_excluded" value="temp7"
+                                            {% if 'temp7' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 不显示视频问答式 </label>
-                                    <input type="checkbox" name="temp_excluded" value="temp3"
+                                    <input type="checkbox" name="temp_excluded" value="temp8"
+                                            {% if 'temp8' in temp_excluded_list %} checked {% endif %}
                                            class="flat-grey list-child"/>
                                     <label> 不显示视频标注式 </label>
 
@@ -558,6 +571,11 @@
                                 {#                                {{ csrf_input }}#}
                                 <label style="font-size: 20px;color:#b0c781">人数筛选</label>
                                 <div>
+                                    <input type="radio" name="tagged_num" value="all"
+                                            {% if request.POST.tagged_num != 'multi' and request.POST.tagged_num != 'single' %}
+                                           checked {% endif %}
+                                           class="flat-grey list-child"/>
+                                    <label> 全部 </label>
                                     <!-- <input type="checkbox" class="list-child" value=""  /> -->
                                     <input type="radio" name="tagged_num" value="single"
                                             {% if request.POST.tagged_num == 'single' %} checked {% endif %}
@@ -569,6 +587,7 @@
                                            class="flat-grey list-child"/>
                                     <label> 多人任务 </label>
                                     <!-- <input type="checkbox" class="square-grey"/> -->
+
                                 </div>
                                 <button type="submit" name="task_filter" class="btn btn-danger btn-sm pull-left">执行筛选
                                 </button>
@@ -594,7 +613,7 @@
                                     {% if request.session.is_login %}
                                         <th>操作</th>
                                     {% endif %}
-                                <th>悬赏积分</th>
+                                    <th>悬赏积分</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -613,7 +632,7 @@
                                             {% if not task.is_closed %}
                                                 <td><span class="label label-danger">正在进行</span></td>
                                             {% else %}
-                                                <td><span class="label label-danger">已结束</span></td>
+                                                <td><span class="label label-danger">已停止</span></td>
                                             {% endif %}
 
                                             <td><span
@@ -627,18 +646,21 @@
                                                                 class="btn btn-default btn-xs"><i
                                                                 class="fa fa-star"></i>收藏
                                                         </button>
-                                                        <button type="submit" name="enter" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-pencil"></i>进入任务
-                                                        </button>
-                                                        <button type="submit" name="take_a_position" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-anchor"></i>抢位
-                                                        </button>
+                                                        {% if not task.is_closed %}
+                                                            <button type="submit" name="enter" value="{{ task.id }}"
+                                                                    class="btn btn-default btn-xs"><i
+                                                                    class="fa fa-pencil"></i>进入任务
+                                                            </button>
+                                                            <button type="submit" name="take_a_position"
+                                                                    value="{{ task.id }}"
+                                                                    class="btn btn-default btn-xs"><i
+                                                                    class="fa fa-anchor"></i>抢位
+                                                            </button>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                             </td>
-                                        <td><span class="label label-danger">2</span></td>
+                                            <td><span class="label label-danger">2</span></td>
                                         </form>
                                     </tr>
                                 {% endfor %}
@@ -650,7 +672,7 @@
 
                 </div><!--end col-6 -->
             </div>
-                    {% if request.session.is_login %}
+            {% if request.session.is_login %}
                 <div class="row" id="GetPostion_Tasks">
                     <div class="col-md-7">
                         <section id="getpostion_tasks" class="panel tasks-widget">
@@ -663,20 +685,20 @@
                                     <thead>
                                     <tr>
 
-                                            <th>#</th>
-                                            <th>任务名称</th>
-                                            <th>类型</th>
-                                            <th>管理者</th>
-                                            <!-- <th>Client</th> -->
-                                            {#                                    <th>Details</th>#}
-                                            <th>发布时间</th>
-                                            <!-- <th>Price</th> -->
-                                            <th>当前状态</th>
-                                            <th>人员需求</th>
-                                            {% if request.session.is_login %}
-                                                <th>操作</th>
-                                            {% endif %}
-                                    <th>悬赏积分</th>
+                                        <th>#</th>
+                                        <th>任务名称</th>
+                                        <th>类型</th>
+                                        <th>管理者</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>发布时间</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>当前状态</th>
+                                        <th>人员需求</th>
+                                        {% if request.session.is_login %}
+                                            <th>操作</th>
+                                        {% endif %}
+                                        <th>悬赏积分</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -699,32 +721,34 @@
                                                         {% if not task.is_closed %}
                                                             <td><span class="label label-danger">正在进行</span></td>
                                                         {% else %}
-                                                            <td><span class="label label-danger">已结束</span></td>
+                                                            <td><span class="label label-danger">已停止</span></td>
                                                         {% endif %}
                                                         <td><span
                                                                 class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
-                                                                <button type="submit" name="collect" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-star"></i>收藏
-                                                        </button>
-                                                        <button type="submit" name="enter" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-pencil"></i>进入任务
-                                                        </button>
-
+                                                                <button type="submit" name="collect"
+                                                                        value="{{ task.id }}"
+                                                                        class="btn btn-default btn-xs"><i
+                                                                        class="fa fa-star"></i>收藏
+                                                                </button>
+                                                                {% if not task.is_closed %}
+                                                                    <button type="submit" name="enter"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-pencil"></i>进入任务
+                                                                    </button>
+                                                                {% endif %}
                                                                 <button type="submit" name="abandon_rejected_task"
                                                                         value="{{ task.id }}"
-
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>放弃抢位
                                                                 </button>
 
                                                             </div>
                                                         </td>
-                                                    <td><span class="label label-danger">2</span></td>
+                                                        <td><span class="label label-danger">2</span></td>
                                                     </div>
 
                                                 </tr>
@@ -769,7 +793,7 @@
                                             {% if request.session.is_login %}
                                                 <th>操作</th>
                                             {% endif %}
-                                        <th>悬赏积分</th>
+                                            <th>悬赏积分</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -802,7 +826,7 @@
                                                         {% if not task.is_closed %}
                                                             <td><span class="label label-danger">正在进行</span></td>
                                                         {% else %}
-                                                            <td><span class="label label-danger">已结束</span></td>
+                                                            <td><span class="label label-danger">已停止</span></td>
                                                         {% endif %}
                                                         <td><span
 
@@ -811,17 +835,21 @@
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
-                                                                <button type="submit" name="enter" value="{{ task.id }}"
-                                                                        class="btn btn-default btn-xs"><i
-                                                                        class="fa fa-pencil"></i>进入任务
-                                                                </button>
-                                                                 <button type="submit" name="take_a_position" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-anchor"></i>抢位
-                                                        </button>
+                                                                {% if not task.is_closed %}
+                                                                    <button type="submit" name="enter"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-pencil"></i>进入任务
+                                                                    </button>
+                                                                    <button type="submit" name="take_a_position"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-anchor"></i>抢位
+                                                                    </button>
+                                                                {% endif %}
                                                             </div>
                                                         </td>
-                                                    <td><span class="label label-danger">2</span></td>
+                                                        <td><span class="label label-danger">2</span></td>
                                                     </div>
 
                                                 </tr>
@@ -874,7 +902,7 @@
                                             {% if request.session.is_login %}
                                                 <th>操作</th>
                                             {% endif %}
-                                        <th>悬赏积分</th>
+                                            <th>悬赏积分</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -906,27 +934,30 @@
                                                         {% if not task.is_closed %}
                                                             <td><span class="label label-danger">正在进行</span></td>
                                                         {% else %}
-                                                            <td><span class="label label-danger">已结束</span></td>
+                                                            <td><span class="label label-danger">已停止</span></td>
                                                         {% endif %}
                                                         <td><span
 
                                                                 class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                                         </td>
                                                         <td>
-                                                            <div class="pull-right hidden-phone">
+                                                            <div class="pull-left hidden-phone">
                                                                 <button type="submit" name="review"
                                                                         value="{{ task.id }}"
 
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>检查成果
                                                                 </button>
-                                                                 <button type="submit" name="close_task" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-anchor"></i>关闭任务
-                                                        </button>
+                                                                {% if not task.is_closed %}
+                                                                    <button type="submit" name="close_task"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-anchor"></i>关闭任务
+                                                                    </button>
+                                                                {% endif %}
                                                             </div>
                                                         </td>
-                                                    <td><span class="label label-danger">2</span></td>
+                                                        <td><span class="label label-danger">2</span></td>
                                                     </div>
 
                                                 </tr>
@@ -961,20 +992,20 @@
                                     <thead>
                                     <tr>
 
-                                            <th>#</th>
-                                            <th>任务名称</th>
-                                            <th>类型</th>
-                                            <th>管理者</th>
-                                            <!-- <th>Client</th> -->
-                                            {#                                    <th>Details</th>#}
-                                            <th>发布时间</th>
-                                            <!-- <th>Price</th> -->
-                                            <th>当前状态</th>
-                                            <th>人员需求</th>
-                                            {% if request.session.is_login %}
-                                                <th>操作</th>
-                                            {% endif %}
-                                    <th>悬赏积分</th>
+                                        <th>#</th>
+                                        <th>任务名称</th>
+                                        <th>类型</th>
+                                        <th>管理者</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>发布时间</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>当前状态</th>
+                                        <th>人员需求</th>
+                                        {% if request.session.is_login %}
+                                            <th>操作</th>
+                                        {% endif %}
+                                        <th>悬赏积分</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -997,32 +1028,35 @@
                                                         {% if not task.is_closed %}
                                                             <td><span class="label label-danger">正在进行</span></td>
                                                         {% else %}
-                                                            <td><span class="label label-danger">已结束</span></td>
+                                                            <td><span class="label label-danger">已停止</span></td>
                                                         {% endif %}
                                                         <td><span
                                                                 class="label label-primary">共{{ task.max_tagged_num }} 个工位，剩余{{ task.max_tagged_num - task.users.count() }}个</span>
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
-                                                                <button type="submit" name="redo_rejected_task" value="{{ task.id }}"
-                                                                        class="btn btn-default btn-xs"><i
-                                                                        class="fa fa-pencil"></i>重做任务
-                                                                </button>
-
+                                                                {% if not task.is_closed %}
+                                                                    <button type="submit" name="redo_rejected_task"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-pencil"></i>重做任务
+                                                                    </button>
+                                                                {% endif %}
                                                                 <button type="submit" name="abandon_rejected_task"
                                                                         value="{{ task.id }}"
 
                                                                         class="btn btn-default btn-xs"><i
                                                                         class="fa fa-pencil"></i>放弃任务
                                                                 </button>
-                                                                 <button type="submit" name="take_a_position" value="{{ task.id }}"
-                                                                class="btn btn-default btn-xs"><i
-                                                                class="fa fa-anchor"></i>抢位
-                                                        </button>
+                                                                {#                                                                <button type="submit" name="take_a_position"#}
+                                                                {#                                                                        value="{{ task.id }}"#}
+                                                                {#                                                                        class="btn btn-default btn-xs"><i#}
+                                                                {#                                                                        class="fa fa-anchor"></i>抢位#}
+                                                                {#                                                                </button>#}
 
                                                             </div>
                                                         </td>
-                                                    <td><span class="label label-danger">2</span></td>
+                                                        <td><span class="label label-danger">2</span></td>
                                                     </div>
 
                                                 </tr>
@@ -1053,20 +1087,20 @@
                                     <thead>
                                     <tr>
 
-                                            <th>#</th>
-                                            <th>任务名称</th>
-                                            <th>类型</th>
-                                            <th>管理者</th>
-                                            <!-- <th>Client</th> -->
-                                            {#                                    <th>Details</th>#}
-                                            <th>发布时间</th>
-                                            <!-- <th>Price</th> -->
-                                            <th>当前状态</th>
-                                            <th>人员需求</th>
-                                            {% if request.session.is_login %}
-                                                <th>操作</th>
-                                            {% endif %}
-                                    <th>悬赏积分</th>
+                                        <th>#</th>
+                                        <th>任务名称</th>
+                                        <th>类型</th>
+                                        <th>管理者</th>
+                                        <!-- <th>Client</th> -->
+                                        {#                                    <th>Details</th>#}
+                                        <th>发布时间</th>
+                                        <!-- <th>Price</th> -->
+                                        <th>当前状态</th>
+                                        <th>人员需求</th>
+                                        {% if request.session.is_login %}
+                                            <th>操作</th>
+                                        {% endif %}
+                                        <th>悬赏积分</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1090,7 +1124,7 @@
                                                         {% if not task.is_closed %}
                                                             <td><span class="label label-danger">正在进行</span></td>
                                                         {% else %}
-                                                            <td><span class="label label-danger">已结束</span></td>
+                                                            <td><span class="label label-danger">已停止</span></td>
                                                         {% endif %}
                                                         <td><span
 
@@ -1099,11 +1133,13 @@
                                                         </td>
                                                         <td>
                                                             <div class="pull-right hidden-phone">
-                                                                <button type="submit" name="redo_unreviewed_task" value="{{ task.id }}"
-                                                                        class="btn btn-default btn-xs"><i
-                                                                        class="fa fa-pencil"></i>重做
-                                                                </button>
-
+                                                                {% if not task.is_closed %}
+                                                                    <button type="submit" name="redo_unreviewed_task"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-pencil"></i>重做
+                                                                    </button>
+                                                                {% endif %}
                                                                 <button type="submit" name="abandon_unreviewed_task"
                                                                         value="{{ task.id }}"
 
@@ -1112,7 +1148,7 @@
                                                                 </button>
                                                             </div>
                                                         </td>
-                                                    <td><span class="label label-danger">2</span></td>
+                                                        <td><span class="label label-danger">2</span></td>
                                                     </div>
 
                                                 </tr>

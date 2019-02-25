@@ -182,6 +182,7 @@ def release_task(request):
         employees_num = task_form.cleaned_data['employees_num']
         print('employees_num', employees_num, type(employees_num))
         credit = task_form.cleaned_data['credit']
+        user_level = task_form.cleaned_data['user_level']
         current_user = models.User.objects.get(name=request.session['username'])
         if current_user.total_credits < credit * employees_num * len(files):
             messages.error(request, "您的信用积分不足，请先进行充值！")
@@ -195,7 +196,7 @@ def release_task(request):
         new_task.details = details
         new_task.max_tagged_num = employees_num
         new_task.credit = credit
-
+        new_task.user_level = user_level
         # save questions and answers
         i = 1
         content = ''
@@ -324,29 +325,50 @@ def confirm_to_upload_pictures(request):
 def all_task(request):
     task_list = models.Task.objects.all()
     num_task = task_list.count()
-
     num_user = models.User.objects.count()
     task_templates = ['', '图片', '视频', '音频']
     task_types = ['', '单选式', '多选式', '问答式', '标注式']
     temp_excluded_list = []
-
     if request.method == "POST":
         print(request.POST)
         if 'task_sort' in request.POST or 'task_filter' in request.POST:
-            if request.POST.get('order') == 'time_desc':
-                task_list = task_list.order_by('-c_time')
             temp_excluded_list = request.POST.getlist('temp_excluded')
             if 'temp1' in temp_excluded_list:
-                task_list = task_list.exclude(template=1, type=3)
+                task_list = task_list.exclude(template=1, type=1).exclude(template=1, type=2)
             if 'temp2' in temp_excluded_list:
-                task_list = task_list.exclude(template=1, type=4)
+                task_list = task_list.exclude(template=1, type=3)
             if 'temp3' in temp_excluded_list:
+                task_list = task_list.exclude(template=1, type=4)
+            if 'temp4' in temp_excluded_list:
+                task_list = task_list.exclude(template=3, type=1).exclude(template=3, type=2)
+            if 'temp5' in temp_excluded_list:
                 task_list = task_list.exclude(template=3, type=3)
+            if 'temp6' in temp_excluded_list:
+                task_list = task_list.exclude(template=2, type=1).exclude(template=2, type=2)
+            if 'temp7' in temp_excluded_list:
+                task_list = task_list.exclude(template=2, type=3)
+            if 'temp8' in temp_excluded_list:
+                task_list = task_list.exclude(template=2, type=4)
+            print(task_list)
             if request.POST.get('tagged_num') == 'single':
                 task_list = task_list.filter(max_tagged_num=1)
             elif request.POST.get('tagged_num') == 'multi':
                 task_list = task_list.exclude(max_tagged_num=1)
-        elif 'collect' in request.POST:
+            if request.POST.get('order') == 'time_desc':
+                task_list = task_list.order_by('-c_time')
+            elif request.POST.get('order') == 'num_asc':
+                task_list = task_list.order_by('max_tagged_num')
+            elif request.POST.get('order') == 'num_desc':
+                task_list = task_list.order_by('-max_tagged_num')
+    if not request.session.get('is_login', None):
+        return render(request, 'all_task.html', locals())
+
+    current_user = models.User.objects.get(name=request.session['username'])
+    rank = models.User.objects.filter(num_label_accepted__gt=current_user.num_label_accepted).count() + 1
+
+    if request.method == "POST":
+        print(request.POST)
+        if 'collect' in request.POST:
             collect_task(request)
         elif 'remove' in request.POST:
             remove_task(request)
@@ -358,10 +380,15 @@ def all_task(request):
             cancel_task(request)
             task_list = models.Task.objects.all()
             num_task = task_list.count()
-        elif 'review' in request.POST:
-            if digit.match(request.POST.get('review')):
-                request.session['task_id'] = int(request.POST.get('review'))
-                return redirect('/one_task/')
+        elif 'review' in request.POST and digit.match(request.POST.get('review')):
+            request.session['task_id'] = int(request.POST.get('review'))
+            return redirect('/one_task/')
+        elif 'close_task' in request.POST and digit.match(request.POST.get('close_task')):
+            task_id = int(request.POST.get('close_task'))
+            task = current_user.released_tasks.filter(id=task_id).first()
+            if task:
+                task.is_closed = True
+                task.save()
 
         elif 'abandon_unreviewed_task' in request.POST:
             if digit.match(request.POST.get('abandon_unreviewed_task')) and request.session.get('is_login', None):
@@ -389,26 +416,29 @@ def all_task(request):
                                             is_rejected=True).delete()
                 return redirect('/enter_task/')
 
-    if request.session.get('is_login', None):
-        current_user = models.User.objects.get(name=request.session['username'])
-        favorite_task_list = current_user.favorite_tasks.all()
-        num_favorite_task = favorite_task_list.count()
+    favorite_task_list = current_user.favorite_tasks.all()
+    num_favorite_task = favorite_task_list.count()
 
-        released_task_list = current_user.released_tasks.all()
-        num_released_task = released_task_list.count()
+    released_task_list = current_user.released_tasks.all()
+    num_released_task = released_task_list.count()
 
-        rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True,
-                                                                subtask__label__user=current_user).distinct()
-        num_rejected_task = rejected_task_list.count()
+    rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True,
+                                                            subtask__label__user=current_user).distinct()
+    num_rejected_task = rejected_task_list.count()
 
-        unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True,
-                                                                  subtask__label__user=current_user).distinct()
-        num_unreviewed_task = unreviewed_task_list.count()
+    unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True,
+                                                              subtask__label__user=current_user).distinct()
+    num_unreviewed_task = unreviewed_task_list.count()
 
-        current_user.login_time = timezone.now()
-        current_user.save()
-        num_updated_task = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
-
+    current_user.login_time = timezone.now()
+    current_user.save()
+    num_updated_task = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
+    label_accepted_new = current_user.label_set.filter(is_unreviewed=False, is_rejected=False,
+                                                       m_time__gt=current_user.last_login_time)
+    num_label_accepted_new = label_accepted_new.count()
+    credits_new = 0
+    for label in label_accepted_new:
+        credits_new += label.sub_task.task.credit
     return render(request, 'all_task.html', locals())
 
 
@@ -475,8 +505,13 @@ def enter_task(request):
     if not request.session.get('is_login', None) or not request.session.get('task_id', None):
         messages.error(request, '用户未登录！')
         return redirect('/all_task/')
-    # current_user = models.User.objects.get(name=request.session['username'])
+    current_user = models.User.objects.get(name=request.session['username'])
     task = models.Task.objects.get(id=request.session['task_id'])
+
+    level_list = [0, 0, 200, 500, 1000, 2000]
+    if current_user.num_label_accepted < level_list[task.user_level]:
+        messages.error(request, '等级不足，无法进入该任务！')
+        return redirect('/all_task/')
 
     if not task.users.filter(name=request.session['username']).first():
         messages.error(request, '请先收藏该任务再开始标注！')
@@ -725,8 +760,12 @@ def check_task(request):
             'sub_task_id', None):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
-    sub_task = models.SubTask.objects.get(id=request.session['sub_task_id'])
+    task = current_user.released_tasks.filter(id=request.session['task_id']).first()
+    if not task:
+        return redirect('/all_task/')
+    sub_task = task.subtask_set.filter(id=request.session['sub_task_id']).first()
+    if not sub_task:
+        return redirect('/all_task/')
 
     if request.method == "POST":
         print(request.POST)
@@ -738,7 +777,7 @@ def check_task(request):
             request.session['label_id'] = int(request.POST.get('detail'))
             return redirect('/picture_detail/')
         elif 'pass_all' in request.POST:
-            label_list = sub_task.label_set.all()
+            label_list = sub_task.label_set.filter(is_unreviewed=True)
             for label in label_list:
                 label.is_rejected = False
                 label.is_unreviewed = False
@@ -784,9 +823,15 @@ def picture_detail(request):
             reject_label(request)
 
     current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
-    sub_task = models.SubTask.objects.get(id=request.session['sub_task_id'])
-    label = models.Label.objects.filter(id=request.session['label_id']).first()
+    task = current_user.released_tasks.filter(id=request.session['task_id']).first()
+    if not task:
+        return redirect('/all_task/')
+    sub_task = task.subtask_set.filter(id=request.session['sub_task_id']).first()
+    if not sub_task:
+        return redirect('/all_task/')
+    label = sub_task.label_set.filter(id=request.session['label_id']).first()
+    if not label:
+        return redirect('/all_task/')
     contents = task.content.split('|')
     return render(request, 'picture_detail.html', locals())
 
@@ -795,7 +840,9 @@ def one_task(request):
     if not request.session.get('is_admin', None) or not request.session.get('task_id', None):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
+    task = current_user.released_tasks.filter(id=request.session['task_id']).first()
+    if not task:
+        return redirect('/all_task/')
 
     if request.method == "POST":
         if 'enter' in request.POST and digit.match(request.POST.get('enter')):
@@ -807,7 +854,6 @@ def one_task(request):
     num_released_task = current_user.released_tasks.count()
     num_updated_task = models.Task.objects.filter(c_time__gt=current_user.last_login_time).count()
     return render(request, 'one_task.html', locals())
-    # return redirect('/one_task/')
 
 
 def recharge(request):
