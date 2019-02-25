@@ -40,9 +40,9 @@ urlpatterns = [
     path('all_task/', views.all_task),
 
     path('enter_task/', views.enter_task),
-    path('picture_task/', views.picture_task),
-    path('video_task/', views.video_task),
-    path('player_task/', views.player_task),
+    # path('picture_task/', views.picture_task),
+    # path('video_task/', views.video_task),
+    # path('player_task/', views.player_task),
 
     path('one_task/', views.one_task),
     path('check_task/', views.check_task),

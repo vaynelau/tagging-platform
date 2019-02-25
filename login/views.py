@@ -369,9 +369,9 @@ def all_task(request):
     if request.method == "POST":
         print(request.POST)
         if 'collect' in request.POST:
-            collect_task(request)
+            collect_task(request, current_user)
         elif 'remove' in request.POST:
-            remove_task(request)
+            remove_task(request, current_user)
         elif 'enter' in request.POST:
             if digit.match(request.POST.get('enter')):
                 request.session['task_id'] = int(request.POST.get('enter'))
@@ -422,12 +422,12 @@ def all_task(request):
     released_task_list = current_user.released_tasks.all()
     num_released_task = released_task_list.count()
 
-    rejected_task_list = current_user.favorite_tasks.filter(subtask__label__is_rejected=True,
-                                                            subtask__label__user=current_user).distinct()
+    rejected_task_list = current_user.claimed_tasks.filter(subtask__label__is_rejected=True,
+                                                           subtask__label__user=current_user).distinct()
     num_rejected_task = rejected_task_list.count()
 
-    unreviewed_task_list = current_user.favorite_tasks.filter(subtask__label__is_unreviewed=True,
-                                                              subtask__label__user=current_user).distinct()
+    unreviewed_task_list = current_user.claimed_tasks.filter(subtask__label__is_unreviewed=True,
+                                                             subtask__label__user=current_user).distinct()
     num_unreviewed_task = unreviewed_task_list.count()
 
     current_user.login_time = timezone.now()
@@ -442,7 +442,7 @@ def all_task(request):
     return render(request, 'all_task.html', locals())
 
 
-def collect_task(request):
+def collect_task(request, current_user):
     if not request.session.get('is_login', None) or not digit.match(request.POST.get('collect')):
         messages.error(request, '用户未登录！')
         return
@@ -451,34 +451,18 @@ def collect_task(request):
     if not task:
         messages.error(request, '该任务不存在！')
         return
-    if task.users.count() >= task.max_tagged_num:
-        messages.error(request, '该任务已达到最大收藏人数，无法收藏！')
-        return
-    current_user = models.User.objects.get(name=request.session['username'])
-
-    if models.TaskUser.objects.filter(task=task, user=current_user).exists():
-        messages.error(request, '您已经收藏了该任务！')
-        return
-
-    models.TaskUser.objects.create(task=task, user=current_user)
+    current_user.favorite_tasks.add(task)
 
 
-def remove_task(request):
+def remove_task(request, current_user):
     if not request.session.get('is_login', None):
+        messages.error(request, '用户未登录！')
         return
-    current_user = models.User.objects.get(name=request.session['username'])
     task_id_list = request.POST.getlist('removed_task_id_list')
     for task_id in task_id_list:
         if not digit.match(task_id):
-            messages.error(request, '该task_id不合法！')
             continue
-        task_id = int(task_id)
-        current_user.taskuser_set.filter(task__id=task_id).delete()
-        # task = models.Task.objects.filter(pk=task_id).first()
-        # if not task:
-        #     print('该任务不存在！')
-        #     continue
-        # models.TaskUser.objects.filter(task=task, user=current_user).delete()  # when not exist, no exception.
+        current_user.favorite_tasks.filter(id=int(task_id)).delete()
 
 
 def cancel_task(request):
@@ -506,41 +490,33 @@ def enter_task(request):
         messages.error(request, '用户未登录！')
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
+    task = models.Task.objects.filter(id=request.session['task_id']).first()
+    if not task:
+        return redirect('/all_task/')
 
     level_list = [0, 0, 200, 500, 1000, 2000]
     if current_user.num_label_accepted < level_list[task.user_level]:
-        messages.error(request, '等级不足，无法进入该任务！')
+        messages.error(request, '您的等级不足，无法进入该任务！')
         return redirect('/all_task/')
 
-    if not task.users.filter(name=request.session['username']).first():
-        messages.error(request, '请先收藏该任务再开始标注！')
-        return redirect('/all_task/')
+    if not task.users.filter(name=request.session['username']).exists():
+        if task.users.count() >= task.max_tagged_num:
+            messages.error(request, '该任务已满员，无法进入！')
+            return redirect('/all_task/')
+        models.TaskUser.objects.create(task=task, user=current_user)
 
     # task_templates = ['', '图片', '视频', '音频']
     # task_types = ['', '单选式', '多选式', '问答式', '标注式']
-
     if task.template == 1:
-        return redirect('/picture_task/')
-    if task.template == 2:
-        return redirect('/video_task/')
-    if task.template == 3:
-        return redirect('/player_task/')
+        return picture_task(request, current_user, task)
+    elif task.template == 2:
+        return video_task(request, current_user, task)
+    elif task.template == 3:
+        return player_task(request, current_user, task)
     return redirect('/all_task/')
 
 
-def picture_task(request):
-    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
-        return redirect('/all_task/')
-    current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
-    if task.template != 1:
-        messages.error(request, '该任务不是图片类任务！')
-        return redirect('/all_task/')
-    if not task.users.filter(name=request.session['username']).first():
-        messages.error(request, '请先收藏该任务再开始标注！')
-        return redirect('/all_task/')
-
+def picture_task(request, current_user, task):
     if request.method == "POST":
         print(request.POST)
         result = ''
@@ -596,18 +572,7 @@ def picture_task(request):
         return render(request, 'picture_circle.html', locals())
 
 
-def video_task(request):
-    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
-        return redirect('/all_task/')
-    current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
-    if task.template != 2:
-        messages.error(request, '该任务不是视频类任务！')
-        return redirect('/all_task/')
-    if not task.users.filter(name=request.session['username']).first():
-        messages.error(request, '请先收藏该任务再开始标注！')
-        return redirect('/all_task/')
-
+def video_task(request, current_user, task):
     if request.method == "POST":
         print(request.POST)
         result = ''
@@ -663,18 +628,7 @@ def video_task(request):
         return render(request, 'video_circle.html', locals())
 
 
-def player_task(request):
-    if not request.session.get('is_login', None) or not request.session.get('task_id', None):
-        return redirect('/all_task/')
-    current_user = models.User.objects.get(name=request.session['username'])
-    task = models.Task.objects.get(id=request.session['task_id'])
-    if task.template != 3 or task.type >= 4:
-        messages.error(request, '该任务不是音频类任务！')
-        return redirect('/all_task/')
-    if not task.users.filter(name=request.session['username']).first():
-        messages.error(request, '请先收藏该任务再开始标注！')
-        return redirect('/all_task/')
-
+def player_task(request, current_user, task):
     if request.method == "POST":
         print(request.POST)
         i = 1
