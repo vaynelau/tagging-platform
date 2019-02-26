@@ -5,17 +5,23 @@
 
     <meta charset="UTF-8">
     <title>充值页面</title>
-
+    <link href="{{ static('lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ static('css/recharge_amazeui.min.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ static('css/recharge_main.css') }}"/>
 
 
 </head>
 <body>
+
 <div class="pay">
 
     <!--主内容开始编辑-->
     <div class="tr_recharge">
+        {% for message in get_messages(request) %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <a href="#" class="close" data-dismiss="alert">&times;</a>{{ message }}
+            </div>
+        {% endfor %}
         <div class="tr_rechtext">
             <p class="te_retit"><img src="{{ static('images/coin.png') }}" alt=""/>Recharge Centre</p>
             <p>Points and RMB are converted to 1:1, which is 1 yuan = 1 points. You can choose Alipay or WeChat payment
@@ -38,26 +44,26 @@
                     <ul class="ui-choose am-form-group" id="uc_01">
                         <li>
                             <label class="am-radio-inline">
-                                <input type="radio" value="" name="docVlGender" required
+                                <input type="radio" value="10" name="docVlGender" required
                                        data-validation-message="Please select a recharge amount"> 10￥
                             </label>
                         </li>
                         <li>
                             <label class="am-radio-inline">
-                                <input type="radio" name="docVlGender"
+                                <input type="radio" value="20" name="docVlGender"
                                        data-validation-message="Please select a recharge amount"> 20￥
                             </label>
                         </li>
 
                         <li>
                             <label class="am-radio-inline">
-                                <input type="radio" name="docVlGender"
+                                <input type="radio" value="50" name="docVlGender"
                                        data-validation-message="Please select a recharge amount"> 50￥
                             </label>
                         </li>
                         <li>
                             <label class="am-radio-inline">
-                                <input type="radio" name="docVlGender"
+                                <input type="radio" value="other" name="docVlGender"
                                        data-validation-message="Please select a recharge amount"> Other amount
                             </label>
                         </li>
@@ -65,19 +71,19 @@
                 </div>
                 <div class="tr_rechoth am-form-group">
                     <span>Other amount</span>
-                    <input type="number" min="10" max="10000" value="10.00元" class="othbox"
+                    <input type="number" min="10" max="10000" name="other_amount" class="othbox"
                            data-validation-message="Recharge amount range: 10-10,000￥"/>
                     <!--<p>充值金额范围：10-10000元</p>-->
                 </div>
                 <div class="tr_rechcho am-form-group">
                     <span>充值方式：</span>
                     <label class="am-radio">
-                        <input type="radio" name="radio1" value="" data-am-ucheck required
+                        <input type="radio" name="radio1" value="1" data-am-ucheck required
                                data-validation-message="Please select a recharge amount"><img
                             src="{{ static('images/wechatpay.png') }}">
                     </label>
                     <label class="am-radio" style="margin-right:30px;">
-                        <input type="radio" name="radio1" value="" data-am-ucheck
+                        <input type="radio" name="radio1" value="2" data-am-ucheck
                                data-validation-message="Please select a recharge amount"><img
                             src="{{ static('images/zfbpay.png') }}">
                     </label>
@@ -94,7 +100,10 @@
         </form>
     </div>
 </div>
-
+<script src="{{ static('js/jquery-1.11.3.min.js') }}"></script>
+<script src="{{ static('js/jquery.easy-pie-chart.js') }}"></script>
+<!--时间js-->
+<script src="{{ static('time/jquery.countdown.js') }}"></script>
 <script type="text/javascript" src="{{ static('js/recharge_jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ static('js/recharge_amazeui.min.js') }}"></script>
 <script type="text/javascript" src="{{ static('js/recharge_ui-choose.js') }}"></script>

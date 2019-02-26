@@ -83,8 +83,8 @@
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="section-head text-center">
-                    <h2>ATLAS</h2>
-                    <p>Confirm the pictures in the atlas.</p>
+                    <h2>您的图片集</h2>
+                    <p>请确认您的数据集</p>
                     <form action="/confirm_to_upload_pictures/" method="post">
                         {{ csrf_input }}
                         <button type="submit" name="confirm" class="btn btn-warning">确认图集</button>
@@ -103,7 +103,7 @@
                 <div class="row container-masonry js-masonry" id="masonry-grid">
                     <div class="col-md-4 branding coffee grid-item col-sm-4">
                         <div class="item-box">
-                            <a href="#">
+                            <a href="#" style="margin-top:80px;margin-bottom: 80px;">
                                 <img src="{{ sub_task.file.url }}" class="item-container">
                                 <div class="item-mask">
                                     <div class="item-caption">

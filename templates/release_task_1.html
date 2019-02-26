@@ -68,8 +68,8 @@
 
                             {{ csrf_input }}
                             <div class="wizard-header text-center">
-                                <h3 class="wizard-title">Create your task</h3>
-                                <p class="category">This information will let us know more about you.</p>
+                                <h3 class="wizard-title">创建问答型任务细节</h3>
+                                <p class="category">更详细的任务信息将帮助标注人员更好的完成您的任务。</p>
                             </div>
 
                             {% for message in get_messages(request) %}
@@ -92,6 +92,7 @@
                                             Select Template
                                         </a>
                                     </li>
+
                                     <li>
                                         <a href="#title" data-toggle="tab">
                                             <div class="icon-circle">
@@ -124,7 +125,14 @@
                                             Employees
                                         </a>
                                     </li>
-
+                                    <li>
+                                        <a href="#rp" data-toggle="tab">
+                                            <div class="icon-circle">
+                                                <i class="ti-anchor"></i>
+                                            </div>
+                                            Reward Points
+                                        </a>
+                                    </li>
                                     <li>
                                         <a href="#details" data-toggle="tab">
                                             <div class="icon-circle">
@@ -139,7 +147,7 @@
                             <div class="tab-content">
 
                                 <div class="tab-pane" id="select_template" style="margin-bottom: 30px;">
-                                    <h5 class="info-text"> Select a template for your task.</h5>
+                                    <h5 class="info-text"> 为您的任务选择模板</h5>
                                     <div class="row">
                                         <div class="col-sm-8 col-sm-offset-2">
                                             <div class="col-sm-4">
@@ -172,33 +180,18 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h6>You can only choose one template.</h6>
-                                </div>
-
-                                <div class="tab-pane" id="reward points" style="margin-bottom: 30px;">
-                                    <div class="row">
-                                        <h5 class="info-text"> Set Reward points.</h5>
-                                        <div class="col-sm-12">
-                                        </div>
-                                        <div class="col-sm-7 col-sm-offset-1">
-                                            <div class="form-group">
-                                                <input type="text" name="reward_points" class="form-control"
-                                                       style="margin-top: 30px;" placeholder="your task name"
-                                                       maxlength="128" required id="reward_points"/>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <h6>您只能选择一个模板。</h6>
                                 </div>
 
                                 <div class="tab-pane" id="title" style="margin-bottom: 30px;">
                                     <div class="row">
-                                        <h5 class="info-text"> Set title for your task.</h5>
+                                        <h5 class="info-text"> 设置题目</h5>
                                         <div class="col-sm-12">
                                         </div>
                                         <div class="col-sm-7 col-sm-offset-1">
                                             <div class="form-group">
                                                 <input type="text" name="name" class="form-control"
-                                                       style="margin-top: 30px;" placeholder="your task name"
+                                                       style="margin-top: 30px;" placeholder="清晰的题目有助于标注者领取您的任务"
                                                        maxlength="128" required id="name"/>
                                             </div>
                                         </div>
@@ -208,20 +201,20 @@
 
                                 <div class="tab-pane" id="picture" style="margin-bottom: 30px;">
                                     <div class="row">
-                                        <h5 class="info-text"> Update Data Set.</h5>
+                                        <h5 class="info-text">上传数据集</h5>
                                         <div class="col-sm-4 col-sm-offset-1">
                                             <div class="picture-container">
                                                 <input type="file" name="files" multiple style="font-size: 22px;"
                                                        id="file" required/>
                                                 <h3></h3>
-                                                <h6>Allows Multiple Selection</h6>
+                                                <h6>允许上传多个文件</h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="qa" style="margin-bottom: 30px;">
                                     <div class="row">
-                                        <h5 class="info-text"> What questions would you like to know?</h5>
+                                        <h5 class="info-text">设置问题</h5>
 
                                         <div class="row" id="addform">
                                             <div id="form-div" class="col-md-12">
@@ -259,28 +252,52 @@
                                 </div>
                                 <div class="tab-pane" id="employees" style="margin-bottom: 30px;">
                                     <div class="row">
-                                        <h5 class="info-text"> Choose the number of employees.</h5>
+                                        <h5 class="info-text">选择雇佣标注者的数目</h5>
                                         <div class="col-sm-12">
                                         </div>
                                         <div class="col-sm-7 col-sm-offset-1">
                                             <div class="form-group">
                                                 <input type="text" maxlength="2" class="form-control"
                                                        name="employees_num" required
-                                                       style="margin-top: 30px;" placeholder="the number of employees, between 1 and 99" id="id_employees_num">
+                                                       style="margin-top: 30px;" placeholder="选择雇佣人数，在1~99之间"
+                                                       id="id_employees_num">
 
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="details" style="margin-bottom: 30px;">
+
+                                <div class="tab-pane" id="rp" style="margin-bottom: 30px;">
                                     <div class="row">
-                                        <h5 class="info-text"> Add some details for your task.</h5>
+                                        <h5 class="info-text">单条标注数据悬赏积分</h5>
+                                        <h5 class="info-text">您当前持有的积分：{{ user.total_credits }}</h5>
                                         <div class="col-sm-12">
                                         </div>
                                         <div class="col-sm-7 col-sm-offset-1">
                                             <div class="form-group">
+                                                <input type="text" maxlength="10" name="credit" class="form-control"
+                                                       style="margin-top: 30px;" placeholder="如：1，任务发布成功后我们将从您的账户扣除"
+                                                       maxlength="128" required id="reward_points"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="details" style="margin-bottom: 30px;">
+                                    <div class="row">
+                                        <h5 class="info-text">您的任务备注</h5>
+                                        <div class="col-sm-12">
+                                        </div>
+
+                                        <div class="col-sm-7 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <input type="text" maxlength="1" class="form-control"
+                                                       name="user_level" required
+                                                       style="margin-top: 30px;" placeholder="设置标注师门槛，1~5">
+                                            </div>
+                                            <div class="form-group">
                                                 <input type="text" maxlength="1024" class="form-control" name="details"
-                                                       style="margin-top: 30px;" placeholder="remarks">
+                                                       style="margin-top: 30px;" placeholder="如有更多要求，请您填写">
                                             </div>
                                         </div>
                                     </div>

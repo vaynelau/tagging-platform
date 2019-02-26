@@ -28,9 +28,9 @@ class RegisterForm(forms.Form):
 
 class TaskForm(forms.Form):
     templates = (
-        (1, '问答式'),
-        (2, '标记式'),
-        (3, '书写式'),
+        (1, '图片'),
+        (2, '视频'),
+        (3, '音频'),
     )
     template = forms.ChoiceField(label='任务模板', choices=templates, required=True, widget=forms.RadioSelect())
 
@@ -44,8 +44,9 @@ class TaskForm(forms.Form):
     a1_q1 = forms.CharField(label='选项1', max_length=128, required=False, widget=forms.TextInput())
     a2_q1 = forms.CharField(label='选项2', max_length=128, required=False, widget=forms.TextInput())
     employees_num = forms.IntegerField(label='人数', max_value=99, min_value=1, required=True, widget=forms.TextInput())
+    credit = forms.IntegerField(label='积分', max_value=9999999999, min_value=1, required=True, widget=forms.TextInput())
     details = forms.CharField(label="任务详情", max_length=1024, required=False, widget=forms.Textarea(
         attrs={'class': 'form-control', 'style': 'margin-top: 30px;', 'placeholder': 'remarks'}))
-
+    user_level = forms.IntegerField(label='积分', max_value=5, min_value=1, required=True, widget=forms.TextInput())
     # users = forms.ModelMultipleChoiceField(label="选择用户", queryset=models.User.objects.all(),
     #                                        required=False, widget=forms.CheckboxSelectMultiple())
