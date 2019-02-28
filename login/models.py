@@ -47,8 +47,7 @@ class User(models.Model):
     c_time = models.DateTimeField(auto_now_add=True)  # 保存用户创建时间
     login_time = models.DateTimeField(default=timezone.now)  # 保存此次登录时间
     last_login_time = models.DateTimeField(default=timezone.now)  # 保存上次登录时间
-
-    # favorite_tasks = models.ManyToManyField('Task')
+    favorite_tasks = models.ManyToManyField('Task')
     total_credits = models.IntegerField(default=1000)
     num_label_accepted = models.IntegerField(default=1)
 
@@ -71,7 +70,7 @@ class Task(models.Model):
     max_tagged_num = models.IntegerField(default=1)
     is_closed = models.BooleanField(default=False)
     credit = models.IntegerField(default=1)
-    users = models.ManyToManyField('User', related_name='favorite_tasks', through='TaskUser')
+    users = models.ManyToManyField('User', related_name='claimed_tasks', through='TaskUser')
     user_level = models.IntegerField(default=1)
 
     def __str__(self):

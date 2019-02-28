@@ -23,16 +23,15 @@
             </div>
         {% endfor %}
         <div class="tr_rechtext">
-            <p class="te_retit"><img src="{{ static('images/coin.png') }}" alt=""/>Recharge Centre</p>
-            <p>Points and RMB are converted to 1:1, which is 1 yuan = 1 points. You can choose Alipay or WeChat payment
-                method to recharge, and the points will be charged at 10 each time.</p>
+            <p class="te_retit"><img src="{{ static('images/coin.png') }}" alt=""/>充值中心</p>
+            <p>积分和人民币兑换1：1，即1元= 1分。 您可以选择支付宝或微信支付，最低充值金额为10￥。</p>
         </div>
         <form action="/recharge/" method="post" class="am-form" id="doc-vld-msg">
             {{ csrf_input }}
             <div class="tr_rechbox">
                 <div class="tr_rechhead">
                     <img src="{{ static('images/ys_head2.jpg') }}"/>
-                    <p>Recharge account:
+                    <p>充值账号：
                         <a>{{ request.session.username }}</a>
                     </p>
                     <div class="tr_rechheadcion">
@@ -64,13 +63,13 @@
                         <li>
                             <label class="am-radio-inline">
                                 <input type="radio" value="other" name="docVlGender"
-                                       data-validation-message="Please select a recharge amount"> Other amount
+                                       data-validation-message="Please select a recharge amount"> 其他
                             </label>
                         </li>
                     </ul>
                 </div>
                 <div class="tr_rechoth am-form-group">
-                    <span>Other amount</span>
+                    <span>其他金额：</span>
                     <input type="number" min="10" max="10000" name="other_amount" class="othbox"
                            data-validation-message="Recharge amount range: 10-10,000￥"/>
                     <!--<p>充值金额范围：10-10000元</p>-->
@@ -89,13 +88,12 @@
                     </label>
                 </div>
                 <div class="tr_rechnum">
-                    <span>Amounts payable:</span>
+                    <span>应付金额:</span>
                     <p class="rechnum">0.00￥</p>
                 </div>
             </div>
             <div class="tr_paybox">
                 <input type="submit" name="confirm" value="确认支付" class="tr_pay am-btn"/>
-                <span>Tips: Points are only circulated in the labeling system, please call the contact number if you encounter problems.</span>
             </div>
         </form>
     </div>
