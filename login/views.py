@@ -732,6 +732,9 @@ def video_task(request, current_user, task, task_user):
     elif task.type == 3:
         return render(request, 'video_task_qa.html', locals())
     else:
+        img_name_list = ''
+        for screen_shot in sub_task.screenshot_set.all():
+            img_name_list += '#' + screen_shot.image.name.split('\\')[-1]
         return render(request, 'video_circle.html', locals())
 
 
