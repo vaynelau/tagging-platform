@@ -9,9 +9,6 @@ from django.contrib import messages
 
 from login import forms, models, tools
 import re
-import os
-
-from mysite.settings import MEDIA_ROOT
 
 digit = re.compile("^\d{1,10}$")
 
@@ -390,31 +387,59 @@ def all_task(request):
                 task.is_closed = True
                 task.save()
 
-        elif 'abandon_unreviewed_task' in request.POST:
-            if digit.match(request.POST.get('abandon_unreviewed_task')) and request.session.get('is_login', None):
-                task_id = int(request.POST.get('abandon_unreviewed_task'))
-                models.Label.objects.filter(user__name=request.session['username'], sub_task__task_id=task_id,
-                                            is_unreviewed=True).delete()
-        elif 'abandon_rejected_task' in request.POST:
-            if digit.match(request.POST.get('abandon_rejected_task')) and request.session.get('is_login', None):
-                task_id = int(request.POST.get('abandon_rejected_task'))
-                models.Label.objects.filter(user__name=request.session['username'], sub_task__task_id=task_id,
-                                            is_rejected=True).delete()
-
         elif 'redo_unreviewed_task' in request.POST:
-            if digit.match(request.POST.get('redo_unreviewed_task')) and request.session.get('is_login', None):
+            if digit.match(request.POST.get('redo_unreviewed_task')):
                 request.session['task_id'] = int(request.POST.get('redo_unreviewed_task'))
-                models.Label.objects.filter(user__name=request.session['username'],
-                                            sub_task__task_id=request.session['task_id'],
+                models.Label.objects.filter(user=current_user, sub_task__task_id=request.session['task_id'],
                                             is_unreviewed=True).delete()
+                models.TaskUser.objects.filter(task_id=request.session['task_id'],
+                                               user=current_user).first().is_finished = False
                 return redirect('/enter_task/')
-        elif 'redo_rejected_task' in request.POST:
-            if digit.match(request.POST.get('redo_rejected_task')) and request.session.get('is_login', None):
-                request.session['task_id'] = int(request.POST.get('redo_rejected_task'))
-                models.Label.objects.filter(user__name=request.session['username'],
-                                            sub_task__task_id=request.session['task_id'],
-                                            is_rejected=True).delete()
-                return redirect('/enter_task/')
+        elif 'abandon_unreviewed_task' in request.POST:
+            if digit.match(request.POST.get('abandon_unreviewed_task')):
+                task_id = int(request.POST.get('abandon_unreviewed_task'))
+                models.Label.objects.filter(user=current_user, sub_task__task_id=task_id,
+                                            is_unreviewed=True).delete()
+                models.TaskUser.objects.filter(task_id=task_id, user=current_user).delete()
+
+        elif 'redo_rejected_task' in request.POST and digit.match(request.POST.get('redo_rejected_task')):
+            request.session['task_id'] = int(request.POST.get('redo_rejected_task'))
+            rejected_labels = models.Label.objects.filter(user=current_user,
+                                                          sub_task__task_id=request.session['task_id'],
+                                                          is_rejected=True)
+            task_user = models.TaskUser.objects.filter(task_id=request.session['task_id'],
+                                                       user=current_user).first()
+
+            task_user.num_label_unreviewed += rejected_labels.count()
+            task_user.num_label_reviewed -= rejected_labels.count()
+            task_user.is_rejected = False
+            task_user.is_finished = False
+            task_user.save()
+            rejected_labels.delete()
+            return redirect('/enter_task/')
+
+        elif 'abandon_rejected_task' in request.POST and digit.match(request.POST.get('abandon_rejected_task')):
+            task_id = int(request.POST.get('abandon_rejected_task'))
+            rejected_labels = models.Label.objects.filter(user=current_user,
+                                                          sub_task__task_id=task_id,
+                                                          is_rejected=True)
+            task_user = models.TaskUser.objects.filter(task_id=task_id, user=current_user).first()
+            if not task_user.is_grabbed:
+                task_user.num_label_unreviewed += rejected_labels.count()
+                task_user.num_label_reviewed -= rejected_labels.count()
+                task_user.is_rejected = False
+                task_user.save()
+            else:
+                pre_task_user = models.TaskUser.objects.filter(task_id=task_id, user=task_user.pre_user).first()
+                pre_task_user.is_rejected = True
+                pre_task_user.save()
+                rejected_labels.update(user=task_user.pre_user, task_user=pre_task_user)
+                task_user.delete()
+            # rejected_labels.delete()
+
+        elif 'take_a_position' in request.POST and digit.match(request.POST.get('take_a_position')):
+            task_id = int(request.POST.get('take_a_position'))
+            grab_task(request, current_user, task_id)
 
     favorite_task_list = current_user.favorite_tasks.all()
     num_favorite_task = favorite_task_list.count()
@@ -422,13 +447,20 @@ def all_task(request):
     released_task_list = current_user.released_tasks.all()
     num_released_task = released_task_list.count()
 
-    rejected_task_list = current_user.claimed_tasks.filter(subtask__label__is_rejected=True,
-                                                           subtask__label__user=current_user).distinct()
+    rejected_task_list = current_user.claimed_tasks.filter(taskuser__is_finished=True,
+                                                           taskuser__num_label_unreviewed=0,
+                                                           taskuser__is_rejected=True,
+                                                           taskuser__user=current_user).distinct()
     num_rejected_task = rejected_task_list.count()
 
-    unreviewed_task_list = current_user.claimed_tasks.filter(subtask__label__is_unreviewed=True,
-                                                             subtask__label__user=current_user).distinct()
+    unreviewed_task_list = current_user.claimed_tasks.filter(taskuser__is_finished=True,
+                                                             taskuser__num_label_reviewed=0,
+                                                             taskuser__user=current_user).distinct()
     num_unreviewed_task = unreviewed_task_list.count()
+
+    get_position_task_list = current_user.claimed_tasks.filter(taskuser__is_finished=False,
+                                                               taskuser__is_grabbed=True,
+                                                               taskuser__user=current_user).distinct()
 
     current_user.login_time = timezone.now()
     current_user.save()
@@ -440,6 +472,38 @@ def all_task(request):
     for label in label_accepted_new:
         credits_new += label.sub_task.task.credit
     return render(request, 'all_task.html', locals())
+
+
+def grab_task(request, current_user, task_id):
+    task = models.Task.objects.filter(id=task_id).first()
+    if not task:
+        messages.error(request, '任务不存在！')
+        return
+
+    level_list = [0, 0, 200, 500, 1000, 2000]
+    if current_user.num_label_accepted < level_list[task.user_level]:
+        messages.error(request, '您的等级不足，无法抢该任务！')
+        return
+    if task.is_closed:
+        messages.error(request, '该任务已关闭！')
+        return
+    if task.users.filter(name=request.session['username']).exists() or task.users.count() < task.max_tagged_num:
+        messages.error(request, '该任务可直接进入！')
+        return
+    task_user = models.TaskUser.objects.filter(task_id=task_id, is_rejected=True, is_finished=True,
+                                               num_label_unreviewed=0).first()
+    if not task_user:
+        return
+    task_user.is_rejected = False
+    task_user.save()
+    rejected_labels = models.Label.objects.filter(user=task_user.user, sub_task__task=task, is_rejected=True)
+
+    new_task_user = models.TaskUser.objects.create(task=task, user=current_user, is_grabbed=True,
+                                                   pre_user=task_user.user,
+                                                   num_label_unreviewed=rejected_labels.count())
+    rejected_labels.update(user=current_user, task_user=new_task_user)
+
+    messages.success(request, '抢位成功！')
 
 
 def collect_task(request, current_user):
@@ -486,15 +550,20 @@ def cancel_task(request):
 
 
 def enter_task(request):
+    print('swdwd')
     if not request.session.get('is_login', None) or not request.session.get('task_id', None):
         messages.error(request, '用户未登录！')
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
     task = models.Task.objects.filter(id=request.session['task_id']).first()
     if not task:
+        messages.error(request, '任务不存在！')
         return redirect('/all_task/')
 
     level_list = [0, 0, 200, 500, 1000, 2000]
+    if task.is_closed:
+        messages.error(request, '该任务已关闭！')
+        return redirect('/all_task/')
     if current_user.num_label_accepted < level_list[task.user_level]:
         messages.error(request, '您的等级不足，无法进入该任务！')
         return redirect('/all_task/')
@@ -503,20 +572,22 @@ def enter_task(request):
         if task.users.count() >= task.max_tagged_num:
             messages.error(request, '该任务已满员，无法进入！')
             return redirect('/all_task/')
-        models.TaskUser.objects.create(task=task, user=current_user)
+        models.TaskUser.objects.create(task=task, user=current_user, num_label_unreviewed=task.subtask_set.count())
+
+    task_user = models.TaskUser.objects.filter(task=task, user=current_user).first()
 
     # task_templates = ['', '图片', '视频', '音频']
     # task_types = ['', '单选式', '多选式', '问答式', '标注式']
     if task.template == 1:
-        return picture_task(request, current_user, task)
+        return picture_task(request, current_user, task, task_user)
     elif task.template == 2:
-        return video_task(request, current_user, task)
+        return video_task(request, current_user, task, task_user)
     elif task.template == 3:
-        return player_task(request, current_user, task)
+        return player_task(request, current_user, task, task_user)
     return redirect('/all_task/')
 
 
-def picture_task(request, current_user, task):
+def picture_task(request, current_user, task, task_user):
     if request.method == "POST":
         print(request.POST)
         result = ''
@@ -538,20 +609,28 @@ def picture_task(request, current_user, task):
         elif sub_task_id:
             sub_task = models.SubTask.objects.get(pk=sub_task_id)
             print(sub_task)
-            task_user = current_user.taskuser_set.filter(task=task).first()
-            label = models.Label.objects.create()
-            label.user = current_user
-            label.sub_task = sub_task
+            if not task_user.is_grabbed:
+                label = models.Label.objects.create()
+                label.user = current_user
+                label.sub_task = sub_task
+                label.task_user = task_user
+            else:
+                label = sub_task.label_set.filter(user=current_user, is_rejected=True).first()
+                label.is_rejected = False
             label.result = result
-            label.task_user = task_user
             label.save()
             if task.type == 4:
                 tools.picture_circle(label)
             del request.session['sub_task_id']
 
-    sub_task = models.get_untagged_sub_task(task, current_user)
+    if not task_user.is_grabbed:
+        sub_task = models.get_untagged_sub_task(task, current_user)
+    else:
+        sub_task = models.get_rejected_sub_task(task, current_user)
     if not sub_task:
         messages.success(request, "该任务已完成！")
+        task_user.is_finished = True
+        task_user.save()
         del request.session['task_id']
         return redirect('/all_task/')
     request.session['sub_task_id'] = sub_task.id
@@ -572,7 +651,7 @@ def picture_task(request, current_user, task):
         return render(request, 'picture_circle.html', locals())
 
 
-def video_task(request, current_user, task):
+def video_task(request, current_user, task, task_user):
     if request.method == "POST":
         print(request.POST)
         result = ''
@@ -594,20 +673,28 @@ def video_task(request, current_user, task):
         elif sub_task_id:
             sub_task = models.SubTask.objects.get(pk=sub_task_id)
             print(sub_task)
-            task_user = current_user.taskuser_set.filter(task=task).first()
-            label = models.Label.objects.create()
-            label.user = current_user
-            label.sub_task = sub_task
+            if not task_user.is_grabbed:
+                label = models.Label.objects.create()
+                label.user = current_user
+                label.sub_task = sub_task
+                label.task_user = task_user
+            else:
+                label = sub_task.label_set.filter(user=current_user, is_rejected=True).first()
+                label.is_rejected = False
             label.result = result
-            label.task_user = task_user
             label.save()
             if task.type == 4:
                 tools.video_circle(label)
             del request.session['sub_task_id']
 
-    sub_task = models.get_untagged_sub_task(task, current_user)
+    if not task_user.is_grabbed:
+        sub_task = models.get_untagged_sub_task(task, current_user)
+    else:
+        sub_task = models.get_rejected_sub_task(task, current_user)
     if not sub_task:
         messages.success(request, "该任务已完成！")
+        task_user.is_finished = True
+        task_user.save()
         del request.session['task_id']
         return redirect('/all_task/')
     request.session['sub_task_id'] = sub_task.id
@@ -628,7 +715,7 @@ def video_task(request, current_user, task):
         return render(request, 'video_circle.html', locals())
 
 
-def player_task(request, current_user, task):
+def player_task(request, current_user, task, task_user):
     if request.method == "POST":
         print(request.POST)
         i = 1
@@ -647,18 +734,26 @@ def player_task(request, current_user, task):
         elif sub_task_id:
             sub_task = models.SubTask.objects.get(pk=sub_task_id)
             print(sub_task)
-            task_user = current_user.taskuser_set.filter(task=task).first()
-            label = models.Label.objects.create()
-            label.user = current_user
-            label.sub_task = sub_task
+            if not task_user.is_grabbed:
+                label = models.Label.objects.create()
+                label.user = current_user
+                label.sub_task = sub_task
+                label.task_user = task_user
+            else:
+                label = sub_task.label_set.filter(user=current_user, is_rejected=True).first()
+                label.is_rejected = False
             label.result = result
-            label.task_user = task_user
             label.save()
             del request.session['sub_task_id']
 
-    sub_task = models.get_untagged_sub_task(task, current_user)
+    if not task_user.is_grabbed:
+        sub_task = models.get_untagged_sub_task(task, current_user)
+    else:
+        sub_task = models.get_rejected_sub_task(task, current_user)
     if not sub_task:
-        messages.success(request, "该任务已标注完成！")
+        messages.success(request, "该任务已完成！")
+        task_user.is_finished = True
+        task_user.save()
         del request.session['task_id']
         return redirect('/all_task/')
     request.session['sub_task_id'] = sub_task.id
@@ -690,13 +785,16 @@ def reject_label(request):
     label.is_rejected = True
     label.is_unreviewed = False
     label.save()
+    label.task_user.num_label_unreviewed -= 1
+    label.task_user.num_label_reviewed += 1
+    label.task_user.is_rejected = True
+    label.task_user.save()
 
 
-def accept_label(request):
+def accept_label(request, sub_task):
     if not digit.match(request.POST.get('pass')):
         messages.error(request, '该label_id不合法！')
         return
-    sub_task = models.SubTask.objects.get(id=request.session['sub_task_id'])
     label_id = int(request.POST.get('pass'))
     label = sub_task.label_set.filter(pk=label_id).first()
     if not label:
@@ -707,6 +805,9 @@ def accept_label(request):
     label.save()
     label.user.total_credits += label.sub_task.task.credit
     label.user.save()
+    label.task_user.num_label_unreviewed -= 1
+    label.task_user.num_label_reviewed += 1
+    label.task_user.save()
 
 
 def check_task(request):
@@ -724,7 +825,7 @@ def check_task(request):
     if request.method == "POST":
         print(request.POST)
         if 'pass' in request.POST:
-            accept_label(request)
+            accept_label(request, sub_task)
         elif 'back' in request.POST:
             reject_label(request)
         elif 'detail' in request.POST and task.type == 4:
@@ -738,6 +839,9 @@ def check_task(request):
                 label.save()
                 label.user.total_credits += label.sub_task.task.credit
                 label.user.save()
+                label.task_user.num_label_unreviewed -= 1
+                label.task_user.num_label_reviewed += 1
+                label.task_user.save()
 
     label_list = sub_task.label_set.all()
     print(label_list)

@@ -319,7 +319,7 @@
                                         <span class="badge badge-info pull-right">{{ credits_new }}</span>
                                         新增积分</a>
                                     <a><i class="fa fa-cloud fa-fw pull-right"></i>
-                                        <span class="badge badge-info pull-right">{{ current_user.num_label_accepted}}</span>
+                                        <span class="badge badge-info pull-right">{{ current_user.num_label_accepted }}</span>
                                         被通过子任务数</a>
                                     <a><i class="fa fa-cloud fa-fw pull-right"></i>
                                         <span class="badge badge-info pull-right">{{ num_label_accepted_new }}</span>
@@ -706,7 +706,7 @@
                                     <form action="/all_task/" method="post">
                                         <div class="task-content">
                                             {{ csrf_input }}
-                                            {% for task in getpostion_task_list %}
+                                            {% for task in get_position_task_list %}
                                                 <tr>
                                                     <div class="task-title">
                                                         <td>{{ task.id }}</td>
@@ -739,13 +739,13 @@
                                                                             class="btn btn-default btn-xs"><i
                                                                             class="fa fa-pencil"></i>进入任务
                                                                     </button>
-                                                                {% endif %}
-                                                                <button type="submit" name="abandon_rejected_task"
-                                                                        value="{{ task.id }}"
-                                                                        class="btn btn-default btn-xs"><i
-                                                                        class="fa fa-pencil"></i>放弃抢位
-                                                                </button>
 
+                                                                    <button type="submit" name="abandon_rejected_task"
+                                                                            value="{{ task.id }}"
+                                                                            class="btn btn-default btn-xs"><i
+                                                                            class="fa fa-pencil"></i>放弃抢位
+                                                                    </button>
+                                                                {% endif %}
                                                             </div>
                                                         </td>
                                                         <td><span class="label label-danger">2</span></td>
