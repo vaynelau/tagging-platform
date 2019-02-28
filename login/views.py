@@ -617,6 +617,7 @@ def picture_task(request, current_user, task, task_user):
             else:
                 label = sub_task.label_set.filter(user=current_user, is_rejected=True).first()
                 label.is_rejected = False
+                label.is_unreviewed = True
             label.result = result
             label.save()
             if task.type == 4:
@@ -681,6 +682,7 @@ def video_task(request, current_user, task, task_user):
             else:
                 label = sub_task.label_set.filter(user=current_user, is_rejected=True).first()
                 label.is_rejected = False
+                label.is_unreviewed = True
             label.result = result
             label.save()
             if task.type == 4:
@@ -742,6 +744,7 @@ def player_task(request, current_user, task, task_user):
             else:
                 label = sub_task.label_set.filter(user=current_user, is_rejected=True).first()
                 label.is_rejected = False
+                label.is_unreviewed = True
             label.result = result
             label.save()
             del request.session['sub_task_id']
