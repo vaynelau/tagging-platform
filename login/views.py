@@ -575,6 +575,9 @@ def enter_task(request):
         models.TaskUser.objects.create(task=task, user=current_user, num_label_unreviewed=task.subtask_set.count())
 
     task_user = models.TaskUser.objects.filter(task=task, user=current_user).first()
+    if task_user.is_finished:
+        messages.error(request, '该任务已完成！')
+        return redirect('/all_task/')
 
     # task_templates = ['', '图片', '视频', '音频']
     # task_types = ['', '单选式', '多选式', '问答式', '标注式']
