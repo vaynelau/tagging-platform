@@ -34,7 +34,7 @@ def get_rejected_sub_task(task, user):
 
 
 def get_unreviewed_sub_task(task, user):
-    unreviewed_sub_task_set = task.subtask_set.filter(users__id=user.id, label__is_unreviewed=True).distinct()
+    unreviewed_sub_task_set = task.subtask_set.filter(users__id=user.id, label__redo=True).distinct()
     print('unreviewed_sub_task_set', unreviewed_sub_task_set)
     return unreviewed_sub_task_set.first()  # if not exist, return None.
 
@@ -87,6 +87,7 @@ class TaskUser(models.Model):
     pre_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='pre_task_users', )
     is_grabbed = models.BooleanField(default=False)
     is_finished = models.BooleanField(default=False)
+    redo = models.BooleanField(default=False)
     num_label_unreviewed = models.IntegerField(default=1)
     num_label_reviewed = models.IntegerField(default=0)
     # num_label_rejected = models.IntegerField(default=0)
@@ -117,6 +118,7 @@ class Label(models.Model):
     m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间
     # is_tagged = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
+    redo = models.BooleanField(default=False)
     is_unreviewed = models.BooleanField(default=True)
     task_user = models.ForeignKey('TaskUser', on_delete=models.SET_NULL, null=True)
 
