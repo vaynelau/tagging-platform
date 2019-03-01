@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
+    'django_cleanup',  # should go after your apps
 ]
 
 MIDDLEWARE = [
@@ -82,14 +83,31 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/2.0.5/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # 数据库类型
-        'NAME': 'mysite',  # 数据库名字
-        'USER': 'django',  # 账号
-        'PASSWORD': '123456',  # 密码
-        'HOST': '127.0.0.1',  # IP
-        'PORT': '3306',  # 端口
+
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+
+        # 'NAME': 'tag',
+        # "USER": 'root',
+        # "PASSWORD": 'hjy19980717',
+
+       'NAME': 'TaggingSystem',  # 数据库名字
+       'USER': 'django',  # 账号
+       'PASSWORD': '123456',  # 密码
+
+       'HOST': '127.0.0.1',  # 本机地址
+       'PORT': '3306',  # 端口
     }
+
+    # 'default': {
+    #          'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': 'MySQL',
+    #          "USER": 'dbUser',
+    #          "PASSWORD": 'zkn980516',
+    #          'HOST': '127.0.0.1',  # 本机地址
+    #          'PORT': '3306',  # 端口
+    #      }
+
 }
 
 # Password validation
@@ -121,10 +139,14 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0.5/howto/static-files/
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
