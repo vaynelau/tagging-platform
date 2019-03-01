@@ -94,14 +94,15 @@
 <script src="{{ static('build/js/draw_roi.js') }}"></script>
 <script type="text/javascript">
     var sampleCount = "{{ sub_task.screenshot_set.count() }}";
-
+    var img_name_list = "{{ img_name_list }}".split('#');
     function loadSamplePic(index) {
-        picNumberStr = PrefixInteger(index, 6) + '.jpg';
+        {#picNumberStr = PrefixInteger(index, 6) + '.jpg';#}
         {#url = "/api/annotation/sample?index="+picNumberStr+'&time='+new Date();#}
         {#url = '/media/task_{{ task.id }}/{{ sub_task.id }}/' + picNumberStr;#}
-        url = '{{ sub_task.file.url.split('.')[0]+'_frame' }}/' + picNumberStr;
+        url = '{{ sub_task.file.url.split('.')[0]+'_frame' }}/' + img_name_list[index];
+        {#url = '{{ sub_task.screenshot_set[0].image.url }}';#}
         $('#img').css({"background": "url('" + url + "') no-repeat"});
-        $('#cur_id').html(picNumberStr);
+        $('#cur_id').html(img_name_list[index]);
         $('.box').remove();
         $('#cur_loc').html('');
     }

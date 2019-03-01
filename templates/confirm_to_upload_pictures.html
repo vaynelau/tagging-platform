@@ -80,7 +80,7 @@
 
 <section id="section-works" class="section-padding">
     <div class="container">
-        <div class="row" style="margin-bottom: -100px;">
+        <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="section-head text-center">
                     <h2>您的图片集</h2>
@@ -100,10 +100,10 @@
         {% for sub_task in sub_tasks %}
             <form action="/confirm_to_upload_pictures/" method="post">
                 {{ csrf_input }}
-                <div class="row container-masonry js-masonry" id="masonry-grid" style="margin-top:100px;margin-bottom: 100px;">
-                    <div class="col-md-offset-4 col-md-4 branding coffee grid-item col-sm-4">
+                <div class="row container-masonry js-masonry" id="masonry-grid">
+                    <div class="col-md-4 branding coffee grid-item col-sm-4">
                         <div class="item-box">
-                            <a href="#">
+                            <a href="#" style="margin-top:80px;margin-bottom: 80px;">
                                 <img src="{{ sub_task.file.url }}" class="item-container">
                                 <div class="item-mask">
                                     <div class="item-caption">

@@ -51,7 +51,7 @@
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
-          <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+        <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -60,7 +60,7 @@
         <div class="navbar-right">
             <ul class="nav navbar-nav">
                 <!-- Messages: style can be found in dropdown.less-->
-                                {% if request.session.is_login %}
+                {% if request.session.is_login %}
                     <li class="dropdown messages-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-envelope"></i>
@@ -244,35 +244,35 @@
                                     <span class="badge badge-success pull-right">{{ num_updated_task }}</span>
                                     任务展板更新</a>
                                 {% if request.session.is_admin %}
-                                <a href="#Favorite_Tasks">
-                                    <i class="fa fa-star  fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
-                                    已收藏任务</a>
-                                <a href="#Unreviewed_Tasks">
-                                    <i class="fa fa-envelope-o fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ num_unreviewed_task }}</span>
-                                    待审核任务</a>
-                                <a href="#Rejected_Tasks">
-                                    <i class="fa fa-ambulance fa-fw pull-right"></i>
-                                    <span class="badge badge-danger pull-right">{{ num_rejected_task }}</span>
-                                    被退回任务</a>
+                                    <a href="#Favorite_Tasks">
+                                        <i class="fa fa-star  fa-fw pull-right"></i>
+                                        <span class="badge badge-danger pull-right">{{ num_favorite_task }}</span>
+                                        已收藏任务</a>
+                                    <a href="#Unreviewed_Tasks">
+                                        <i class="fa fa-envelope-o fa-fw pull-right"></i>
+                                        <span class="badge badge-danger pull-right">{{ num_unreviewed_task }}</span>
+                                        待审核任务</a>
+                                    <a href="#Rejected_Tasks">
+                                        <i class="fa fa-ambulance fa-fw pull-right"></i>
+                                        <span class="badge badge-danger pull-right">{{ num_rejected_task }}</span>
+                                        被退回任务</a>
 
                                     <a href="#Released_Tasks">
                                         <i class="fa fa-arrows fa-fw pull-right"></i>
                                         <span class="badge badge-danger pull-right">{{ num_released_task }}</span>
-                                       已发布任务</a>
+                                        已发布任务</a>
                                     <a href="/recharge/"><i class="fa fa-star fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">{{ current_user.total_credits }}</span>
-                                    总积分</a>
-                                      <a ><i class="fa fa-star fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">12</span>
-                                    新增积分</a>
-                                    <a ><i class="fa fa-cloud fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">50</span>
-                                    被通过任务数</a>
+                                        <span class="badge badge-info pull-right">{{ current_user.total_credits }}</span>
+                                        总积分</a>
+                                    <a><i class="fa fa-star fa-fw pull-right"></i>
+                                        <span class="badge badge-info pull-right">{{ credits_new }}</span>
+                                        新增积分</a>
                                     <a><i class="fa fa-cloud fa-fw pull-right"></i>
-                                    <span class="badge badge-info pull-right">5</span>
-                                    新增被通过</a>
+                                        <span class="badge badge-info pull-right">{{ current_user.num_label_accepted }}</span>
+                                        被通过子任务数</a>
+                                    <a><i class="fa fa-cloud fa-fw pull-right"></i>
+                                        <span class="badge badge-info pull-right">{{ num_label_accepted_new }}</span>
+                                        新增被通过</a>
                                 {% endif %}
 
                             </li>
@@ -418,7 +418,6 @@
     </aside><!-- /.right-side -->
 
 </div><!-- ./wrapper -->
-
 
 
 <!-- jQuery 2.0.2 -->
