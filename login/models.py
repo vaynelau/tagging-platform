@@ -131,3 +131,10 @@ class Screenshot(models.Model):
     label = models.ForeignKey('Label', on_delete=models.CASCADE, null=True)
     result = models.TextField(max_length=1024)  # 保存标记结果
     image = models.FileField(max_length=256)
+
+
+class Order(models.Model):
+    amount = models.IntegerField(default=0)
+    status = models.TextField(max_length=128)
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    c_time = models.DateTimeField(auto_now_add=True)

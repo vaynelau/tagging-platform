@@ -1,14 +1,18 @@
 # login/views.py
 import codecs
 import csv
+import os
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib import messages
+import alipay
 
 from login import forms, models, tools
 import re
+
+from mysite import settings
 
 digit = re.compile("^\d{1,10}$")
 
@@ -966,6 +970,58 @@ def recharge(request):
     if not request.session.get('is_login', None):
         return redirect('/all_task/')
     current_user = models.User.objects.get(name=request.session['username'])
+    order = models.Order.objects.create()
+    order.user = current_user
+    order.amount = 1
+    order.status = "unpaid"
+    order.save()
+    ali_pay = alipay.AliPay(
+        appid=settings.ALIPAY_APPID,
+        app_notify_url=None,  # 使用默认回调的地址
+        #  公钥的路径
+        app_private_key_path=os.path.join(settings.BASE_DIR, 'keys/pri'),
+        # 私钥的路径
+        alipay_public_key_path=os.path.join(settings.BASE_DIR, 'keys/pub'),
+        # 使用的加密方式
+        sign_type='RSA2',
+        # 默认是False，测试环境配合沙箱环境使用，如果是生产环境，将其改为True
+        debug=True)
+    order_string = ali_pay.api_alipay_trade_page_pay(
+        # // 订单编号
+        out_trade_no=order.o_id,
+        # // 订单总额
+        total_amount=order.amount,
+        # // 订单描述信息
+        subject='积分充值订单-{}'.format(order.o_id),
+        # // 回调地址, 订单支付成功后回调的地址
+        return_url='/all_task/',
+    )
+    while True:
+        response = alipay.api_alipay_trade_query(order.o_id)
+        # code 40004 支付订单未创建
+        # code 10000 trade_status  WAIT_BUYER_PAY  等待支付
+        # oode 10000 trade_status  TRADE_SUCCESS  支付成功
+        # response 是字典
+        code = response.get('code')
+        trade_status = response.get('trade_status')
+        if code == '10000' and trade_status == 'TRADE_SUCCESS':
+            # 支付成功
+            order = OrderInfo.objects.get(id=o_id)
+            order.o_pay = True
+            order.save()
+            # 返回支付结果
+            return JsonResponse({
+                'status': 1,
+                'msg': '支付成功'
+            })
+        elif (code == '10000' and trade_status == 'WAIT_BUYER_PAY') or code == '40004':
+            # 表示支付暂时没有完成
+            continue
+        else:
+            return JsonResponse({
+                'status': 0,
+                'msg': '支付失败'
+            })
 
     if request.method == "POST" and 'docVlGender' in request.POST:
         print(request.POST)
