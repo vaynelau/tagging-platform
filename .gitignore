@@ -18,5 +18,4 @@ __pycache__/
 *$py.class
 
 media/
-#*.py
-
+nohup.out

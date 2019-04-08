@@ -37,7 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
+    'sslserver',
+    # 'werkzeug_debugger_runserver',
+    # 'django_extensions',
     'django_cleanup',  # should go after your apps
+]
+
+ALLOWED_HOSTS = [ 
+    'group.tttaaabbbccc.club',
 ]
 
 MIDDLEWARE = [
@@ -84,29 +91,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
 
-   'default': {
-       'ENGINE': 'django.db.backends.mysql',
-
-        # 'NAME': 'tag',
-        # "USER": 'root',
-        # "PASSWORD": 'hjy19980717',
-
-       'NAME': 'TaggingSystem',  # 数据库名字
-       'USER': 'django',  # 账号
-       'PASSWORD': '123456',  # 密码
-
-       'HOST': '127.0.0.1',  # 本机地址
-       'PORT': '3306',  # 端口
+    'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-
-    # 'default': {
-    #          'ENGINE': 'django.db.backends.mysql',
-    #         'NAME': 'MySQL',
-    #          "USER": 'dbUser',
-    #          "PASSWORD": 'zkn980516',
-    #          'HOST': '127.0.0.1',  # 本机地址
-    #          'PORT': '3306',  # 端口
-    #      }
 
 }
 
