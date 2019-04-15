@@ -93,6 +93,7 @@ class TaskUser(models.Model):
     # num_label_rejected = models.IntegerField(default=0)
     # is_reviewed = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
+    is_abandoned = models.BooleanField(default=False)
     c_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
