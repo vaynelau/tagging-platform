@@ -83,30 +83,24 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/2.0.5/ref/settings/#databases
 
 DATABASES = {
-
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-
-        # 'NAME': 'tag',
-        # "USER": 'root',
-        # "PASSWORD": 'hjy19980717',
-
-        'NAME': 'TaggingSystem',  # 数据库名字
-        'USER': 'django',  # 账号
-        'PASSWORD': '123456',  # 密码
-
-        'HOST': '127.0.0.1',  # 本机地址
-        'PORT': '3306',  # 端口
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-
     # 'default': {
-    #              'ENGINE': 'django.db.backends.mysql',
-    #             'NAME': 'MySQL',
-    #              "USER": 'dbUser',
-    #             "PASSWORD": 'zkn980516',
-    #              'HOST': '127.0.0.1',  # 本机地址
-    #              'PORT': '3306',  # 端口
-    #          }
+    #     'ENGINE': 'django.db.backends.mysql',
+    #
+    #     # 'NAME': 'tag',
+    #     # "USER": 'root',
+    #     # "PASSWORD": 'hjy19980717',
+    #
+    #     'NAME': 'TaggingSystem',  # 数据库名字
+    #     'USER': 'django',  # 账号
+    #     'PASSWORD': '123456',  # 密码
+    #
+    #     'HOST': '127.0.0.1',  # 本机地址
+    #     'PORT': '3306',  # 端口
+    # }
 
 }
 
@@ -163,12 +157,3 @@ MESSAGE_TAGS = {
     messages.WARNING: "alert alert-warning",
     messages.ERROR: "alert alert-danger",
 }
-
-# 支付宝设置
-ALIPAY_APPID = '2016092800616239'
-# 私钥
-APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'keys/pri')
-# 公钥
-ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'keys/pub')
-# 接口
-ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do?'

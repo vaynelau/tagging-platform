@@ -49,7 +49,7 @@ class User(models.Model):
     last_login_time = models.DateTimeField(default=timezone.now)  # 保存上次登录时间
     favorite_tasks = models.ManyToManyField('Task')
     total_credits = models.IntegerField(default=1000)
-    num_label_accepted = models.IntegerField(default=1)
+    num_label_accepted = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -68,6 +68,7 @@ class Task(models.Model):
     details = models.TextField(max_length=1024)
     c_time = models.DateTimeField(auto_now_add=True)
     max_tagged_num = models.IntegerField(default=1)
+    num_worker = models.IntegerField(default=0)
     is_closed = models.BooleanField(default=False)
     credit = models.IntegerField(default=1)
     users = models.ManyToManyField('User', related_name='claimed_tasks', through='TaskUser',
@@ -84,17 +85,19 @@ class Task(models.Model):
 class TaskUser(models.Model):
     task = models.ForeignKey('Task', on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-    pre_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='pre_task_users', )
-    is_grabbed = models.BooleanField(default=False)
-    is_finished = models.BooleanField(default=False)
-    redo = models.BooleanField(default=False)
-    num_label_unreviewed = models.IntegerField(default=1)
-    num_label_reviewed = models.IntegerField(default=0)
-    # num_label_rejected = models.IntegerField(default=0)
-    # is_reviewed = models.BooleanField(default=False)
-    is_rejected = models.BooleanField(default=False)
-    is_abandoned = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, default='doing')
     c_time = models.DateTimeField(auto_now_add=True)
+    num_label_unreviewed = models.IntegerField(default=-1)  # include untagged labels
+    num_label_rejected = models.IntegerField(default=0)
+    has_grabbed = models.BooleanField(default=False)
+
+    # num_label_reviewed = models.IntegerField(default=0)
+    # pre_user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='pre_task_users', )
+    # is_finished = models.BooleanField(default=False)
+    # redo = models.BooleanField(default=False)
+    # is_reviewed = models.BooleanField(default=False)
+    # is_rejected = models.BooleanField(default=False)
+    # is_abandoned = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["c_time"]
@@ -114,14 +117,16 @@ class Label(models.Model):
     """标签表"""
 
     sub_task = models.ForeignKey('SubTask', on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
+    task_user = models.ForeignKey('TaskUser', on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=20, default='untagged')
     result = models.TextField(max_length=1024)  # 保存标记结果
     m_time = models.DateTimeField(auto_now=True)  # 保存最后标记时间
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)  # del
+
     # is_tagged = models.BooleanField(default=False)
-    is_rejected = models.BooleanField(default=False)
-    redo = models.BooleanField(default=False)
-    is_unreviewed = models.BooleanField(default=True)
-    task_user = models.ForeignKey('TaskUser', on_delete=models.SET_NULL, null=True)
+    # is_rejected = models.BooleanField(default=False)  #
+    # redo = models.BooleanField(default=False)  #
+    # is_unreviewed = models.BooleanField(default=True)  #
 
     class Meta:
         ordering = ["m_time"]
