@@ -68,12 +68,12 @@ class Task(models.Model):
     details = models.TextField(max_length=1024)
     c_time = models.DateTimeField(auto_now_add=True)
     max_tagged_num = models.IntegerField(default=1)
-    num_worker = models.IntegerField(default=0)
     is_closed = models.BooleanField(default=False)
     credit = models.IntegerField(default=1)
     users = models.ManyToManyField('User', related_name='claimed_tasks', through='TaskUser',
                                    through_fields=('task', 'user'))
     user_level = models.IntegerField(default=1)
+    num_worker = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
